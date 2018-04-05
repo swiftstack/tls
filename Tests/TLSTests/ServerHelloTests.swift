@@ -67,7 +67,7 @@ class ServerHelloTests: TestCase {
 
             assertEqual(
                 hello.extensions[safe: 4],
-                .statusRequest(.init(certificateStatus: nil)))
+                .statusRequest(.init(certificateStatus: .none)))
 
             assertEqual(
                 hello.extensions[safe: 5],

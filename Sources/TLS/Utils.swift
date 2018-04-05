@@ -14,6 +14,19 @@ extension StreamReader {
     }
 }
 
+extension StreamWriter {
+    // TODO: avoid copying
+    func countingLength<T: FixedWidthInteger>(
+        as type: T.Type,
+        task: (OutputByteStream) throws -> Void) throws
+    {
+        let output = OutputByteStream()
+        try task(output)
+        try write(T(output.bytes.count).byteSwapped)
+        try write(output.bytes)
+    }
+}
+
 extension StreamReader {
     func read(_ type: UInt24.Type) throws -> UInt24 {
         var value = UInt24(0)
@@ -23,5 +36,14 @@ extension StreamReader {
             }
         }
         return value
+    }
+}
+
+extension StreamWriter {
+    func write(_ type: UInt24) throws {
+        var value = UInt24(0)
+        try withUnsafePointer(to: &value) { pointer in
+            try write(pointer, byteCount: MemoryLayout<UInt24>.size)
+        }
     }
 }

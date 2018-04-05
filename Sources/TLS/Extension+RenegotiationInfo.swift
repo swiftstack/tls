@@ -24,4 +24,8 @@ extension Extension.RenegotiationInfo {
 
         fatalError("not implemented")
     }
+
+    func encode<T: StreamWriter>(to stream: T) throws {
+        try stream.write(UInt8(0))
+    }
 }

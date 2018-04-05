@@ -21,4 +21,8 @@ extension Extension.Heartbeat {
         }
         self.mode = mode
     }
+
+    func encode<T: StreamWriter>(to stream: T) throws {
+        try stream.write(mode.rawValue)
+    }
 }

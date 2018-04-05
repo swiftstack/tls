@@ -67,4 +67,12 @@ extension Extension.SupportedGroups {
         }
         self.values = groups
     }
+
+    func encode<T: StreamWriter>(to stream: T) throws {
+        try stream.countingLength(as: UInt16.self) { stream in
+            for value in values {
+                try stream.write(value.rawValue.byteSwapped)
+            }
+        }
+    }
 }

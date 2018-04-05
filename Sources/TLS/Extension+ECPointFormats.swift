@@ -32,4 +32,11 @@ extension Extension.ECPointFormats {
         }
         self.values = points
     }
+
+    func encode<T: StreamWriter>(to stream: T) throws {
+        try stream.write(UInt8(values.count))
+        for value in values {
+            try stream.write(value.rawValue)
+        }
+    }
 }

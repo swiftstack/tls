@@ -3,7 +3,7 @@ import Stream
 @testable import TLS
 
 class ExtensionServerNameTests: TestCase {
-    func testExtensionServerNameName() {
+    func testDecodeName() {
         scope {
             let stream = InputByteStream(
                 [0x00, 0x00, 0x05, 0x79, 0x61, 0x2e, 0x72, 0x75])
@@ -13,7 +13,7 @@ class ExtensionServerNameTests: TestCase {
         }
     }
 
-    func testExtensionServerName() {
+    func testDecode() {
         scope {
             let stream = InputByteStream(
                 [0x00, 0x08, 0x00, 0x00, 0x05, 0x79, 0x61, 0x2e, 0x72, 0x75])
@@ -23,7 +23,7 @@ class ExtensionServerNameTests: TestCase {
         }
     }
 
-    func testExtensionServerNameType() {
+    func testDecodeExtension() {
         scope {
             let stream = InputByteStream(
                 [0x00, 0x00, 0x00, 0x0a, 0x00, 0x08, 0x00, 0x00,
@@ -31,6 +31,43 @@ class ExtensionServerNameTests: TestCase {
             let result = try Extension(from: stream)
             assertEqual(result, .serverName(.init(values: [
                 .init(type: .hostName, value: "ya.ru")])))
+        }
+    }
+
+    func testEncodeName() {
+        scope {
+            let stream = OutputByteStream()
+            let expected: [UInt8] =
+                [0x00, 0x00, 0x05, 0x79, 0x61, 0x2e, 0x72, 0x75]
+            let name = Extension.ServerName.Name(
+                type: .hostName, value: "ya.ru")
+            try name.encode(to: stream)
+            assertEqual(stream.bytes, expected)
+        }
+    }
+
+    func testEncode() {
+        scope {
+            let stream = OutputByteStream()
+            let expected: [UInt8] =
+                [0x00, 0x08, 0x00, 0x00, 0x05, 0x79, 0x61, 0x2e, 0x72, 0x75]
+            let serverName = Extension.ServerName(values: [
+                .init(type: .hostName, value: "ya.ru")])
+            try serverName.encode(to: stream)
+            assertEqual(stream.bytes, expected)
+        }
+    }
+
+    func testEncodeExtension() {
+        scope {
+            let stream = OutputByteStream()
+            let expected: [UInt8] =
+                [0x00, 0x00, 0x00, 0x0a, 0x00, 0x08, 0x00, 0x00,
+                 0x05, 0x79, 0x61, 0x2e, 0x72, 0x75]
+            let serverNameExtension = Extension.serverName(
+                .init(values: [.init(type: .hostName, value: "ya.ru")]))
+            try serverNameExtension.encode(to: stream)
+            assertEqual(stream.bytes, expected)
         }
     }
 }

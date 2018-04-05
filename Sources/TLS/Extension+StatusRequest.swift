@@ -4,12 +4,13 @@ import Platform
 extension Extension {
     public struct StatusRequest: Equatable {
         public enum CertificateStatus: UInt8 {
+            case none
             case ocsp = 0x01
         }
 
-        public let certificateStatus: CertificateStatus?
+        public let certificateStatus: CertificateStatus
 
-        public init(certificateStatus: CertificateStatus?) {
+        public init(certificateStatus: CertificateStatus) {
             self.certificateStatus = certificateStatus
         }
     }
@@ -30,5 +31,14 @@ extension Extension.StatusRequest {
         }
 
         self.certificateStatus = status
+    }
+
+    func encode<T: StreamWriter>(to stream: T) throws {
+        guard certificateStatus != .none else {
+            return
+        }
+        try stream.write(certificateStatus.rawValue)
+        try stream.write(UInt16(0))
+        try stream.write(UInt16(0))
     }
 }

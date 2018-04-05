@@ -14,4 +14,8 @@ extension Extension.SessionTicket {
     init<T: StreamReader>(from stream: T) throws {
         self.data = try stream.readUntilEnd()
     }
+
+    func encode<T: StreamWriter>(to stream: T) throws {
+        try stream.write(data)
+    }
 }

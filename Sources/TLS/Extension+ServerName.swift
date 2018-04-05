@@ -36,6 +36,12 @@ extension Extension.ServerName.Name {
             return String(decoding: bytes, as: UTF8.self)
         }
     }
+
+    func encode<T: StreamWriter>(to stream: T) throws {
+        try stream.write(type.rawValue)
+        try stream.write(UInt16(value.utf8.count).byteSwapped)
+        try stream.write(value)
+    }
 }
 
 extension Extension.ServerName {
@@ -48,6 +54,14 @@ extension Extension.ServerName {
                 names.append(try Name(from: stream))
             }
             return names
+        }
+    }
+
+    func encode<T: StreamWriter>(to stream: T) throws {
+        try stream.countingLength(as: UInt16.self) { stream in
+            for value in values {
+                try value.encode(to: stream)
+            }
         }
     }
 }

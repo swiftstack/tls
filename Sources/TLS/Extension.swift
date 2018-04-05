@@ -33,7 +33,7 @@ extension Extension {
             throw TLSError.invalidExtension
         }
 
-        // fast path to avoid extra InputByteStream init + read overhead
+        // fast path to avoid extra InputStream + read() overhead
         guard length > 0 else {
             switch type {
             case .serverName:
@@ -47,7 +47,7 @@ extension Extension {
             case .signatureAlgorithms:
                 self = .signatureAlgorithms(SignatureAlgorithms(values: []))
             case .statusRequest:
-                self = .statusRequest(StatusRequest(certificateStatus: nil))
+                self = .statusRequest(StatusRequest(certificateStatus: .none))
             case .heartbeat:
                 throw TLSError.invalidExtension
             case .renegotiationInfo:
@@ -84,6 +84,46 @@ extension Extension {
 }
 
 extension Extension {
+    func encode<T: StreamWriter>(to stream: T) throws {
+        func write(_ rawType: RawType) throws {
+            try stream.write(rawType.rawValue.byteSwapped)
+        }
+
+        switch self {
+        case .serverName: try write(.serverName)
+        case .supportedGroups: try write(.supportedGroups)
+        case .ecPointFormats: try write(.ecPointFormats)
+        case .sessionTicket: try write(.sessionTicket)
+        case .signatureAlgorithms: try write(.signatureAlgorithms)
+        case .statusRequest: try write(.statusRequest)
+        case .heartbeat: try write(.heartbeat)
+        case .renegotiationInfo: try write(.renegotiationInfo)
+        }
+
+        try stream.countingLength(as: UInt16.self) { stream in
+            switch self {
+            case .serverName(let value):
+                try value.encode(to: stream)
+            case .supportedGroups(let value):
+                try value.encode(to: stream)
+            case .ecPointFormats(let value):
+                try value.encode(to: stream)
+            case .sessionTicket(let value):
+                try value.encode(to: stream)
+            case .signatureAlgorithms(let value):
+                try value.encode(to: stream)
+            case .statusRequest(let value):
+                try value.encode(to: stream)
+            case .heartbeat(let value):
+                try value.encode(to: stream)
+            case .renegotiationInfo(let value):
+                try value.encode(to: stream)
+            }
+        }
+    }
+}
+
+extension Extension {
     fileprivate enum RawType: UInt16 {
         case serverName = 0x0000
         case maxFragmentLength = 0x0001
@@ -95,7 +135,7 @@ extension Extension {
         case clientAuthz = 0x0007
         case serverAuthz = 0x0008
         case certType = 0x0009
-        case supportedGroups = 0x000a // (renamed from "elliptic_curves")
+        case supportedGroups = 0x000a // (ex "elliptic_curves")
         case ecPointFormats = 0x000b
         case srp = 0x000c
         case signatureAlgorithms = 0x000d

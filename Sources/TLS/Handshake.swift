@@ -46,6 +46,10 @@ extension Handshake.RawType {
         }
         self = type
     }
+
+    func encode<T: StreamWriter>(to stream: T) throws {
+        try stream.write(self.rawValue)
+    }
 }
 
 extension Handshake {
@@ -61,6 +65,22 @@ extension Handshake {
             case .serverHelloDone: return .serverHelloDone
             default: throw TLSError.invalidHandshake
             }
+        }
+    }
+
+    func encode<T: StreamWriter>(to stream: T) throws {
+        // TODO: implement stream.countingLength(of: UInt24.self)
+        let output = OutputByteStream()
+
+        switch self {
+//        case .clientHello(let hello):
+//            try RawType.clientHello.encode(to: stream)
+//            try hello.encode(to: output)
+        case .serverHelloDone:
+            try RawType.serverHelloDone.encode(to: stream)
+            try stream.write(UInt24(0))
+        default:
+            fatalError("not implemented")
         }
     }
 }
