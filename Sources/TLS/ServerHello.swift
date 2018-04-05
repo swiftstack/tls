@@ -44,4 +44,12 @@ extension ServerHello {
         self.compressionMethod = try CompressionMethod(from: stream)
         self.extensions = try [Extension](from: stream)
     }
+
+    public func encode<T: StreamWriter>(to stream: T) throws {
+        try random.encode(to: stream)
+        try sessionId.encode(to: stream)
+        try ciperSuite.encode(to: stream)
+        try compressionMethod.encode(to: stream)
+        try extensions.encode(to: stream)
+    }
 }

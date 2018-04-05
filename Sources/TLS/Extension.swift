@@ -24,6 +24,9 @@ extension Array where Element == Extension {
     }
 
     func encode<T: StreamWriter>(to stream: T) throws {
+        guard count > 0 else {
+            return
+        }
         try stream.countingLength(as: UInt16.self) { stream in
             for value in self {
                 try value.encode(to: stream)

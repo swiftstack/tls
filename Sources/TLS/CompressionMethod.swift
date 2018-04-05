@@ -19,6 +19,9 @@ extension Array where Element == CompressionMethod {
     }
 
     func encode<T: StreamWriter>(to stream: T) throws {
+        guard count > 0 else {
+            return
+        }
         try stream.write(UInt8(count))
         for value in self {
             try value.encode(to: stream)

@@ -59,6 +59,9 @@ extension Extension.SignatureAlgorithms {
     }
 
     func encode<T: StreamWriter>(to stream: T) throws {
+        guard values.count > 0 else {
+            return
+        }
         try stream.countingLength(as: UInt16.self) { stream in
             for value in values {
                 try stream.write(value.hash.rawValue)

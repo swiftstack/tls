@@ -17,6 +17,9 @@ extension Array where Element == CiperSuite {
     }
 
     func encode<T: StreamWriter>(to stream: T) throws {
+        guard count > 0 else {
+            return
+        }
         try stream.write(UInt16(count << 1).byteSwapped)
         for value in self {
             try value.encode(to: stream)
