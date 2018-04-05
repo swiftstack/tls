@@ -1,10 +1,10 @@
 import Stream
 
 public struct RecordLayer: Equatable {
-    public let version: ProtocolVersion
+    public let version: Version
     public let content: Content
 
-    public init(version: ProtocolVersion, content: Content) {
+    public init(version: Version, content: Content) {
         self.version = version
         self.content = content
     }
@@ -32,7 +32,7 @@ extension RecordLayer {
     public init<T: StreamReader>(from stream: T) throws {
         let type = try ContentType(from: stream)
 
-        self.version = try ProtocolVersion(from: stream)
+        self.version = try Version(from: stream)
 
         let length = Int(try stream.read(UInt16.self).byteSwapped)
         self.content = try stream.withLimitedStream(by: length) { stream in

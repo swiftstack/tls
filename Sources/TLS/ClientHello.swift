@@ -1,7 +1,7 @@
 import Stream
 
 public struct ClientHello: Equatable {
-    let version: ProtocolVersion
+    let version: Version
     let random: Random
     let sessionId: SessionId // [0..32]
     let ciperSuites: [CiperSuite]
@@ -9,7 +9,7 @@ public struct ClientHello: Equatable {
     let extensions: [Extension]
 
     public init(
-        version: ProtocolVersion,
+        version: Version,
         random: Random,
         sessionId: SessionId,
         ciperSuites: [CiperSuite],
@@ -27,7 +27,7 @@ public struct ClientHello: Equatable {
 
 extension ClientHello {
     public init<T: StreamReader>(from stream: T) throws {
-        self.version = try ProtocolVersion(from: stream)
+        self.version = try Version(from: stream)
         self.random = try Random(from: stream)
         self.sessionId = try SessionId(from: stream)
         self.ciperSuites = try [CiperSuite](from: stream)
