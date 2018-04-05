@@ -59,11 +59,16 @@ extension Handshake {
 
         self = try stream.withLimitedStream(by: length) { stream in
             switch type {
-            case .clientHello: return .clientHello(try ClientHello(from: stream))
-            case .serverHello: return .serverHello(try ServerHello(from: stream))
-            case .certificate: return .certificate(try [Certificate](from: stream))
-            case .serverHelloDone: return .serverHelloDone
-            default: throw TLSError.invalidHandshake
+            case .clientHello:
+                return .clientHello(try ClientHello(from: stream))
+            case .serverHello:
+                return .serverHello(try ServerHello(from: stream))
+            case .certificate:
+                return .certificate(try [Certificate](from: stream))
+            case .serverHelloDone:
+                return .serverHelloDone
+            default:
+                throw TLSError.invalidHandshake
             }
         }
     }
@@ -73,14 +78,24 @@ extension Handshake {
         let output = OutputByteStream()
 
         switch self {
-//        case .clientHello(let hello):
-//            try RawType.clientHello.encode(to: stream)
-//            try hello.encode(to: output)
+        case .clientHello(let hello):
+            try RawType.clientHello.encode(to: stream)
+            try hello.encode(to: output)
+        case .serverHello(let hello):
+            try RawType.serverHello.encode(to: stream)
+            try hello.encode(to: output)
         case .serverHelloDone:
             try RawType.serverHelloDone.encode(to: stream)
             try stream.write(UInt24(0))
         default:
             fatalError("not implemented")
         }
+
+        guard output.bytes.count > 0 else {
+            return
+        }
+
+        try stream.write(UInt24(UInt(output.bytes.count)).byteSwapped)
+        try stream.write(output.bytes)
     }
 }

@@ -1,6 +1,7 @@
 import Stream
 
 public struct ServerHello: Equatable {
+    public let version: Version
     public let random: Random
     public let sessionId: SessionId // [0..32]
     public let ciperSuite: CiperSuite
@@ -8,12 +9,14 @@ public struct ServerHello: Equatable {
     public let extensions: [Extension]
 
     public init(
+        version: Version,
         random: Random,
         sessionId: SessionId,
         ciperSuite: CiperSuite,
         compressionMethod: CompressionMethod,
         extensions: [Extension])
     {
+        self.version = version
         self.random = random
         self.sessionId = sessionId
         self.ciperSuite = ciperSuite
@@ -28,6 +31,7 @@ extension ServerHello {
     }
 
     public init(sessionId: SessionId, ciperSuite: CiperSuite) {
+        self.version = .tls12
         self.random = Random()
         self.sessionId = sessionId
         self.ciperSuite = ciperSuite
@@ -38,6 +42,7 @@ extension ServerHello {
 
 extension ServerHello {
     public init<T: StreamReader>(from stream: T) throws {
+        self.version = try Version(from: stream)
         self.random = try Random(from: stream)
         self.sessionId = try SessionId(from: stream)
         self.ciperSuite = try CiperSuite(from: stream)
@@ -46,6 +51,7 @@ extension ServerHello {
     }
 
     public func encode<T: StreamWriter>(to stream: T) throws {
+        try version.encode(to: stream)
         try random.encode(to: stream)
         try sessionId.encode(to: stream)
         try ciperSuite.encode(to: stream)

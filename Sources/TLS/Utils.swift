@@ -40,8 +40,8 @@ extension StreamReader {
 }
 
 extension StreamWriter {
-    func write(_ type: UInt24) throws {
-        var value = UInt24(0)
+    func write(_ value: UInt24) throws {
+        var value = value
         try withUnsafePointer(to: &value) { pointer in
             try write(pointer, byteCount: MemoryLayout<UInt24>.size)
         }

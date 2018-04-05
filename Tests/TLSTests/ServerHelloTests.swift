@@ -5,6 +5,8 @@ import Stream
 class ServerHelloTests: TestCase {
     @nonobjc
     let bytes: [UInt8] = [
+        // TLS 1.2
+        0x03, 0x03,
         // time + random
         0xd1, 0xe8, 0x97, 0x9c, 0x71, 0x3c, 0x8b, 0x1e,
         0xf3, 0x63, 0x8a, 0xa1, 0x92, 0xde, 0x9d, 0xcd,
@@ -37,6 +39,7 @@ class ServerHelloTests: TestCase {
 
             let hello = try ServerHello(from: stream)
 
+            assertEqual(hello.version, .tls12)
             assertEqual(hello.random.time, 3521681308)
             assertEqual(hello.random.bytes, [
                 0x71, 0x3c, 0x8b, 0x1e,
@@ -83,6 +86,7 @@ class ServerHelloTests: TestCase {
             let stream = OutputByteStream()
 
             let hello = ServerHello(
+                version: .tls12,
                 random: .init(time: 3521681308, bytes: [
                     0x71, 0x3c, 0x8b, 0x1e,
                     0xf3, 0x63, 0x8a, 0xa1, 0x92, 0xde, 0x9d, 0xcd,
@@ -104,42 +108,44 @@ class ServerHelloTests: TestCase {
                 ])
 
             try hello.encode(to: stream)
-
             assertEqual(stream.bytes, bytes)
 
+            // TLS 1.2
+            guard stream.bytes.count >= 2 else { return }
+            assertEqual(stream.bytes[..<2], bytes[..<2])
             // time + random
-            guard stream.bytes.count >= 32 else { return }
-            assertEqual(stream.bytes[..<32], bytes[..<32])
+            guard stream.bytes.count >= 34 else { return }
+            assertEqual(stream.bytes[..<34], bytes[..<34])
             // session id length
-            guard stream.bytes.count >= 33 else { return }
-            assertEqual(stream.bytes[32..<33], bytes[32..<33])
-            // chiper suite
             guard stream.bytes.count >= 35 else { return }
-            assertEqual(stream.bytes[33..<35], bytes[33..<35])
+            assertEqual(stream.bytes[34..<35], bytes[34..<35])
+            // chiper suite
+            guard stream.bytes.count >= 37 else { return }
+            assertEqual(stream.bytes[35..<37], bytes[35..<37])
             // compression method
-            guard stream.bytes.count >= 36 else { return }
-            assertEqual(stream.bytes[35..<36], bytes[35..<36])
-            // extension length
             guard stream.bytes.count >= 38 else { return }
-            assertEqual(stream.bytes[36..<38], bytes[36..<38])
+            assertEqual(stream.bytes[37..<38], bytes[37..<38])
+            // extension length
+            guard stream.bytes.count >= 40 else { return }
+            assertEqual(stream.bytes[38..<40], bytes[38..<40])
             // server name
-            guard stream.bytes.count >= 46 else { return }
-            assertEqual(stream.bytes[42..<46], bytes[42..<46])
+            guard stream.bytes.count >= 44 else { return }
+            assertEqual(stream.bytes[40..<44], bytes[40..<44])
             // renegatiation info
-            guard stream.bytes.count >= 51 else { return }
-            assertEqual(stream.bytes[46..<51], bytes[46..<51])
+            guard stream.bytes.count >= 49 else { return }
+            assertEqual(stream.bytes[44..<49], bytes[44..<49])
             // ec point formats
-            guard stream.bytes.count >= 59 else { return }
-            assertEqual(stream.bytes[51..<59], bytes[51..<59])
+            guard stream.bytes.count >= 57 else { return }
+            assertEqual(stream.bytes[49..<57], bytes[49..<57])
             // session ticket tls
-            guard stream.bytes.count >= 63 else { return }
-            assertEqual(stream.bytes[59..<63], bytes[59..<63])
+            guard stream.bytes.count >= 61 else { return }
+            assertEqual(stream.bytes[57..<61], bytes[57..<61])
             // status request
-            guard stream.bytes.count >= 67 else { return }
-            assertEqual(stream.bytes[63..<67], bytes[63..<67])
+            guard stream.bytes.count >= 65 else { return }
+            assertEqual(stream.bytes[61..<65], bytes[61..<65])
             // heartbeat
-            guard stream.bytes.count >= 72 else { return }
-            assertEqual(stream.bytes[67..<72], bytes[67..<72])
+            guard stream.bytes.count >= 70 else { return }
+            assertEqual(stream.bytes[65..<70], bytes[65..<70])
         }
     }
 }
