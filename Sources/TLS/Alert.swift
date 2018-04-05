@@ -64,4 +64,9 @@ extension Alert {
         self.level = level
         self.description = description
     }
+
+    func encode<T: StreamWriter>(to stream: T) throws {
+        try stream.write(level.rawValue)
+        try stream.write(description.rawValue)
+    }
 }

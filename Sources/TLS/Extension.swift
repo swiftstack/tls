@@ -22,6 +22,14 @@ extension Array where Element == Extension {
             return extensions
         }
     }
+
+    func encode<T: StreamWriter>(to stream: T) throws {
+        try stream.countingLength(as: UInt16.self) { stream in
+            for value in self {
+                try value.encode(to: stream)
+            }
+        }
+    }
 }
 
 extension Extension {
@@ -102,22 +110,14 @@ extension Extension {
 
         try stream.countingLength(as: UInt16.self) { stream in
             switch self {
-            case .serverName(let value):
-                try value.encode(to: stream)
-            case .supportedGroups(let value):
-                try value.encode(to: stream)
-            case .ecPointFormats(let value):
-                try value.encode(to: stream)
-            case .sessionTicket(let value):
-                try value.encode(to: stream)
-            case .signatureAlgorithms(let value):
-                try value.encode(to: stream)
-            case .statusRequest(let value):
-                try value.encode(to: stream)
-            case .heartbeat(let value):
-                try value.encode(to: stream)
-            case .renegotiationInfo(let value):
-                try value.encode(to: stream)
+            case .serverName(let value): try value.encode(to: stream)
+            case .supportedGroups(let value): try value.encode(to: stream)
+            case .ecPointFormats(let value): try value.encode(to: stream)
+            case .sessionTicket(let value): try value.encode(to: stream)
+            case .signatureAlgorithms(let value): try value.encode(to: stream)
+            case .statusRequest(let value): try value.encode(to: stream)
+            case .heartbeat(let value): try value.encode(to: stream)
+            case .renegotiationInfo(let value): try value.encode(to: stream)
             }
         }
     }

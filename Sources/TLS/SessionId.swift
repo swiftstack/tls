@@ -19,4 +19,9 @@ extension SessionId {
 
         self.data = try stream.read(count: length)
     }
+
+    func encode<T: StreamWriter>(to stream: T) throws {
+        try stream.write(UInt8(data.count))
+        try stream.write(data)
+    }
 }

@@ -34,4 +34,13 @@ extension ClientHello {
         self.compressionMethods = try [CompressionMethod](from: stream)
         self.extensions = try [Extension](from: stream)
     }
+
+    public func encode<T: StreamWriter>(to stream: T) throws {
+        try version.encode(to: stream)
+        try random.encode(to: stream)
+        try sessionId.encode(to: stream)
+        try ciperSuites.encode(to: stream)
+        try compressionMethods.encode(to: stream)
+        try extensions.encode(to: stream)
+    }
 }

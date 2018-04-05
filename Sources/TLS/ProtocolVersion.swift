@@ -23,4 +23,8 @@ extension ProtocolVersion {
         }
         self = version
     }
+
+    func encode<T: StreamWriter>(to stream: T) throws {
+        try stream.write(rawValue.byteSwapped)
+    }
 }
