@@ -99,21 +99,18 @@ class ClientHelloTests: TestCase {
 
             assertEqual(
                 hello.extensions[safe: 0],
-                .serverName(.init(values: [
-                    .init(
-                        type: .hostName,
-                        value: "ya.ru")])))
+                .serverName([.init(type: .hostName, value: "ya.ru")]))
 
             assertEqual(
                 hello.extensions[safe: 1],
-                .ecPointFormats(.init(values: [
+                .ecPointFormats([
                     .uncompressed,
                     .ansiX962_compressed_prime,
-                    .ansiX962_compressed_char2])))
+                    .ansiX962_compressed_char2]))
 
             assertEqual(
                 hello.extensions[safe: 2],
-                .supportedGroups(.init(values: [
+                .supportedGroups([
                     .secp256r1,
                     .secp521r1,
                     .brainpoolP512r1,
@@ -126,7 +123,7 @@ class ClientHelloTests: TestCase {
                     .sect409k1,
                     .sect409r1,
                     .sect283k1,
-                    .sect283r1])))
+                    .sect283r1]))
 
             assertEqual(
                 hello.extensions[safe: 3],
@@ -134,7 +131,7 @@ class ClientHelloTests: TestCase {
 
             assertEqual(
                 hello.extensions[safe: 4],
-                .signatureAlgorithms(.init(values: [
+                .signatureAlgorithms([
                     .init(hash: .sha512, signature: .rsa),
                     .init(hash: .sha512, signature: .dsa),
                     .init(hash: .sha512, signature: .ecdsa),
@@ -150,7 +147,7 @@ class ClientHelloTests: TestCase {
                     .init(hash: .sha1, signature: .rsa),
                     .init(hash: .sha1, signature: .dsa),
                     .init(hash: .sha1, signature: .ecdsa),
-                ])))
+                ]))
 
             assertEqual(
                 hello.extensions[safe: 5],
@@ -201,14 +198,13 @@ class ClientHelloTests: TestCase {
                 ],
                 compressionMethods: [.none],
                 extensions: [
-                    .serverName(
-                        .init(values: [
-                            .init(type: .hostName, value: "ya.ru")])),
-                    .ecPointFormats(.init(values: [
+                    .serverName([
+                        .init(type: .hostName, value: "ya.ru")]),
+                    .ecPointFormats([
                         .uncompressed,
                         .ansiX962_compressed_prime,
-                        .ansiX962_compressed_char2])),
-                    .supportedGroups(.init(values: [
+                        .ansiX962_compressed_char2]),
+                    .supportedGroups([
                         .secp256r1,
                         .secp521r1,
                         .brainpoolP512r1,
@@ -221,10 +217,10 @@ class ClientHelloTests: TestCase {
                         .sect409k1,
                         .sect409r1,
                         .sect283k1,
-                        .sect283r1])),
+                        .sect283r1]),
                     .sessionTicket(
                         .init(data: [])),
-                    .signatureAlgorithms(.init(values: [
+                    .signatureAlgorithms([
                         .init(hash: .sha512, signature: .rsa),
                         .init(hash: .sha512, signature: .dsa),
                         .init(hash: .sha512, signature: .ecdsa),
@@ -240,7 +236,7 @@ class ClientHelloTests: TestCase {
                         .init(hash: .sha1, signature: .rsa),
                         .init(hash: .sha1, signature: .dsa),
                         .init(hash: .sha1, signature: .ecdsa),
-                        ])),
+                        ]),
                     .statusRequest(.init(certificateStatus: .ocsp)),
                     .heartbeat(.init(mode: .allowed))
                 ])

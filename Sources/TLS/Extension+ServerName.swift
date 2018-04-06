@@ -2,28 +2,20 @@ import Stream
 
 extension Extension {
     public struct ServerName: Equatable {
-        public struct Name: Equatable {
-            public enum NameType: UInt8 {
-                case hostName = 0
-            }
-            public let type: NameType
-            public let value: String
-
-            public init(type: NameType, value: String) {
-                self.type = type
-                self.value = value
-            }
+        public enum NameType: UInt8 {
+            case hostName = 0
         }
+        public let type: NameType
+        public let value: String
 
-        public let values: [Name]
-
-        public init(values: [Name]) {
-            self.values = values
+        public init(type: NameType, value: String) {
+            self.type = type
+            self.value = value
         }
     }
 }
 
-extension Extension.ServerName.Name {
+extension Extension.ServerName {
     init<T: StreamReader>(from stream: T) throws {
         let rawType = try stream.read(UInt8.self)
         guard let type = NameType(rawValue: rawType) else {
@@ -44,25 +36,25 @@ extension Extension.ServerName.Name {
     }
 }
 
-extension Extension.ServerName {
+extension Array where Element == Extension.ServerName {
     init<T: StreamReader>(from stream: T) throws {
         let length = Int(try stream.read(UInt16.self).byteSwapped)
 
-        self.values = try stream.withLimitedStream(by: length) { stream in
-            var names = [Name]()
+        self = try stream.withLimitedStream(by: length) { stream in
+            var names = [Element]()
             while !stream.isEmpty {
-                names.append(try Name(from: stream))
+                names.append(try Element(from: stream))
             }
             return names
         }
     }
 
     func encode<T: StreamWriter>(to stream: T) throws {
-        guard values.count > 0 else {
+        guard count > 0 else {
             return
         }
         try stream.countingLength(as: UInt16.self) { stream in
-            for value in values {
+            for value in self {
                 try value.encode(to: stream)
             }
         }

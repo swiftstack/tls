@@ -1,44 +1,36 @@
 import Stream
 
 extension Extension {
-    public struct ECPointFormats: Equatable {
-        public enum ECPoint: UInt8 {
-            case uncompressed = 0x00
-            case ansiX962_compressed_prime = 0x01
-            case ansiX962_compressed_char2 = 0x02
-        }
-
-        public let values: [ECPoint]
-
-        public init(values: [ECPoint]) {
-            self.values = values
-        }
+    public enum ECPointFormat: UInt8 {
+        case uncompressed = 0x00
+        case ansiX962_compressed_prime = 0x01
+        case ansiX962_compressed_char2 = 0x02
     }
 }
 
-extension Extension.ECPointFormats {
+extension Array where Element == Extension.ECPointFormat {
     init<T: StreamReader>(from stream: T) throws {
         let length = Int(try stream.read(UInt8.self))
 
-        var points = [ECPoint]()
+        var points = [Element]()
         var remain = length
         while remain > 0 {
             let rawPoint = try stream.read(UInt8.self)
-            guard let ecPoint = ECPoint(rawValue: rawPoint) else {
+            guard let ecPoint = Element(rawValue: rawPoint) else {
                 throw TLSError.invalidExtension
             }
             points.append(ecPoint)
             remain -= MemoryLayout<UInt8>.size
         }
-        self.values = points
+        self = points
     }
 
     func encode<T: StreamWriter>(to stream: T) throws {
-        guard values.count > 0 else {
+        guard count > 0 else {
             return
         }
-        try stream.write(UInt8(values.count))
-        for value in values {
+        try stream.write(UInt8(count))
+        for value in self {
             try stream.write(value.rawValue)
         }
     }

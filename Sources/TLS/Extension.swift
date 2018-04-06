@@ -1,11 +1,11 @@
 import Stream
 
 public enum Extension: Equatable {
-    case serverName(ServerName)
-    case supportedGroups(SupportedGroups)
-    case ecPointFormats(ECPointFormats)
+    case serverName([ServerName])
+    case supportedGroups([SupportedGroup])
+    case ecPointFormats([ECPointFormat])
     case sessionTicket(SessionTicket)
-    case signatureAlgorithms(SignatureAlgorithms)
+    case signatureAlgorithms([SignatureAlgorithm])
     case statusRequest(StatusRequest)
     case heartbeat(Heartbeat)
     case renegotiationInfo(RenegotiationInfo)
@@ -48,21 +48,21 @@ extension Extension {
         guard length > 0 else {
             switch type {
             case .serverName:
-                self = .serverName(ServerName(values: []))
+                self = .serverName([])
             case .supportedGroups:
-                self = .supportedGroups(SupportedGroups(values: []))
+                self = .supportedGroups([])
             case .ecPointFormats:
-                self = .ecPointFormats(ECPointFormats(values: []))
+                self = .ecPointFormats([])
             case .sessionTicket:
                 self = .sessionTicket(SessionTicket(data: []))
             case .signatureAlgorithms:
-                self = .signatureAlgorithms(SignatureAlgorithms(values: []))
+                self = .signatureAlgorithms([])
             case .statusRequest:
                 self = .statusRequest(StatusRequest(certificateStatus: .none))
             case .heartbeat:
                 throw TLSError.invalidExtension
             case .renegotiationInfo:
-                self = .renegotiationInfo(RenegotiationInfo(renegotiatedConnection: []))
+                self = .renegotiationInfo(RenegotiationInfo())
             default:
                 throw TLSError.invalidExtension
             }
@@ -72,15 +72,15 @@ extension Extension {
         self = try stream.withLimitedStream(by: length) { stream in
             switch type {
             case .serverName:
-                return .serverName(try ServerName(from: stream))
+                return .serverName(try [ServerName](from: stream))
             case .supportedGroups:
-                return .supportedGroups(try SupportedGroups(from: stream))
+                return .supportedGroups(try [SupportedGroup](from: stream))
             case .ecPointFormats:
-                return .ecPointFormats(try ECPointFormats(from: stream))
+                return .ecPointFormats(try [ECPointFormat](from: stream))
             case .sessionTicket:
                 return .sessionTicket(try SessionTicket(from: stream))
             case .signatureAlgorithms:
-                return .signatureAlgorithms(try SignatureAlgorithms(from: stream))
+                return .signatureAlgorithms(try [SignatureAlgorithm](from: stream))
             case .statusRequest:
                 return .statusRequest(try StatusRequest(from: stream))
             case .heartbeat:

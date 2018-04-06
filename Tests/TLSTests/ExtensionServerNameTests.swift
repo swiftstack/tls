@@ -3,11 +3,13 @@ import Stream
 @testable import TLS
 
 class ExtensionServerNameTests: TestCase {
+    typealias ServerName = Extension.ServerName
+
     func testDecodeName() {
         scope {
             let stream = InputByteStream(
                 [0x00, 0x00, 0x05, 0x79, 0x61, 0x2e, 0x72, 0x75])
-            let result = try Extension.ServerName.Name(from: stream)
+            let result = try ServerName(from: stream)
             assertEqual(result.type, .hostName)
             assertEqual(result.value, "ya.ru")
         }
@@ -17,9 +19,8 @@ class ExtensionServerNameTests: TestCase {
         scope {
             let stream = InputByteStream(
                 [0x00, 0x08, 0x00, 0x00, 0x05, 0x79, 0x61, 0x2e, 0x72, 0x75])
-            let result = try Extension.ServerName(from: stream)
-            assertEqual(result, .init(values: [
-                .init(type: .hostName, value: "ya.ru")]))
+            let result = try [ServerName](from: stream)
+            assertEqual(result, [.init(type: .hostName, value: "ya.ru")])
         }
     }
 
@@ -29,8 +30,8 @@ class ExtensionServerNameTests: TestCase {
                 [0x00, 0x00, 0x00, 0x0a, 0x00, 0x08, 0x00, 0x00,
                  0x05, 0x79, 0x61, 0x2e, 0x72, 0x75])
             let result = try Extension(from: stream)
-            assertEqual(result, .serverName(.init(values: [
-                .init(type: .hostName, value: "ya.ru")])))
+            assertEqual(result, .serverName([
+                .init(type: .hostName, value: "ya.ru")]))
         }
     }
 
@@ -39,8 +40,7 @@ class ExtensionServerNameTests: TestCase {
             let stream = OutputByteStream()
             let expected: [UInt8] =
                 [0x00, 0x00, 0x05, 0x79, 0x61, 0x2e, 0x72, 0x75]
-            let name = Extension.ServerName.Name(
-                type: .hostName, value: "ya.ru")
+            let name = ServerName(type: .hostName, value: "ya.ru")
             try name.encode(to: stream)
             assertEqual(stream.bytes, expected)
         }
@@ -51,7 +51,7 @@ class ExtensionServerNameTests: TestCase {
             let stream = OutputByteStream()
             let expected: [UInt8] =
                 [0x00, 0x08, 0x00, 0x00, 0x05, 0x79, 0x61, 0x2e, 0x72, 0x75]
-            let serverName = Extension.ServerName(values: [
+            let serverName = [ServerName]([
                 .init(type: .hostName, value: "ya.ru")])
             try serverName.encode(to: stream)
             assertEqual(stream.bytes, expected)
@@ -64,8 +64,8 @@ class ExtensionServerNameTests: TestCase {
             let expected: [UInt8] =
                 [0x00, 0x00, 0x00, 0x0a, 0x00, 0x08, 0x00, 0x00,
                  0x05, 0x79, 0x61, 0x2e, 0x72, 0x75]
-            let serverNameExtension = Extension.serverName(
-                .init(values: [.init(type: .hostName, value: "ya.ru")]))
+            let serverNameExtension = Extension.serverName([
+                .init(type: .hostName, value: "ya.ru")])
             try serverNameExtension.encode(to: stream)
             assertEqual(stream.bytes, expected)
         }
