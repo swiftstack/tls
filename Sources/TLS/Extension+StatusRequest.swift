@@ -1,44 +1,67 @@
 import Stream
 import Platform
 
+// https://tools.ietf.org/html/rfc4366#section-3.6
+
 extension Extension {
-    public struct StatusRequest: Equatable {
-        public enum CertificateStatus: UInt8 {
-            case none
-            case ocsp = 0x01
+    public enum StatusRequest: Equatable {
+        case none
+        case ocsp(OCSPStatusRequest)
+    }
+
+    public struct OCSPStatusRequest: Equatable {
+        public let responderIdList: [UInt8]
+        public let extensions: [UInt8]
+
+        public init (responderIdList: [UInt8] = [], extensions: [UInt8] = []) {
+            self.responderIdList = responderIdList
+            self.extensions = extensions
+        }
+    }
+}
+
+extension Extension.OCSPStatusRequest {
+    init<T: StreamReader>(from stream: T) throws {
+        let respondersLength = Int(try stream.read(UInt16.self).byteSwapped)
+        switch respondersLength {
+        case 0: self.responderIdList = []
+        default: self.responderIdList = try stream.read(count: respondersLength)
         }
 
-        public let certificateStatus: CertificateStatus
+        let extensionsLength = Int(try stream.read(UInt16.self).byteSwapped)
+        switch extensionsLength {
+        case 0: self.extensions = []
+        default: self.extensions = try stream.read(count: extensionsLength)
+        }
+    }
 
-        public init(certificateStatus: CertificateStatus) {
-            self.certificateStatus = certificateStatus
+    func encode<T: StreamWriter>(to stream: T) throws {
+        try stream.write(UInt16(responderIdList.count))
+        if responderIdList.count > 0 {
+            try stream.write(responderIdList)
+        }
+        try stream.write(UInt16(extensions.count))
+        if extensions.count > 0 {
+            try stream.write(extensions)
         }
     }
 }
 
 extension Extension.StatusRequest {
     init<T: StreamReader>(from stream: T) throws {
-        let rawStatus = try stream.read(UInt8.self)
-        let responderIdListlength = Int(try stream.read(UInt16.self).byteSwapped)
-        let requestExtensionsLength = Int(try stream.read(UInt16.self).byteSwapped)
-
-        guard let status = CertificateStatus(rawValue: rawStatus) else {
-            throw TLSError.invalidExtension
+        let type = try Certificate.Status.RawType(from: stream)
+        switch type {
+        case .ocsp: self = .ocsp(try Extension.OCSPStatusRequest(from: stream))
         }
-
-        guard responderIdListlength == 0 && requestExtensionsLength == 0 else {
-            fatalError("not implemented")
-        }
-
-        self.certificateStatus = status
     }
 
     func encode<T: StreamWriter>(to stream: T) throws {
-        guard certificateStatus != .none else {
+        switch self {
+        case .none:
             return
+        case .ocsp(let request):
+            try Certificate.Status.RawType.ocsp.encode(to: stream)
+            try request.encode(to: stream)
         }
-        try stream.write(certificateStatus.rawValue)
-        try stream.write(UInt16(0))
-        try stream.write(UInt16(0))
     }
 }

@@ -58,7 +58,7 @@ extension Extension {
             case .signatureAlgorithms:
                 self = .signatureAlgorithms([])
             case .statusRequest:
-                self = .statusRequest(StatusRequest(certificateStatus: .none))
+                self = .statusRequest(.none)
             case .heartbeat:
                 throw TLSError.invalidExtension
             case .renegotiationInfo:
