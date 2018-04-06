@@ -4,6 +4,7 @@ public enum Version: UInt16 {
     case tls10 = 0x0301
     case tls11 = 0x0302
     case tls12 = 0x0303
+    case tls13 = 0x0304
 }
 
 extension Version {
