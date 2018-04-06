@@ -62,7 +62,7 @@ extension Extension {
             case .heartbeat:
                 throw TLSError.invalidExtension
             case .renegotiationInfo:
-                self = .renegotiationInfo(RenegotiationInfo(values: []))
+                self = .renegotiationInfo(RenegotiationInfo(renegotiatedConnection: []))
             default:
                 throw TLSError.invalidExtension
             }

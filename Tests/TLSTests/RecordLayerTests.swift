@@ -49,21 +49,27 @@ class RecordLayerTests: TestCase {
             let stream = InputByteStream(bytes)
 
             let recordLayer = try RecordLayer(from: stream)
-            assertEqual(recordLayer.version, .tls12)
-            return
-            //FIXME: fatal error: should not try to mangle a symbolic reference;
-            //       resolve it to a non-symbolic demangling tree instead
-            //            assertEqual(recordLayer.content, .handshake(.serverHello(.init(
-            //                version: .tls12,
-            //                random: .init(time: 3521681308, bytes: [
-            //                    0x71, 0x3c, 0x8b, 0x1e,
-            //                    0xf3, 0x63, 0x8a, 0xa1, 0x92, 0xde, 0x9d, 0xcd,
-            //                    0x7b, 0x85, 0xb2, 0x0f, 0x9e, 0xc1, 0x85, 0x4c,
-            //                    0x20, 0xbb, 0xe9, 0x9e, 0x44, 0xad, 0xf6, 0x25]),
-            //                sessionId: .init(data: []),
-            //                ciperSuite: .tls_ecdhe_rsa_with_aes_128_gcm_sha256,
-            //                compressionMethod: .none,
-            //                extensions: []))))
+            assertEqual(recordLayer.content, .handshake(.serverHello(.init(
+                version: .tls12,
+                random: .init(time: 3521681308, bytes: [
+                    0x71, 0x3c, 0x8b, 0x1e,
+                    0xf3, 0x63, 0x8a, 0xa1, 0x92, 0xde, 0x9d, 0xcd,
+                    0x7b, 0x85, 0xb2, 0x0f, 0x9e, 0xc1, 0x85, 0x4c,
+                    0x20, 0xbb, 0xe9, 0x9e, 0x44, 0xad, 0xf6, 0x25]),
+                sessionId: .init(data: []),
+                ciperSuite: .tls_ecdhe_rsa_with_aes_128_gcm_sha256,
+                compressionMethod: .none,
+                extensions: [
+                    .serverName(.init(values: [])),
+                    .renegotiationInfo(.init(renegotiatedConnection: [])),
+                    .ecPointFormats(.init(values: [
+                        .uncompressed,
+                        .ansiX962_compressed_prime,
+                        .ansiX962_compressed_char2])),
+                    .sessionTicket(.init(data: [])),
+                    .statusRequest(.init(certificateStatus: .none)),
+                    .heartbeat(.init(mode: .allowed))
+                ]))))
         }
     }
 
@@ -84,7 +90,7 @@ class RecordLayerTests: TestCase {
                     compressionMethod: .none,
                     extensions: [
                         .serverName(.init(values: [])),
-                        .renegotiationInfo(.init(values: [])),
+                        .renegotiationInfo(.init()),
                         .ecPointFormats(.init(values: [
                             .uncompressed,
                             .ansiX962_compressed_prime,

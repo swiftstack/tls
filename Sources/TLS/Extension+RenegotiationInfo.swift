@@ -2,30 +2,30 @@ import Stream
 
 extension Extension {
     public struct RenegotiationInfo: Equatable {
-        let values: [Any]
+        let renegotiatedConnection: [UInt8]
 
-        public static func ==(
-            lhs: RenegotiationInfo,
-            rhs: RenegotiationInfo) -> Bool
-        {
-            return lhs.values.isEmpty == rhs.values.isEmpty
+        public init(renegotiatedConnection: [UInt8] = []) {
+            self.renegotiatedConnection = renegotiatedConnection
         }
     }
 }
 
 extension Extension.RenegotiationInfo {
     init<T: StreamReader>(from stream: T) throws {
-        let length = try stream.read(UInt8.self)
-
+        let length = Int(try stream.read(UInt8.self))
         guard length > 0 else {
-            self.values = []
+            self.renegotiatedConnection = []
             return
         }
-
-        fatalError("not implemented")
+        self.renegotiatedConnection = try stream.read(count: length)
     }
 
     func encode<T: StreamWriter>(to stream: T) throws {
-        try stream.write(UInt8(0))
+        guard renegotiatedConnection.count > 0 else {
+            try stream.write(UInt8(0))
+            return
+        }
+        try stream.write(UInt8(renegotiatedConnection.count))
+        try stream.write(renegotiatedConnection)
     }
 }

@@ -58,7 +58,7 @@ class ServerHelloTests: TestCase {
 
             assertEqual(
                 hello.extensions[safe: 1],
-                .renegotiationInfo(.init(values: [])))
+                .renegotiationInfo(.init(renegotiatedConnection: [])))
 
             assertEqual(
                 hello.extensions[safe: 2],
@@ -97,7 +97,7 @@ class ServerHelloTests: TestCase {
                 compressionMethod: .none,
                 extensions: [
                     .serverName(.init(values: [])),
-                    .renegotiationInfo(.init(values: [])),
+                    .renegotiationInfo(.init(renegotiatedConnection: [])),
                     .ecPointFormats(.init(values: [
                         .uncompressed,
                         .ansiX962_compressed_prime,
