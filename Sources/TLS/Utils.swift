@@ -25,6 +25,17 @@ extension StreamWriter {
         try write(T(output.bytes.count).byteSwapped)
         try write(output.bytes)
     }
+
+    // TODO: avoid copying
+    func countingLength(
+        as type: UInt24.Type,
+        task: (OutputByteStream) throws -> Void) throws
+    {
+        let output = OutputByteStream()
+        try task(output)
+        try write(UInt24(UInt(output.bytes.count)).byteSwapped)
+        try write(output.bytes)
+    }
 }
 
 extension StreamReader {

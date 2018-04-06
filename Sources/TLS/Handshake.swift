@@ -74,28 +74,25 @@ extension Handshake {
     }
 
     func encode<T: StreamWriter>(to stream: T) throws {
-        // TODO: implement stream.countingLength(of: UInt24.self)
-        let output = OutputByteStream()
-
+        func write(rawType type: RawType) throws {
+            try type.encode(to: stream)
+        }
         switch self {
-        case .clientHello(let hello):
-            try RawType.clientHello.encode(to: stream)
-            try hello.encode(to: output)
-        case .serverHello(let hello):
-            try RawType.serverHello.encode(to: stream)
-            try hello.encode(to: output)
-        case .serverHelloDone:
-            try RawType.serverHelloDone.encode(to: stream)
-            try stream.write(UInt24(0))
-        default:
-            fatalError("not implemented")
+        case .clientHello: try write(rawType: .clientHello)
+        case .serverHello: try write(rawType: .serverHello)
+        case .certificate: try write(rawType: .certificate)
+        case .serverHelloDone: try write(rawType: .serverHelloDone)
+        default: fatalError("not implemented")
         }
 
-        guard output.bytes.count > 0 else {
-            return
+        try stream.countingLength(as: UInt24.self) { stream in
+            switch self {
+            case .clientHello(let hello): try hello.encode(to: stream)
+            case .serverHello(let hello): try hello.encode(to: stream)
+            case .certificate(let data): try data.encode(to: stream)
+            case .serverHelloDone: return
+            default: fatalError("not implemented")
+            }
         }
-
-        try stream.write(UInt24(UInt(output.bytes.count)).byteSwapped)
-        try stream.write(output.bytes)
     }
 }

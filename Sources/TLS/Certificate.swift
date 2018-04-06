@@ -1,7 +1,7 @@
 import Stream
 
 public struct Certificate: Equatable {
-
+    public let bytes: [UInt8]
 }
 
 extension Array where Element == Certificate {
@@ -15,12 +15,28 @@ extension Array where Element == Certificate {
             return certificates
         }
     }
+
+    func encode<T: StreamWriter>(to stream: T) throws {
+        guard count > 0 else {
+            return
+        }
+        try stream.countingLength(as: UInt24.self) { stream in
+            for value in self {
+                try value.encode(to: stream)
+            }
+        }
+    }
 }
 
 extension Certificate {
-    fileprivate static let headerSize = 3
     init<T: StreamReader>(from stream: T) throws {
-        fatalError("not implemented")
-        // let length = Int(buffer[0]) << 16 | Int(buffer[1]) << 8 | Int(buffer[2])
+        let length = Int(try stream.read(UInt24.self).byteSwapped)
+        self.bytes = try stream.read(count: length)
+    }
+
+    func encode<T: StreamWriter>(to stream: T) throws {
+        try stream.countingLength(as: UInt24.self) { stream in
+            try stream.write(bytes)
+        }
     }
 }
