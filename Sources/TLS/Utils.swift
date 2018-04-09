@@ -37,24 +37,3 @@ extension StreamWriter {
         try write(output.bytes)
     }
 }
-
-extension StreamReader {
-    func read(_ type: UInt24.Type) throws -> UInt24 {
-        var value = UInt24(0)
-        try withUnsafeMutableBytes(of: &value) { buffer in
-            try read(count: MemoryLayout<UInt24>.size) { bytes in
-                buffer.copyMemory(from: bytes)
-            }
-        }
-        return value
-    }
-}
-
-extension StreamWriter {
-    func write(_ value: UInt24) throws {
-        var value = value
-        try withUnsafePointer(to: &value) { pointer in
-            try write(pointer, byteCount: MemoryLayout<UInt24>.size)
-        }
-    }
-}
