@@ -34,7 +34,7 @@ extension Extension {
 
 extension Array where Element == Extension.SignatureAlgorithm {
     init<T: StreamReader>(from stream: T) throws {
-        let length = Int(try stream.read(UInt16.self).byteSwapped)
+        let length = Int(try stream.read(UInt16.self))
 
         var algorithms = [Element]()
         var remain = length

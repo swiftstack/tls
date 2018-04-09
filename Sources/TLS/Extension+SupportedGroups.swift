@@ -80,12 +80,12 @@ extension Extension {
 
 extension Array where Element == Extension.SupportedGroup {
     init<T: StreamReader>(from stream: T) throws {
-        let length = Int(try stream.read(UInt16.self).byteSwapped)
+        let length = Int(try stream.read(UInt16.self))
 
         var groups = [Element]()
         var remain = length
         while remain > 0 {
-            let rawGroup = try stream.read(UInt16.self).byteSwapped
+            let rawGroup = try stream.read(UInt16.self)
             guard let group = Element(rawValue: rawGroup) else {
                 throw TLSError.invalidExtension
             }
@@ -101,7 +101,7 @@ extension Array where Element == Extension.SupportedGroup {
         }
         try stream.countingLength(as: UInt16.self) { stream in
             for value in self {
-                try stream.write(value.rawValue.byteSwapped)
+                try stream.write(value.rawValue)
             }
         }
     }

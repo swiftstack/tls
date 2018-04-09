@@ -6,7 +6,7 @@ public struct Certificate: Equatable {
 
 extension Array where Element == Certificate {
     init<T: StreamReader>(from stream: T) throws {
-        let length = Int(try stream.read(UInt24.self).byteSwapped)
+        let length = Int(try stream.read(UInt24.self))
         self = try stream.withLimitedStream(by: length) { stream in
             var certificates = [Certificate]()
             while !stream.isEmpty {
@@ -30,7 +30,7 @@ extension Array where Element == Certificate {
 
 extension Certificate {
     init<T: StreamReader>(from stream: T) throws {
-        let length = Int(try stream.read(UInt24.self).byteSwapped)
+        let length = Int(try stream.read(UInt24.self))
         self.bytes = try stream.read(count: length)
     }
 

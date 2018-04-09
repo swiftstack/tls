@@ -22,13 +22,13 @@ extension Extension {
 
 extension Extension.OCSPStatusRequest {
     init<T: StreamReader>(from stream: T) throws {
-        let respondersLength = Int(try stream.read(UInt16.self).byteSwapped)
+        let respondersLength = Int(try stream.read(UInt16.self))
         switch respondersLength {
         case 0: self.responderIdList = []
         default: self.responderIdList = try stream.read(count: respondersLength)
         }
 
-        let extensionsLength = Int(try stream.read(UInt16.self).byteSwapped)
+        let extensionsLength = Int(try stream.read(UInt16.self))
         switch extensionsLength {
         case 0: self.extensions = []
         default: self.extensions = try stream.read(count: extensionsLength)

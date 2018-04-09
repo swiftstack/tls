@@ -55,7 +55,7 @@ extension Handshake.RawType {
 extension Handshake {
     init<T: StreamReader>(from stream: T) throws {
         let type = try RawType(from: stream)
-        let length = Int(try stream.read(UInt24.self).byteSwapped)
+        let length = Int(try stream.read(UInt24.self))
 
         self = try stream.withLimitedStream(by: length) { stream in
             switch type {

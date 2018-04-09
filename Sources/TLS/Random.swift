@@ -19,13 +19,13 @@ extension Random {
 
 extension Random {
     init<T: StreamReader>(from stream: T) throws {
-        self.time = Int(try stream.read(UInt32.self).byteSwapped)
+        self.time = Int(try stream.read(UInt32.self))
         self.bytes = try stream.read(count: 28)
     }
 
     func encode<T: StreamWriter>(to stream: T) throws {
         assert(bytes.count == 28)
-        try stream.write(UInt32(time).byteSwapped)
+        try stream.write(UInt32(time))
         try stream.write(bytes)
     }
 }

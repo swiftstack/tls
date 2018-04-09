@@ -48,7 +48,7 @@ extension RecordLayer {
 
         self.version = try Version(from: stream)
 
-        let length = Int(try stream.read(UInt16.self).byteSwapped)
+        let length = Int(try stream.read(UInt16.self))
         self.content = try stream.withLimitedStream(by: length) { stream in
             switch type {
             case .changeChiperSpec:

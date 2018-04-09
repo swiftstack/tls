@@ -56,7 +56,7 @@ extension Certificate.Status.RawType {
 extension Certificate.Status {
     init<T: StreamReader>(from stream: T) throws {
         let type = try Certificate.Status.RawType(from: stream)
-        let length = Int(try stream.read(UInt24.self).byteSwapped)
+        let length = Int(try stream.read(UInt24.self))
         self = try stream.withLimitedStream(by: length) { stream in
             switch type {
             case .ocsp: return .ocsp(try OCSPResponse(from: stream))

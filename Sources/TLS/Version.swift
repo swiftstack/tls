@@ -18,7 +18,7 @@ extension Version {
 
 extension Version {
     init<T: StreamReader>(from stream: T) throws {
-        let rawVersion = try stream.read(UInt16.self).byteSwapped
+        let rawVersion = try stream.read(UInt16.self)
         guard let version = Version(rawValue: rawVersion) else {
             throw TLSError.invalidProtocolVerion
         }
@@ -26,6 +26,6 @@ extension Version {
     }
 
     func encode<T: StreamWriter>(to stream: T) throws {
-        try stream.write(rawValue.byteSwapped)
+        try stream.write(rawValue)
     }
 }

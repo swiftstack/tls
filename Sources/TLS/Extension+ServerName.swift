@@ -23,7 +23,7 @@ extension Extension.ServerName {
         }
         self.type = type
 
-        let length = Int(try stream.read(UInt16.self).byteSwapped)
+        let length = Int(try stream.read(UInt16.self))
         self.value = try stream.read(count: length) { bytes in
             return String(decoding: bytes, as: UTF8.self)
         }
@@ -31,14 +31,14 @@ extension Extension.ServerName {
 
     func encode<T: StreamWriter>(to stream: T) throws {
         try stream.write(type.rawValue)
-        try stream.write(UInt16(value.utf8.count).byteSwapped)
+        try stream.write(UInt16(value.utf8.count))
         try stream.write(value)
     }
 }
 
 extension Array where Element == Extension.ServerName {
     init<T: StreamReader>(from stream: T) throws {
-        let length = Int(try stream.read(UInt16.self).byteSwapped)
+        let length = Int(try stream.read(UInt16.self))
 
         self = try stream.withLimitedStream(by: length) { stream in
             var names = [Element]()
