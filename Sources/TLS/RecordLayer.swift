@@ -47,9 +47,8 @@ extension RecordLayer {
         let type = try ContentType(from: stream)
 
         self.version = try Version(from: stream)
-
-        let length = Int(try stream.read(UInt16.self))
-        self.content = try stream.withLimitedStream(by: length) { stream in
+        self.content = try stream.withSubStream(sizedBy: UInt16.self)
+        { stream in
             switch type {
             case .changeChiperSpec:
                 return .changeChiperSpec(try ChangeCiperSpec(from: stream))
@@ -58,7 +57,7 @@ extension RecordLayer {
             case .handshake:
                 return .handshake(try Handshake(from: stream))
             case .applicationData:
-                return .applicationData(try stream.read(count: length))
+                return .applicationData(try stream.readUntilEnd())
             case .heartbeat:
                 return .heartbeat
             }
@@ -79,7 +78,7 @@ extension RecordLayer {
 
         try version.encode(to: stream)
 
-        try stream.countingLength(as: UInt16.self) { stream in
+        try stream.withSubStream(sizedBy: UInt16.self) { stream in
             switch content {
             case .changeChiperSpec(let value): try value.encode(to: stream)
             case .alert(let value): try value.encode(to: stream)

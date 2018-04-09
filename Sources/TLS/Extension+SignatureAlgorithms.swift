@@ -57,7 +57,7 @@ extension Array where Element == Extension.SignatureAlgorithm {
         guard count > 0 else {
             return
         }
-        try stream.countingLength(as: UInt16.self) { stream in
+        try stream.withSubStream(sizedBy: UInt16.self) { stream in
             for value in self {
                 try stream.write(value.hash.rawValue)
                 try stream.write(value.signature.rawValue)
