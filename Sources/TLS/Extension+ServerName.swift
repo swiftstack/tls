@@ -16,7 +16,7 @@ extension Extension {
 }
 
 extension Extension.ServerName {
-    init<T: StreamReader>(from stream: T) throws {
+    init(from stream: StreamReader) throws {
         let rawType = try stream.read(UInt8.self)
         guard let type = NameType(rawValue: rawType) else {
             throw TLSError.invalidExtension
@@ -29,7 +29,7 @@ extension Extension.ServerName {
         }
     }
 
-    func encode<T: StreamWriter>(to stream: T) throws {
+    func encode(to stream: StreamWriter) throws {
         try stream.write(type.rawValue)
         try stream.write(UInt16(value.utf8.count))
         try stream.write(value)
@@ -37,7 +37,7 @@ extension Extension.ServerName {
 }
 
 extension Array where Element == Extension.ServerName {
-    init<T: StreamReader>(from stream: T) throws {
+    init(from stream: StreamReader) throws {
         let length = Int(try stream.read(UInt16.self))
 
         self = try stream.withLimitedStream(by: length) { stream in
@@ -49,7 +49,7 @@ extension Array where Element == Extension.ServerName {
         }
     }
 
-    func encode<T: StreamWriter>(to stream: T) throws {
+    func encode(to stream: StreamWriter) throws {
         guard count > 0 else {
             return
         }

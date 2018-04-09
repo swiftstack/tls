@@ -39,7 +39,7 @@ extension Handshake {
 }
 
 extension Handshake.RawType {
-    init<T: StreamReader>(from stream: T) throws {
+    init(from stream: StreamReader) throws {
         let rawType = try stream.read(UInt8.self)
         guard let type = Handshake.RawType(rawValue: rawType) else {
             throw TLSError.invalidHandshake
@@ -47,13 +47,13 @@ extension Handshake.RawType {
         self = type
     }
 
-    func encode<T: StreamWriter>(to stream: T) throws {
+    func encode(to stream: StreamWriter) throws {
         try stream.write(self.rawValue)
     }
 }
 
 extension Handshake {
-    init<T: StreamReader>(from stream: T) throws {
+    init(from stream: StreamReader) throws {
         let type = try RawType(from: stream)
         let length = Int(try stream.read(UInt24.self))
 
@@ -75,7 +75,7 @@ extension Handshake {
         }
     }
 
-    func encode<T: StreamWriter>(to stream: T) throws {
+    func encode(to stream: StreamWriter) throws {
         func write(rawType type: RawType) throws {
             try type.encode(to: stream)
         }
@@ -87,7 +87,7 @@ extension Handshake {
         default: fatalError("not implemented")
         }
 
-        try stream.countingLength(as: UInt24.self) { stream in
+        try stream.withSubStream(sizedBy: UInt24.self) { stream in
             switch self {
             case .clientHello(let hello): try hello.encode(to: stream)
             case .serverHello(let hello): try hello.encode(to: stream)

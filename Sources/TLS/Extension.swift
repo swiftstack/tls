@@ -12,7 +12,7 @@ public enum Extension: Equatable {
 }
 
 extension Array where Element == Extension {
-    init<T: StreamReader>(from stream: T) throws {
+    init(from stream: StreamReader) throws {
         let length = Int(try stream.read(UInt16.self))
         self = try stream.withLimitedStream(by: length) { stream in
             var extensions = [Extension]()
@@ -23,7 +23,7 @@ extension Array where Element == Extension {
         }
     }
 
-    func encode<T: StreamWriter>(to stream: T) throws {
+    func encode(to stream: StreamWriter) throws {
         guard count > 0 else {
             return
         }
@@ -36,7 +36,7 @@ extension Array where Element == Extension {
 }
 
 extension Extension {
-    init<T: StreamReader>(from stream: T) throws {
+    init(from stream: StreamReader) throws {
         let rawType = try stream.read(UInt16.self)
         let length = Int(try stream.read(UInt16.self))
 
@@ -95,7 +95,7 @@ extension Extension {
 }
 
 extension Extension {
-    func encode<T: StreamWriter>(to stream: T) throws {
+    func encode(to stream: StreamWriter) throws {
         func write(_ rawType: RawType) throws {
             try stream.write(rawType.rawValue)
         }

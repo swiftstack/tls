@@ -11,7 +11,7 @@ extension Extension {
 }
 
 extension Extension.RenegotiationInfo {
-    init<T: StreamReader>(from stream: T) throws {
+    init(from stream: StreamReader) throws {
         let length = Int(try stream.read(UInt8.self))
         guard length > 0 else {
             self.renegotiatedConnection = []
@@ -20,7 +20,7 @@ extension Extension.RenegotiationInfo {
         self.renegotiatedConnection = try stream.read(count: length)
     }
 
-    func encode<T: StreamWriter>(to stream: T) throws {
+    func encode(to stream: StreamWriter) throws {
         guard renegotiatedConnection.count > 0 else {
             try stream.write(UInt8(0))
             return

@@ -9,7 +9,7 @@ public struct SessionId: Equatable {
 }
 
 extension SessionId {
-    init<T: StreamReader>(from stream: T) throws {
+    init(from stream: StreamReader) throws {
         let length = Int(try stream.read(UInt8.self))
 
         guard length > 0 else {
@@ -20,7 +20,7 @@ extension SessionId {
         self.data = try stream.read(count: length)
     }
 
-    func encode<T: StreamWriter>(to stream: T) throws {
+    func encode(to stream: StreamWriter) throws {
         try stream.write(UInt8(data.count))
         try stream.write(data)
     }

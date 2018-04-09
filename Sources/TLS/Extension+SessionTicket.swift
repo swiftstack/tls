@@ -11,11 +11,11 @@ extension Extension {
 }
 
 extension Extension.SessionTicket {
-    init<T: StreamReader>(from stream: T) throws {
+    init(from stream: StreamReader) throws {
         self.data = try stream.readUntilEnd()
     }
 
-    func encode<T: StreamWriter>(to stream: T) throws {
+    func encode(to stream: StreamWriter) throws {
         try stream.write(data)
     }
 }

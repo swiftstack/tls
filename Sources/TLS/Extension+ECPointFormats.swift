@@ -9,7 +9,7 @@ extension Extension {
 }
 
 extension Array where Element == Extension.ECPointFormat {
-    init<T: StreamReader>(from stream: T) throws {
+    init(from stream: StreamReader) throws {
         let length = Int(try stream.read(UInt8.self))
 
         var points = [Element]()
@@ -25,7 +25,7 @@ extension Array where Element == Extension.ECPointFormat {
         self = points
     }
 
-    func encode<T: StreamWriter>(to stream: T) throws {
+    func encode(to stream: StreamWriter) throws {
         guard count > 0 else {
             return
         }

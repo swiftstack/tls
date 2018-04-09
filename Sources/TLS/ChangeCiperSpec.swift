@@ -5,7 +5,7 @@ public enum ChangeCiperSpec: UInt8 {
 }
 
 extension ChangeCiperSpec {
-    init<T: StreamReader>(from stream: T) throws {
+    init(from stream: StreamReader) throws {
         let rawSpec = try stream.read(UInt8.self)
         guard let spec = ChangeCiperSpec(rawValue: rawSpec) else {
             throw TLSError.invalidChangeCiperSpec
@@ -13,7 +13,7 @@ extension ChangeCiperSpec {
         self = spec
     }
 
-    func encode<T: StreamWriter>(to stream: T) throws {
+    func encode(to stream: StreamWriter) throws {
         try stream.write(rawValue)
     }
 }

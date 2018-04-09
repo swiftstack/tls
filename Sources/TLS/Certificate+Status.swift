@@ -40,7 +40,7 @@ extension Certificate {
 }
 
 extension Certificate.Status.RawType {
-    init<T: StreamReader>(from stream: T) throws {
+    init(from stream: StreamReader) throws {
         let rawType = try stream.read(UInt8.self)
         guard let type = Certificate.Status.RawType(rawValue: rawType) else {
             throw TLSError.invalidExtension
@@ -48,13 +48,13 @@ extension Certificate.Status.RawType {
         self = type
     }
 
-    func encode<T: StreamWriter>(to stream: T) throws {
+    func encode(to stream: StreamWriter) throws {
         try stream.write(rawValue)
     }
 }
 
 extension Certificate.Status {
-    init<T: StreamReader>(from stream: T) throws {
+    init(from stream: StreamReader) throws {
         let type = try Certificate.Status.RawType(from: stream)
         let length = Int(try stream.read(UInt24.self))
         self = try stream.withLimitedStream(by: length) { stream in
@@ -64,7 +64,7 @@ extension Certificate.Status {
         }
     }
 
-    func encode<T: StreamWriter>(to stream: T) throws {
+    func encode(to stream: StreamWriter) throws {
         switch self {
         case .ocsp(let response):
             try Certificate.Status.RawType.ocsp.encode(to: stream)
@@ -76,7 +76,7 @@ extension Certificate.Status {
 }
 
 extension Certificate.Status.OCSPResponse {
-    init<T: StreamReader>(from stream: T) throws {
+    init(from stream: StreamReader) throws {
         self.unimplemented0 = try stream.read(UInt8.self)
         self.unimplemented1 = try stream.read(UInt8.self)
         self.unimplemented2 = try stream.read(UInt8.self)
@@ -98,7 +98,7 @@ extension Certificate.Status.OCSPResponse {
         self.bytes = try stream.readUntilEnd()
     }
 
-    func encode<T: StreamWriter>(to stream: T) throws {
+    func encode(to stream: StreamWriter) throws {
         try stream.write(unimplemented0)
         try stream.write(unimplemented1)
         try stream.write(unimplemented2)

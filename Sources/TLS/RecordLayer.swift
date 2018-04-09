@@ -29,7 +29,7 @@ extension RecordLayer {
 }
 
 extension RecordLayer.ContentType {
-    init<T: StreamReader>(from stream: T) throws {
+    init(from stream: StreamReader) throws {
         let rawType = try stream.read(UInt8.self)
         guard let type = RecordLayer.ContentType(rawValue: rawType) else {
             throw TLSError.invalidRecordContentType
@@ -37,13 +37,13 @@ extension RecordLayer.ContentType {
         self = type
     }
 
-    func encode<T: StreamWriter>(to stream: T) throws {
+    func encode(to stream: StreamWriter) throws {
         try stream.write(self.rawValue)
     }
 }
 
 extension RecordLayer {
-    public init<T: StreamReader>(from stream: T) throws {
+    public init(from stream: StreamReader) throws {
         let type = try ContentType(from: stream)
 
         self.version = try Version(from: stream)
@@ -65,7 +65,7 @@ extension RecordLayer {
         }
     }
 
-    public func encode<T: StreamWriter>(to stream: T) throws {
+    public func encode(to stream: StreamWriter) throws {
         func write(_ type: ContentType) throws {
             try stream.write(type.rawValue)
         }

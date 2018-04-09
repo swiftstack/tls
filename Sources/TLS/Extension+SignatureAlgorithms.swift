@@ -33,7 +33,7 @@ extension Extension {
 }
 
 extension Array where Element == Extension.SignatureAlgorithm {
-    init<T: StreamReader>(from stream: T) throws {
+    init(from stream: StreamReader) throws {
         let length = Int(try stream.read(UInt16.self))
 
         var algorithms = [Element]()
@@ -53,7 +53,7 @@ extension Array where Element == Extension.SignatureAlgorithm {
         self = algorithms
     }
 
-    func encode<T: StreamWriter>(to stream: T) throws {
+    func encode(to stream: StreamWriter) throws {
         guard count > 0 else {
             return
         }

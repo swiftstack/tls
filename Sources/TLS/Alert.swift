@@ -52,7 +52,7 @@ extension Alert {
 }
 
 extension Alert {
-    init<T: StreamReader>(from stream: T) throws {
+    init(from stream: StreamReader) throws {
         let rawLevel = try stream.read(UInt8.self)
         let rawDescription = try stream.read(UInt8.self)
 
@@ -65,7 +65,7 @@ extension Alert {
         self.description = description
     }
 
-    func encode<T: StreamWriter>(to stream: T) throws {
+    func encode(to stream: StreamWriter) throws {
         try stream.write(level.rawValue)
         try stream.write(description.rawValue)
     }

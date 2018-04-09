@@ -14,7 +14,7 @@ extension Extension {
 }
 
 extension Extension.Heartbeat {
-    init<T: StreamReader>(from stream: T) throws {
+    init(from stream: StreamReader) throws {
         let rawMode = try stream.read(UInt8.self)
         guard let mode = Mode(rawValue: rawMode) else {
             throw TLSError.invalidExtension
@@ -22,7 +22,7 @@ extension Extension.Heartbeat {
         self.mode = mode
     }
 
-    func encode<T: StreamWriter>(to stream: T) throws {
+    func encode(to stream: StreamWriter) throws {
         try stream.write(mode.rawValue)
     }
 }

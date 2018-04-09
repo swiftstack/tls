@@ -21,7 +21,7 @@ extension Extension {
 }
 
 extension Extension.OCSPStatusRequest {
-    init<T: StreamReader>(from stream: T) throws {
+    init(from stream: StreamReader) throws {
         let respondersLength = Int(try stream.read(UInt16.self))
         switch respondersLength {
         case 0: self.responderIdList = []
@@ -35,7 +35,7 @@ extension Extension.OCSPStatusRequest {
         }
     }
 
-    func encode<T: StreamWriter>(to stream: T) throws {
+    func encode(to stream: StreamWriter) throws {
         try stream.write(UInt16(responderIdList.count))
         if responderIdList.count > 0 {
             try stream.write(responderIdList)
@@ -48,14 +48,14 @@ extension Extension.OCSPStatusRequest {
 }
 
 extension Extension.StatusRequest {
-    init<T: StreamReader>(from stream: T) throws {
+    init(from stream: StreamReader) throws {
         let type = try Certificate.Status.RawType(from: stream)
         switch type {
         case .ocsp: self = .ocsp(try Extension.OCSPStatusRequest(from: stream))
         }
     }
 
-    func encode<T: StreamWriter>(to stream: T) throws {
+    func encode(to stream: StreamWriter) throws {
         switch self {
         case .none:
             return

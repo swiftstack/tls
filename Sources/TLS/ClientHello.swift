@@ -26,7 +26,7 @@ public struct ClientHello: Equatable {
 }
 
 extension ClientHello {
-    public init<T: StreamReader>(from stream: T) throws {
+    public init(from stream: StreamReader) throws {
         self.version = try Version(from: stream)
         self.random = try Random(from: stream)
         self.sessionId = try SessionId(from: stream)
@@ -35,7 +35,7 @@ extension ClientHello {
         self.extensions = try [Extension](from: stream)
     }
 
-    public func encode<T: StreamWriter>(to stream: T) throws {
+    public func encode(to stream: StreamWriter) throws {
         try version.encode(to: stream)
         try random.encode(to: stream)
         try sessionId.encode(to: stream)
