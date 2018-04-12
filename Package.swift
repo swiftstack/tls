@@ -11,6 +11,9 @@ let package = Package(
             url: "https://github.com/swift-stack/platform.git",
             .branch("master")),
         .package(
+            url: "https://github.com/swift-stack/crypto.git",
+            .branch("master")),
+        .package(
             url: "https://github.com/swift-stack/stream.git",
             .branch("master")),
         .package(
@@ -18,7 +21,7 @@ let package = Package(
             .branch("master"))
     ],
     targets: [
-        .target(name: "TLS", dependencies: ["Platform", "Stream"]),
+        .target(name: "TLS", dependencies: ["Platform", "Crypto", "Stream"]),
         .testTarget(name: "TLSTests", dependencies: ["TLS", "Test"])
     ]
 )
