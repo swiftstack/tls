@@ -34,23 +34,13 @@ extension Extension {
 
 extension Array where Element == Extension.SignatureAlgorithm {
     init(from stream: StreamReader) throws {
-        let length = Int(try stream.read(UInt16.self))
-
-        var algorithms = [Element]()
-        var remain = length
-        while remain > 0 {
-            let rawHash = try stream.read(UInt8.self)
-            let rawSignature = try stream.read(UInt8.self)
-            guard
-                let hash = Element.Hash(rawValue: rawHash),
-                let signature = Element.Signature(rawValue: rawSignature)
-            else {
-                throw TLSError.invalidExtension
+        self = try stream.withSubStream(sizedBy: UInt16.self) { stream in
+            var algorithms = [Element]()
+            while !stream.isEmpty {
+                algorithms.append(try Element(from: stream))
             }
-            algorithms.append(Element(hash: hash, signature: signature))
-            remain -= MemoryLayout<UInt8>.size + MemoryLayout<UInt8>.size
+            return algorithms
         }
-        self = algorithms
     }
 
     func encode(to stream: StreamWriter) throws {
@@ -59,9 +49,28 @@ extension Array where Element == Extension.SignatureAlgorithm {
         }
         try stream.withSubStream(sizedBy: UInt16.self) { stream in
             for value in self {
-                try stream.write(value.hash.rawValue)
-                try stream.write(value.signature.rawValue)
+                try value.encode(to: stream)
             }
         }
+    }
+}
+
+extension Extension.SignatureAlgorithm {
+    init(from stream: StreamReader) throws {
+        let rawHash = try stream.read(UInt8.self)
+        let rawSignature = try stream.read(UInt8.self)
+        guard
+            let hash = Hash(rawValue: rawHash),
+            let signature = Signature(rawValue: rawSignature)
+        else {
+            throw TLSError.invalidExtension
+        }
+        self.hash = hash
+        self.signature = signature
+    }
+
+    func encode(to stream: StreamWriter) throws {
+        try stream.write(hash.rawValue)
+        try stream.write(signature.rawValue)
     }
 }

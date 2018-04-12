@@ -85,11 +85,7 @@ extension Array where Element == Extension.SupportedGroup {
         var groups = [Element]()
         var remain = length
         while remain > 0 {
-            let rawGroup = try stream.read(UInt16.self)
-            guard let group = Element(rawValue: rawGroup) else {
-                throw TLSError.invalidExtension
-            }
-            groups.append(group)
+            groups.append(try Element(from: stream))
             remain -= MemoryLayout<UInt16>.size
         }
         self = groups
@@ -101,8 +97,24 @@ extension Array where Element == Extension.SupportedGroup {
         }
         try stream.withSubStream(sizedBy: UInt16.self) { stream in
             for value in self {
-                try stream.write(value.rawValue)
+                try value.encode(to: stream)
             }
         }
+    }
+}
+
+extension Extension.SupportedGroup {
+    typealias SupportedGroup = Extension.SupportedGroup
+
+    init(from stream: StreamReader) throws {
+        let rawGroup = try stream.read(UInt16.self)
+        guard let group = SupportedGroup(rawValue: rawGroup) else {
+            throw TLSError.invalidExtension
+        }
+        self = group
+    }
+
+    func encode(to stream: StreamWriter) throws {
+        try stream.write(rawValue)
     }
 }
