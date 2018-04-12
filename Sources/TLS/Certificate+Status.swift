@@ -1,4 +1,5 @@
 import Stream
+import Crypto
 
 extension Certificate {
     public enum Status: Equatable {
@@ -15,26 +16,17 @@ extension Certificate {
                 case success = 0x00 // Response has valid confirmations
                 case malformedRequest = 0x01 // Illegal confirmation request
                 case internalError = 0x02 // Internal error in issuer
-                case tryLater = 0x03 //Try again later
+                case tryLater = 0x03 // Try again later
                 case sigRequired = 0x05 // Must sign the request
                 case unauthorized = 0x06 // Request unauthorized
             }
 
-            let unimplemented0: UInt8
-            let unimplemented1: UInt8
-            let unimplemented2: UInt8
-            let unimplemented3: UInt8
-            let unimplemented4: UInt8
-            let unimplemented5: UInt8
-
             let status: Status
+            let basicResponse: BasicOCSPResponse
+        }
 
-            let unimplemented6: UInt8
-            let unimplemented7: UInt8
-            let unimplemented8: UInt8
-            let unimplemented9: UInt8
-
-            let bytes: [UInt8]
+        public struct BasicOCSPResponse: Equatable {
+            let value: ASN1
         }
     }
 }
@@ -74,44 +66,128 @@ extension Certificate.Status {
     }
 }
 
-extension Certificate.Status.OCSPResponse {
-    init(from stream: StreamReader) throws {
-        self.unimplemented0 = try stream.read(UInt8.self)
-        self.unimplemented1 = try stream.read(UInt8.self)
-        self.unimplemented2 = try stream.read(UInt8.self)
-        self.unimplemented3 = try stream.read(UInt8.self)
-        self.unimplemented4 = try stream.read(UInt8.self)
-        self.unimplemented5 = try stream.read(UInt8.self)
+extension Certificate.Status.OCSPResponse.Status {
+    typealias Status = Certificate.Status.OCSPResponse.Status
 
-        let rawStatus = try stream.read(UInt8.self)
-        guard let status = Status(rawValue: rawStatus) else {
+    init(from asn1: ASN1) throws {
+        guard asn1.identifier.isConstructed == false,
+            asn1.identifier.class == .universal,
+            asn1.identifier.tag == .enumerated,
+            case .integer(let value) = asn1.content,
+            let rawStatus = UInt8(exactly: value),
+            let status = Status(rawValue: rawStatus)
+        else {
             throw TLSError.invalidCertificateStatus
         }
-        self.status = status
+        self = status
+    }
 
-        self.unimplemented6 = try stream.read(UInt8.self)
-        self.unimplemented7 = try stream.read(UInt8.self)
-        self.unimplemented8 = try stream.read(UInt8.self)
-        self.unimplemented9 = try stream.read(UInt8.self)
+    var asn1: ASN1 {
+        return ASN1(
+            identifier: .init(
+                isConstructed: true,
+                class: .universal,
+                tag: .enumerated),
+            content: .integer(Int(rawValue)))
+    }
+}
 
-        self.bytes = try stream.readUntilEnd()
+// TODO: Decode / Encode
+extension Certificate.Status.BasicOCSPResponse {
+    init(from asn1: ASN1) throws {
+        self.value = asn1
+    }
+
+    var asn1: ASN1 {
+        return self.value
+    }
+}
+
+struct ASN1Objects {
+    static let basicOCSP: [UInt8] = [
+        0x2b, 0x06, 0x01, 0x05, 0x05, 0x07, 0x30, 0x01, 0x01
+    ]
+}
+
+extension Certificate.Status.OCSPResponse {
+    typealias BasicOCSPResponse = Certificate.Status.BasicOCSPResponse
+
+    init(from stream: StreamReader) throws {
+        let asn1 = try ASN1(from: stream)
+
+        guard asn1.identifier.isConstructed,
+            asn1.identifier.class == .universal,
+            asn1.identifier.tag == .sequence,
+            case .sequence(let sequence) = asn1.content,
+            sequence.count >= 2
+        else {
+            throw TLSError.invalidCertificateStatus
+        }
+        let status = try Status(from: sequence[0])
+        guard status == .success else {
+            throw TLSError.invalidCertificateStatus
+        }
+
+        self.status  = status
+
+        let ber = sequence[1]
+        guard
+            ber.identifier.isConstructed,
+            ber.identifier.class == .contextSpecific,
+            ber.identifier.tag == .ber,
+            case .sequence(let container) = ber.content,
+            container.count == 1
+        else {
+            throw TLSError.invalidCertificateStatus
+        }
+
+        let typeData = container[0]
+        guard
+            typeData.identifier.isConstructed,
+            typeData.identifier.class == .universal,
+            typeData.identifier.tag == .sequence,
+            case .sequence(let typeDataSequence) = typeData.content,
+            typeDataSequence.count == 2
+        else {
+            throw TLSError.invalidCertificateStatus
+        }
+
+        let type = typeDataSequence[0]
+        let data = typeDataSequence[1]
+
+        guard type.identifier.isConstructed == false,
+            type.identifier.class == .universal,
+            type.identifier.tag == .objectIdentifier,
+            case .data(let object) = type.content,
+            object == ASN1Objects.basicOCSP
+        else {
+            throw TLSError.invalidCertificateStatus
+        }
+
+        guard data.identifier.isConstructed == false,
+            data.identifier.class == .universal,
+            data.identifier.tag == .octetString,
+            case .data(let basicOCSPBytes) = data.content
+        else {
+            throw TLSError.invalidCertificateStatus
+        }
+
+        let basicOCSP = try ASN1(from: InputByteStream(basicOCSPBytes))
+
+        self.basicResponse = try BasicOCSPResponse(from: basicOCSP)
     }
 
     func encode(to stream: StreamWriter) throws {
-        try stream.write(unimplemented0)
-        try stream.write(unimplemented1)
-        try stream.write(unimplemented2)
-        try stream.write(unimplemented3)
-        try stream.write(unimplemented4)
-        try stream.write(unimplemented5)
+        let asn1 = ASN1(
+            identifier: .init(
+                isConstructed: true,
+                class: .universal,
+                tag: .sequence),
+            content: .sequence([
+                status.asn1,
+                basicResponse.asn1
+            ]))
 
-        try stream.write(status.rawValue)
-
-        try stream.write(unimplemented6)
-        try stream.write(unimplemented7)
-        try stream.write(unimplemented8)
-        try stream.write(unimplemented9)
-
-        try stream.write(bytes)
+        try asn1.encode(to: stream)
     }
 }
