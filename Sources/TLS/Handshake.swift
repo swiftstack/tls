@@ -10,8 +10,8 @@ public enum Handshake: Equatable {
     case serverKeyExchange(ServerKeyExchange)
     case certificateRequest
     case serverHelloDone
-    case sertificateVerify
-    case clientKeyExchange
+    case certificateVerify
+    case clientKeyExchange(ClientKeyExchange)
     case finished
     case certificateUrl
     case certificateStatus(Certificate.Status)
@@ -65,6 +65,8 @@ extension Handshake {
                 return .certificate(try [Certificate](from: stream))
             case .serverKeyExchange:
                 return .serverKeyExchange(try ServerKeyExchange(from: stream))
+            case .clientKeyExchange:
+                return .clientKeyExchange(try ClientKeyExchange(from: stream))
             case .certificateStatus:
                 return .certificateStatus(try Certificate.Status(from: stream))
             case .serverHelloDone:
@@ -84,6 +86,7 @@ extension Handshake {
         case .serverHello: try write(rawType: .serverHello)
         case .certificate: try write(rawType: .certificate)
         case .serverKeyExchange: try write(rawType: .serverKeyExchange)
+        case .clientKeyExchange: try write(rawType: .clientKeyExchange)
         case .serverHelloDone: try write(rawType: .serverHelloDone)
         default: fatalError("not implemented")
         }
@@ -93,6 +96,7 @@ extension Handshake {
             case .clientHello(let hello): try hello.encode(to: stream)
             case .serverHello(let hello): try hello.encode(to: stream)
             case .serverKeyExchange(let data): try data.encode(to: stream)
+            case .clientKeyExchange(let data): try data.encode(to: stream)
             case .certificate(let data): try data.encode(to: stream)
             case .serverHelloDone: return
             default: fatalError("not implemented")
