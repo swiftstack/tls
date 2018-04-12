@@ -5,7 +5,7 @@ public enum Handshake: Equatable {
     case clientHello(ClientHello)
     case serverHello(ServerHello)
     case helloVerifyRequest
-    case newSessionTicket
+    case newSessionTicket(NewSessionTicket)
     case certificate([Certificate])
     case serverKeyExchange(ServerKeyExchange)
     case certificateRequest
@@ -61,6 +61,8 @@ extension Handshake {
                 return .clientHello(try ClientHello(from: stream))
             case .serverHello:
                 return .serverHello(try ServerHello(from: stream))
+            case .newSessionTicket:
+                return .newSessionTicket(try NewSessionTicket(from: stream))
             case .certificate:
                 return .certificate(try [Certificate](from: stream))
             case .serverKeyExchange:
@@ -84,6 +86,7 @@ extension Handshake {
         switch self {
         case .clientHello: try write(rawType: .clientHello)
         case .serverHello: try write(rawType: .serverHello)
+        case .newSessionTicket: try write(rawType: .newSessionTicket)
         case .certificate: try write(rawType: .certificate)
         case .serverKeyExchange: try write(rawType: .serverKeyExchange)
         case .clientKeyExchange: try write(rawType: .clientKeyExchange)
@@ -93,11 +96,12 @@ extension Handshake {
 
         try stream.withSubStream(sizedBy: UInt24.self) { stream in
             switch self {
-            case .clientHello(let hello): try hello.encode(to: stream)
-            case .serverHello(let hello): try hello.encode(to: stream)
-            case .serverKeyExchange(let data): try data.encode(to: stream)
-            case .clientKeyExchange(let data): try data.encode(to: stream)
-            case .certificate(let data): try data.encode(to: stream)
+            case .clientHello(let value): try value.encode(to: stream)
+            case .serverHello(let value): try value.encode(to: stream)
+            case .newSessionTicket(let value): try value.encode(to: stream)
+            case .serverKeyExchange(let value): try value.encode(to: stream)
+            case .clientKeyExchange(let value): try value.encode(to: stream)
+            case .certificate(let value): try value.encode(to: stream)
             case .serverHelloDone: return
             default: fatalError("not implemented")
             }
