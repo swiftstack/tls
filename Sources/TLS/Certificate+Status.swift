@@ -130,12 +130,12 @@ extension Certificate.Status.OCSPResponse {
 
         self.status  = status
 
-        let ber = sequence[1]
+        let eoc = sequence[1]
         guard
-            ber.identifier.isConstructed,
-            ber.identifier.class == .contextSpecific,
-            ber.identifier.tag == .ber,
-            case .sequence(let container) = ber.content,
+            eoc.identifier.isConstructed,
+            eoc.identifier.class == .contextSpecific,
+            eoc.identifier.tag == .endOfContent,
+            case .sequence(let container) = eoc.content,
             container.count == 1
         else {
             throw TLSError.invalidCertificateStatus
