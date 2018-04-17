@@ -103,12 +103,6 @@ extension Certificate.Status.BasicOCSPResponse {
     }
 }
 
-struct ASN1Objects {
-    static let basicOCSP: [UInt8] = [
-        0x2b, 0x06, 0x01, 0x05, 0x05, 0x07, 0x30, 0x01, 0x01
-    ]
-}
-
 extension Certificate.Status.OCSPResponse {
     typealias BasicOCSPResponse = Certificate.Status.BasicOCSPResponse
 
@@ -159,7 +153,7 @@ extension Certificate.Status.OCSPResponse {
             type.identifier.class == .universal,
             type.identifier.tag == .objectIdentifier,
             case .data(let object) = type.content,
-            object == ASN1Objects.basicOCSP
+            object == ASN1.Objects.basicOCSP
         else {
             throw TLSError.invalidCertificateStatus
         }
