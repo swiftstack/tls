@@ -11,9 +11,15 @@ public struct Random: Equatable {
 extension Random {
     public init() {
         self.time = Platform.time(nil)
+        self.bytes = Random.generate()
+    }
+
+    static func generate() -> [UInt8] {
         var bytes = [UInt8](repeating: 0, count: Random.bytesSize)
-        arc4random_buf(&bytes, bytes.count)
-        self.bytes = bytes
+        for i in 0..<Random.bytesSize {
+            bytes[i] = UInt8.random(in: 0...UInt8.max)
+        }
+        return bytes
     }
 }
 
