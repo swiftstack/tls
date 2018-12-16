@@ -1,15 +1,16 @@
+import Crypto
 import Stream
 
-public struct Certificate: Equatable {
-    public let bytes: [UInt8]
-}
-
-extension Array where Element == Certificate {
+extension Array where Element == X509.Certificate {
     init(from stream: StreamReader) throws {
         self = try stream.withSubStream(sizedBy: UInt24.self) { stream in
-            var certificates = [Certificate]()
+            var certificates = [X509.Certificate]()
             while !stream.isEmpty {
-                certificates.append(try Certificate(from: stream))
+                let x509 = try stream.withSubStream(sizedBy: UInt24.self)
+                { stream in
+                    return try X509.Certificate(from: stream)
+                }
+                certificates.append(x509)
             }
             return certificates
         }
@@ -21,21 +22,22 @@ extension Array where Element == Certificate {
         }
         try stream.withSubStream(sizedBy: UInt24.self) { stream in
             for value in self {
-                try value.encode(to: stream)
+                try stream.withSubStream(sizedBy: UInt24.self) { stream in
+                    try value.encode(to: stream)
+                }
             }
         }
     }
 }
 
-extension Certificate {
+extension X509.Certificate {
     init(from stream: StreamReader) throws {
-        let length = Int(try stream.read(UInt24.self))
-        self.bytes = try stream.read(count: length)
+        let asn1 = try ASN1(from: stream)
+        try self.init(from: asn1)
     }
 
     func encode(to stream: StreamWriter) throws {
-        try stream.withSubStream(sizedBy: UInt24.self) { stream in
-            try stream.write(bytes)
-        }
+        let asn1 = self.encode()
+        try asn1.encode(to: stream)
     }
 }
