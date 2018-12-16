@@ -3,7 +3,7 @@ import Stream
 @testable import TLS
 
 class CertificateStatusTests: TestCase {
-    @nonobjc let header: [UInt8] = [
+    let header: [UInt8] = [
         // handshake
         0x16,
         // tls 1.2
@@ -220,8 +220,7 @@ class CertificateStatusTests: TestCase {
         0xe3, 0x6d, 0xd7, 0xc7, 0x6b, 0xcb, 0xf6, 0x40,
         0xaf, 0x0c, 0xbb, 0xbf, 0x2e, 0xaf, 0x93, 0x28,
         0x49, 0x71, 0x95, 0x27, 0x3f, 0x6c, 0xf9, 0x76,
-        0x65
-    ]
+        0x65]
 
     var bytes: [UInt8] {
         return header + status

@@ -3,7 +3,6 @@ import Stream
 @testable import TLS
 
 class ChangeCipherSpecTests: TestCase {
-    @nonobjc
     let bytes: [UInt8] = [0x14, 0x03, 0x03, 0x00, 0x01, 0x01]
 
     func testDecode() {

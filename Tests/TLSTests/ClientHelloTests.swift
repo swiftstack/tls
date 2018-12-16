@@ -3,7 +3,6 @@ import Stream
 @testable import TLS
 
 class ClientHelloTests: TestCase {
-    @nonobjc
     let bytes: [UInt8] = [
         // TLS 1.2
         0x03, 0x03,

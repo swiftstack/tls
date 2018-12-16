@@ -3,7 +3,6 @@ import Stream
 @testable import TLS
 
 class NewSessionTicketTests: TestCase {
-    @nonobjc
     let bytes: [UInt8] = [
         // handshake
         0x16,

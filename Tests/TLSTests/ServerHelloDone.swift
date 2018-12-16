@@ -3,7 +3,6 @@ import Stream
 @testable import TLS
 
 class ServerHelloDone: TestCase {
-    @nonobjc
     let bytes: [UInt8] = [0x16, 0x03, 0x03, 0x00, 0x04, 0x0e, 0x00, 0x00, 0x00]
 
     func testDecode() {
