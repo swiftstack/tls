@@ -15,7 +15,7 @@ public enum Handshake: Equatable {
     case clientKeyExchange(ClientKeyExchange)
     case finished
     case certificateUrl
-    case certificateStatus(Certificate.Status)
+    case certificateStatus(CertificateStatus)
     case supplementalData
 }
 
@@ -71,7 +71,7 @@ extension Handshake {
             case .clientKeyExchange:
                 return .clientKeyExchange(try ClientKeyExchange(from: stream))
             case .certificateStatus:
-                return .certificateStatus(try Certificate.Status(from: stream))
+                return .certificateStatus(try CertificateStatus(from: stream))
             case .serverHelloDone:
                 return .serverHelloDone
             default:
