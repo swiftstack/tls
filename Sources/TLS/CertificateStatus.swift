@@ -6,6 +6,8 @@ import Crypto
 public enum CertificateStatus: Equatable {
     case ocsp(OCSP.Response)
 
+    // https://tools.ietf.org/html/rfc6961#section-3
+
     enum RawType: UInt8 {
         case ocsp = 0x01
     }
