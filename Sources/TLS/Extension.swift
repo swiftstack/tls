@@ -13,7 +13,7 @@ public enum Extension: Equatable {
 
 extension Array where Element == Extension {
     init(from stream: StreamReader) throws {
-        self = try stream.withSubStream(sizedBy: UInt16.self) { stream in
+        self = try stream.withSubStreamReader(sizedBy: UInt16.self) { stream in
             var extensions = [Extension]()
             while !stream.isEmpty {
                 extensions.append(try Extension(from: stream))
@@ -26,7 +26,7 @@ extension Array where Element == Extension {
         guard count > 0 else {
             return
         }
-        try stream.withSubStream(sizedBy: UInt16.self) { stream in
+        try stream.withSubStreamWriter(sizedBy: UInt16.self) { stream in
             for value in self {
                 try value.encode(to: stream)
             }
@@ -68,7 +68,7 @@ extension Extension {
             return
         }
 
-        self = try stream.withSubStream(limitedBy: length) { stream in
+        self = try stream.withSubStreamReader(limitedBy: length) { stream in
             switch type {
             case .serverName:
                 return .serverName(try [ServerName](from: stream))
@@ -110,7 +110,7 @@ extension Extension {
         case .renegotiationInfo: try write(.renegotiationInfo)
         }
 
-        try stream.withSubStream(sizedBy: UInt16.self) { stream in
+        try stream.withSubStreamWriter(sizedBy: UInt16.self) { stream in
             switch self {
             case .serverName(let value): try value.encode(to: stream)
             case .supportedGroups(let value): try value.encode(to: stream)

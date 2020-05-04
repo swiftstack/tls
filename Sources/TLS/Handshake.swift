@@ -56,7 +56,7 @@ extension Handshake.RawType {
 extension Handshake {
     init(from stream: StreamReader) throws {
         let type = try RawType(from: stream)
-        self = try stream.withSubStream(sizedBy: UInt24.self) { stream in
+        self = try stream.withSubStreamReader(sizedBy: UInt24.self) { stream in
             switch type {
             case .clientHello:
                 return .clientHello(try ClientHello(from: stream))
@@ -95,7 +95,7 @@ extension Handshake {
         default: fatalError("not implemented")
         }
 
-        try stream.withSubStream(sizedBy: UInt24.self) { stream in
+        try stream.withSubStreamWriter(sizedBy: UInt24.self) { stream in
             switch self {
             case .clientHello(let value): try value.encode(to: stream)
             case .serverHello(let value): try value.encode(to: stream)

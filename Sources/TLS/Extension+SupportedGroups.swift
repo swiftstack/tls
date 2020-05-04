@@ -95,7 +95,7 @@ extension Array where Element == Extension.SupportedGroup {
         guard count > 0 else {
             return
         }
-        try stream.withSubStream(sizedBy: UInt16.self) { stream in
+        try stream.withSubStreamWriter(sizedBy: UInt16.self) { stream in
             for value in self {
                 try value.encode(to: stream)
             }

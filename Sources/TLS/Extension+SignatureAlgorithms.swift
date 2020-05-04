@@ -34,7 +34,7 @@ extension Extension {
 
 extension Array where Element == Extension.SignatureAlgorithm {
     init(from stream: StreamReader) throws {
-        self = try stream.withSubStream(sizedBy: UInt16.self) { stream in
+        self = try stream.withSubStreamReader(sizedBy: UInt16.self) { stream in
             var algorithms = [Element]()
             while !stream.isEmpty {
                 algorithms.append(try Element(from: stream))
@@ -47,7 +47,7 @@ extension Array where Element == Extension.SignatureAlgorithm {
         guard count > 0 else {
             return
         }
-        try stream.withSubStream(sizedBy: UInt16.self) { stream in
+        try stream.withSubStreamWriter(sizedBy: UInt16.self) { stream in
             for value in self {
                 try value.encode(to: stream)
             }

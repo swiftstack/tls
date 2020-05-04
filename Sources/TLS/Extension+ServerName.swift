@@ -38,7 +38,7 @@ extension Extension.ServerName {
 
 extension Array where Element == Extension.ServerName {
     init(from stream: StreamReader) throws {
-        self = try stream.withSubStream(sizedBy: UInt16.self) { stream in
+        self = try stream.withSubStreamReader(sizedBy: UInt16.self) { stream in
             var names = [Element]()
             while !stream.isEmpty {
                 names.append(try Element(from: stream))
@@ -51,7 +51,7 @@ extension Array where Element == Extension.ServerName {
         guard count > 0 else {
             return
         }
-        try stream.withSubStream(sizedBy: UInt16.self) { stream in
+        try stream.withSubStreamWriter(sizedBy: UInt16.self) { stream in
             for value in self {
                 try value.encode(to: stream)
             }

@@ -47,7 +47,7 @@ extension RecordLayer {
         let type = try ContentType(from: stream)
 
         self.version = try Version(from: stream)
-        self.content = try stream.withSubStream(sizedBy: UInt16.self)
+        self.content = try stream.withSubStreamReader(sizedBy: UInt16.self)
         { stream in
             switch type {
             case .changeChiperSpec:
@@ -78,7 +78,7 @@ extension RecordLayer {
 
         try version.encode(to: stream)
 
-        try stream.withSubStream(sizedBy: UInt16.self) { stream in
+        try stream.withSubStreamWriter(sizedBy: UInt16.self) { stream in
             switch content {
             case .changeChiperSpec(let value): try value.encode(to: stream)
             case .alert(let value): try value.encode(to: stream)

@@ -3,10 +3,10 @@ import Stream
 
 extension Array where Element == X509.Certificate {
     init(from stream: StreamReader) throws {
-        self = try stream.withSubStream(sizedBy: UInt24.self) { stream in
+        self = try stream.withSubStreamReader(sizedBy: UInt24.self) { stream in
             var certificates = [X509.Certificate]()
             while !stream.isEmpty {
-                let x509 = try stream.withSubStream(sizedBy: UInt24.self)
+                let x509 = try stream.withSubStreamReader(sizedBy: UInt24.self)
                 { stream in
                     return try X509.Certificate(from: stream)
                 }
@@ -20,9 +20,9 @@ extension Array where Element == X509.Certificate {
         guard count > 0 else {
             return
         }
-        try stream.withSubStream(sizedBy: UInt24.self) { stream in
+        try stream.withSubStreamWriter(sizedBy: UInt24.self) { stream in
             for value in self {
-                try stream.withSubStream(sizedBy: UInt24.self) { stream in
+                try stream.withSubStreamWriter(sizedBy: UInt24.self) { stream in
                     try value.encode(to: stream)
                 }
             }
