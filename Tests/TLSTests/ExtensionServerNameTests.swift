@@ -10,8 +10,8 @@ class ExtensionServerNameTests: TestCase {
             let stream = InputByteStream(
                 [0x00, 0x00, 0x05, 0x79, 0x61, 0x2e, 0x72, 0x75])
             let result = try ServerName(from: stream)
-            assertEqual(result.type, .hostName)
-            assertEqual(result.value, "ya.ru")
+            expect(result.type == .hostName)
+            expect(result.value == "ya.ru")
         }
     }
 
@@ -20,7 +20,7 @@ class ExtensionServerNameTests: TestCase {
             let stream = InputByteStream(
                 [0x00, 0x08, 0x00, 0x00, 0x05, 0x79, 0x61, 0x2e, 0x72, 0x75])
             let result = try [ServerName](from: stream)
-            assertEqual(result, [.init(type: .hostName, value: "ya.ru")])
+            expect(result == [.init(type: .hostName, value: "ya.ru")])
         }
     }
 
@@ -30,7 +30,7 @@ class ExtensionServerNameTests: TestCase {
                 [0x00, 0x00, 0x00, 0x0a, 0x00, 0x08, 0x00, 0x00,
                  0x05, 0x79, 0x61, 0x2e, 0x72, 0x75])
             let result = try Extension(from: stream)
-            assertEqual(result, .serverName([
+            expect(result == .serverName([
                 .init(type: .hostName, value: "ya.ru")]))
         }
     }
@@ -42,7 +42,7 @@ class ExtensionServerNameTests: TestCase {
                 [0x00, 0x00, 0x05, 0x79, 0x61, 0x2e, 0x72, 0x75]
             let name = ServerName(type: .hostName, value: "ya.ru")
             try name.encode(to: stream)
-            assertEqual(stream.bytes, expected)
+            expect(stream.bytes == expected)
         }
     }
 
@@ -54,7 +54,7 @@ class ExtensionServerNameTests: TestCase {
             let serverName = [ServerName]([
                 .init(type: .hostName, value: "ya.ru")])
             try serverName.encode(to: stream)
-            assertEqual(stream.bytes, expected)
+            expect(stream.bytes == expected)
         }
     }
 
@@ -67,7 +67,7 @@ class ExtensionServerNameTests: TestCase {
             let serverNameExtension = Extension.serverName([
                 .init(type: .hostName, value: "ya.ru")])
             try serverNameExtension.encode(to: stream)
-            assertEqual(stream.bytes, expected)
+            expect(stream.bytes == expected)
         }
     }
 }

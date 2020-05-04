@@ -56,18 +56,18 @@ class ClientHelloTests: TestCase {
 
             let hello = try ClientHello(from: stream)
 
-            assertEqual(hello.random.time, 73170025)
+            expect(hello.random.time == 73170025)
 
-            assertEqual(hello.random.bytes, [
+            expect(hello.random.bytes == [
                 0xb0, 0x0f, 0x73, 0x18, 0x56, 0xae, 0x7c, 0x3f,
                 0x7c, 0x19, 0x13, 0x19, 0x6a, 0xfd, 0xd0, 0x76,
                 0xb6, 0x7f, 0x55, 0x74, 0xaa, 0xd8, 0x23, 0x1d,
                 0x31, 0x12, 0xdc, 0x54
                 ])
 
-            assertEqual(hello.sessionId, .init(data: []))
+            expect(hello.sessionId == .init(data: []))
 
-            assertEqual(hello.ciperSuites, [
+            expect(hello.ciperSuites == [
                 .tls_ecdhe_ecdsa_with_aes_256_gcm_sha384,
                 .tls_ecdhe_ecdsa_with_aes_128_gcm_sha256,
                 .tls_ecdhe_ecdsa_with_aes_256_cbc_sha384,
@@ -92,23 +92,26 @@ class ClientHelloTests: TestCase {
                 .tls_empty_renegotiation_info_scsv
                 ])
 
-            assertEqual(hello.compressionMethods, [.none])
+            expect(hello.compressionMethods == [.none])
 
-            assertEqual(hello.extensions.count, 7)
+            expect(hello.extensions.count == 7)
 
-            assertEqual(
-                hello.extensions[safe: 0],
+            expect(
+                hello.extensions[safe: 0]
+                ==
                 .serverName([.init(type: .hostName, value: "ya.ru")]))
 
-            assertEqual(
-                hello.extensions[safe: 1],
+            expect(
+                hello.extensions[safe: 1]
+                ==
                 .ecPointFormats([
                     .uncompressed,
                     .ansiX962_compressed_prime,
                     .ansiX962_compressed_char2]))
 
-            assertEqual(
-                hello.extensions[safe: 2],
+            expect(
+                hello.extensions[safe: 2]
+                ==
                 .supportedGroups([
                     .secp256r1,
                     .secp521r1,
@@ -124,12 +127,14 @@ class ClientHelloTests: TestCase {
                     .sect283k1,
                     .sect283r1]))
 
-            assertEqual(
-                hello.extensions[safe: 3],
+            expect(
+                hello.extensions[safe: 3]
+                ==
                 .sessionTicket(.init(data: [])))
 
-            assertEqual(
-                hello.extensions[safe: 4],
+            expect(
+                hello.extensions[safe: 4]
+                ==
                 .signatureAlgorithms([
                     .init(hash: .sha512, signature: .rsa),
                     .init(hash: .sha512, signature: .dsa),
@@ -148,12 +153,14 @@ class ClientHelloTests: TestCase {
                     .init(hash: .sha1, signature: .ecdsa),
                 ]))
 
-            assertEqual(
-                hello.extensions[safe: 5],
+            expect(
+                hello.extensions[safe: 5]
+                ==
                 .statusRequest(.ocsp(.init())))
 
-            assertEqual(
-                hello.extensions[safe: 6],
+            expect(
+                hello.extensions[safe: 6]
+                ==
                 .heartbeat(.init(mode: .allowed)))
         }
     }
@@ -241,50 +248,50 @@ class ClientHelloTests: TestCase {
                 ])
 
             try hello.encode(to: stream)
-            assertEqual(stream.bytes, bytes)
+            expect(stream.bytes == bytes)
 
             // TLS 1.2
             guard stream.bytes.count >= 2 else { return }
-            assertEqual(stream.bytes[..<2], bytes[..<2])
+            expect(stream.bytes[..<2] == bytes[..<2])
             // time + random
             guard stream.bytes.count >= 34 else { return }
-            assertEqual(stream.bytes[2..<34], bytes[2..<34])
+            expect(stream.bytes[2..<34] == bytes[2..<34])
             // sessionId length
             guard stream.bytes.count >= 35 else { return }
-            assertEqual(stream.bytes[34..<35], bytes[34..<35])
+            expect(stream.bytes[34..<35] == bytes[34..<35])
             // ciper suites length
             guard stream.bytes.count >= 37 else { return }
-            assertEqual(stream.bytes[35..<37], bytes[35..<37])
+            expect(stream.bytes[35..<37] == bytes[35..<37])
             // ciper suites
             guard stream.bytes.count >= 80 else { return }
-            assertEqual(stream.bytes[37..<80], bytes[37..<80])
+            expect(stream.bytes[37..<80] == bytes[37..<80])
             // compression methods
             guard stream.bytes.count >= 82 else { return }
-            assertEqual(stream.bytes[80..<82], bytes[80..<82])
+            expect(stream.bytes[80..<82] == bytes[80..<82])
             // extensions length
             guard stream.bytes.count >= 84 else { return }
-            assertEqual(stream.bytes[82..<84], bytes[82..<84])
+            expect(stream.bytes[82..<84] == bytes[82..<84])
             // server name
             guard stream.bytes.count >= 98 else { return }
-            assertEqual(stream.bytes[84..<98], bytes[84..<98])
+            expect(stream.bytes[84..<98] == bytes[84..<98])
             // ec point formats
             guard stream.bytes.count >= 106 else { return }
-            assertEqual(stream.bytes[98..<106], bytes[98..<106])
+            expect(stream.bytes[98..<106] == bytes[98..<106])
             // supported groups (elliptic curves)
             guard stream.bytes.count >= 138 else { return }
-            assertEqual(stream.bytes[106..<138], bytes[106..<138])
+            expect(stream.bytes[106..<138] == bytes[106..<138])
             // SessionTicket TLS
             guard stream.bytes.count >= 142 else { return }
-            assertEqual(stream.bytes[138..<142], bytes[138..<142])
+            expect(stream.bytes[138..<142] == bytes[138..<142])
             // signature algorithms
             guard stream.bytes.count >= 178 else { return }
-            assertEqual(stream.bytes[142..<178], bytes[142..<178])
+            expect(stream.bytes[142..<178] == bytes[142..<178])
             // status request
             guard stream.bytes.count >= 187 else { return }
-            assertEqual(stream.bytes[178..<187], bytes[178..<187])
+            expect(stream.bytes[178..<187] == bytes[178..<187])
             // heartbeat
             guard stream.bytes.count >= 192 else { return }
-            assertEqual(stream.bytes[187..<192], bytes[187..<192])
+            expect(stream.bytes[187..<192] == bytes[187..<192])
         }
     }
 }

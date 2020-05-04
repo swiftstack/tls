@@ -84,7 +84,7 @@ class ServerKeyExchangeTests: TestCase {
         scope {
             let stream = InputByteStream([UInt8](bytes[9...]))
             let result = try ServerKeyExchange(from: stream)
-            assertEqual(result, serverKeyExchange)
+            expect(result == serverKeyExchange)
         }
     }
 
@@ -92,8 +92,8 @@ class ServerKeyExchangeTests: TestCase {
         scope {
             let stream = InputByteStream(bytes)
             let record = try RecordLayer(from: stream)
-            assertEqual(record.version, .tls12)
-            assertEqual(record.content, .handshake(
+            expect(record.version == .tls12)
+            expect(record.content == .handshake(
                 .serverKeyExchange(serverKeyExchange)))
         }
     }
@@ -102,7 +102,7 @@ class ServerKeyExchangeTests: TestCase {
         scope {
             let stream = OutputByteStream()
             try serverKeyExchange.encode(to: stream)
-            assertEqual(stream.bytes[...], bytes[9...])
+            expect(stream.bytes[...] == bytes[9...])
         }
     }
 
@@ -113,7 +113,7 @@ class ServerKeyExchangeTests: TestCase {
                 version: .tls12,
                 content: .handshake(.serverKeyExchange(serverKeyExchange)))
             try record.encode(to: stream)
-            assertEqual(stream.bytes, bytes)
+            expect(stream.bytes == bytes)
         }
     }
 }

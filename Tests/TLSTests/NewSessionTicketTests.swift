@@ -56,8 +56,8 @@ class NewSessionTicketTests: TestCase {
         scope {
             let stream = InputByteStream(bytes)
             let record = try RecordLayer(from: stream)
-            assertEqual(record.version, .tls12)
-            assertEqual(record.content, .handshake(
+            expect(record.version == .tls12)
+            expect(record.content == .handshake(
                 .newSessionTicket(newSessionTicket)))
         }
     }
@@ -69,7 +69,7 @@ class NewSessionTicketTests: TestCase {
                 version: .tls12,
                 content: .handshake(.newSessionTicket(newSessionTicket)))
             try record.encode(to: stream)
-            assertEqual(stream.bytes, bytes)
+            expect(stream.bytes == bytes)
         }
     }
 }

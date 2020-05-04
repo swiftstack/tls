@@ -31,7 +31,7 @@ class ExtensionSignatureAlgorithmsTests: TestCase {
                  0x04, 0x02, 0x04, 0x03, 0x03, 0x01, 0x03, 0x02,
                  0x03, 0x03, 0x02, 0x01, 0x02, 0x02, 0x02, 0x03])
             let result = try [SignatureAlgorithm](from: stream)
-            assertEqual(result, algorithms)
+            expect(result == algorithms)
         }
     }
 
@@ -44,7 +44,7 @@ class ExtensionSignatureAlgorithmsTests: TestCase {
                  0x04, 0x02, 0x04, 0x03, 0x03, 0x01, 0x03, 0x02,
                  0x03, 0x03, 0x02, 0x01, 0x02, 0x02, 0x02, 0x03])
             let result = try Extension(from: stream)
-            assertEqual(result, .signatureAlgorithms(algorithms))
+            expect(result == .signatureAlgorithms(algorithms))
         }
     }
 
@@ -57,7 +57,7 @@ class ExtensionSignatureAlgorithmsTests: TestCase {
                  0x04, 0x02, 0x04, 0x03, 0x03, 0x01, 0x03, 0x02,
                  0x03, 0x03, 0x02, 0x01, 0x02, 0x02, 0x02, 0x03]
             try algorithms.encode(to: stream)
-            assertEqual(stream.bytes, expected)
+            expect(stream.bytes == expected)
         }
     }
 
@@ -72,7 +72,7 @@ class ExtensionSignatureAlgorithmsTests: TestCase {
                  0x03, 0x03, 0x02, 0x01, 0x02, 0x02, 0x02, 0x03]
             let signatureAlgorithms = Extension.signatureAlgorithms(algorithms)
             try signatureAlgorithms.encode(to: stream)
-            assertEqual(stream.bytes, expected)
+            expect(stream.bytes == expected)
         }
     }
 }

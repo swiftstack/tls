@@ -9,8 +9,8 @@ class ChangeCipherSpecTests: TestCase {
         scope {
             let stream = InputByteStream(bytes)
             let record = try RecordLayer(from: stream)
-            assertEqual(record.version, .tls12)
-            assertEqual(record.content, .changeChiperSpec(.default))
+            expect(record.version == .tls12)
+            expect(record.content == .changeChiperSpec(.default))
         }
     }
 
@@ -19,7 +19,7 @@ class ChangeCipherSpecTests: TestCase {
             let stream = OutputByteStream()
             let record = RecordLayer(version: .tls12, content: .changeChiperSpec(.default))
             try record.encode(to: stream)
-            assertEqual(stream.bytes, bytes)
+            expect(stream.bytes == bytes)
         }
     }
 }

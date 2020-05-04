@@ -9,8 +9,8 @@ class ServerHelloDone: TestCase {
         scope {
             let stream = InputByteStream(bytes)
             let record = try RecordLayer(from: stream)
-            assertEqual(record.version, .tls12)
-            assertEqual(record.content, .handshake(.serverHelloDone))
+            expect(record.version == .tls12)
+            expect(record.content == .handshake(.serverHelloDone))
         }
     }
 
@@ -21,7 +21,7 @@ class ServerHelloDone: TestCase {
                 version: .tls12,
                 content: .handshake(.serverHelloDone))
             try record.encode(to: stream)
-            assertEqual(stream.bytes, bytes)
+            expect(stream.bytes == bytes)
         }
     }
 }

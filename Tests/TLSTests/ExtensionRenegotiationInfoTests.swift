@@ -7,7 +7,7 @@ class ExtensionRenegotiationInfoTests: TestCase {
         scope {
             let stream = InputByteStream([0x00])
             let result = try Extension.RenegotiationInfo(from: stream)
-            assertEqual(result, .init(renegotiatedConnection: []))
+            expect(result == .init(renegotiatedConnection: []))
         }
     }
 
@@ -15,7 +15,7 @@ class ExtensionRenegotiationInfoTests: TestCase {
         scope {
             let stream = InputByteStream([0xff, 0x01, 0x00, 0x01, 0x00])
             let result = try Extension(from: stream)
-            assertEqual(result, .renegotiationInfo(.init()))
+            expect(result == .renegotiationInfo(.init()))
         }
     }
 
@@ -25,7 +25,7 @@ class ExtensionRenegotiationInfoTests: TestCase {
             let expected: [UInt8] = [0x00]
             let info = Extension.RenegotiationInfo(renegotiatedConnection: [])
             try info.encode(to: stream)
-            assertEqual(stream.bytes, expected)
+            expect(stream.bytes == expected)
         }
     }
 
@@ -35,7 +35,7 @@ class ExtensionRenegotiationInfoTests: TestCase {
             let expected: [UInt8] = [0xff, 0x01, 0x00, 0x01, 0x00]
             let info = Extension.renegotiationInfo(.init())
             try info.encode(to: stream)
-            assertEqual(stream.bytes, expected)
+            expect(stream.bytes == expected)
         }
     }
 }

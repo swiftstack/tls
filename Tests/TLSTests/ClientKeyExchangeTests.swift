@@ -36,7 +36,7 @@ class ClientKeyExchangeTests: TestCase {
         scope {
             let stream = InputByteStream([UInt8](bytes[9...]))
             let result = try ClientKeyExchange(from: stream)
-            assertEqual(result, clientKeyExchange)
+            expect(result == clientKeyExchange)
         }
     }
 
@@ -44,8 +44,8 @@ class ClientKeyExchangeTests: TestCase {
         scope {
             let stream = InputByteStream(bytes)
             let record = try RecordLayer(from: stream)
-            assertEqual(record.version, .tls12)
-            assertEqual(record.content, .handshake(
+            expect(record.version == .tls12)
+            expect(record.content == .handshake(
                 .clientKeyExchange(clientKeyExchange)))
         }
     }
@@ -54,7 +54,7 @@ class ClientKeyExchangeTests: TestCase {
         scope {
             let stream = OutputByteStream()
             try clientKeyExchange.encode(to: stream)
-            assertEqual(stream.bytes[...], bytes[9...])
+            expect(stream.bytes[...] == bytes[9...])
         }
     }
 
@@ -65,7 +65,7 @@ class ClientKeyExchangeTests: TestCase {
                 version: .tls12,
                 content: .handshake(.clientKeyExchange(clientKeyExchange)))
             try record.encode(to: stream)
-            assertEqual(stream.bytes, bytes)
+            expect(stream.bytes == bytes)
         }
     }
 }

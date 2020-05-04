@@ -9,7 +9,7 @@ class ExtensionECPointFormatsTests: TestCase {
         scope {
             let stream = InputByteStream([0x03, 0x00, 0x01, 0x02])
             let result = try [ECPointFormat](from: stream)
-            assertEqual(result, [
+            expect(result == [
                 .uncompressed,
                 .ansiX962_compressed_prime,
                 .ansiX962_compressed_char2])
@@ -21,7 +21,7 @@ class ExtensionECPointFormatsTests: TestCase {
             let stream = InputByteStream(
                 [0x00, 0x0b, 0x00, 0x04, 0x03, 0x00, 0x01, 0x02])
             let result = try Extension(from: stream)
-            assertEqual(result, .ecPointFormats([
+            expect(result == .ecPointFormats([
                 .uncompressed,
                 .ansiX962_compressed_prime,
                 .ansiX962_compressed_char2]))
@@ -38,7 +38,7 @@ class ExtensionECPointFormatsTests: TestCase {
                 .ansiX962_compressed_char2
             ]
             try formats.encode(to: stream)
-            assertEqual(stream.bytes, expected)
+            expect(stream.bytes == expected)
         }
     }
 
@@ -52,7 +52,7 @@ class ExtensionECPointFormatsTests: TestCase {
                 .ansiX962_compressed_prime,
                 .ansiX962_compressed_char2])
             try formatsExtension.encode(to: stream)
-            assertEqual(stream.bytes, expected)
+            expect(stream.bytes == expected)
         }
     }
 }

@@ -9,7 +9,7 @@ class ExtensionStatusRequestTests: TestCase {
         scope {
             let stream = InputByteStream([0x01, 0x00, 0x00, 0x00, 0x00])
             let result = try StatusRequest(from: stream)
-            assertEqual(result, .ocsp(.init()))
+            expect(result == .ocsp(.init()))
         }
     }
 
@@ -18,7 +18,7 @@ class ExtensionStatusRequestTests: TestCase {
             let stream = InputByteStream(
                 [0x00, 0x05, 0x00, 0x05, 0x01, 0x00, 0x00, 0x00, 0x00])
             let result = try Extension(from: stream)
-            assertEqual(result, .statusRequest(.ocsp(.init())))
+            expect(result == .statusRequest(.ocsp(.init())))
         }
     }
 
@@ -28,7 +28,7 @@ class ExtensionStatusRequestTests: TestCase {
             let expected: [UInt8] = [0x01, 0x00, 0x00, 0x00, 0x00]
             let statusRequest = StatusRequest.ocsp(.init())
             try statusRequest.encode(to: stream)
-            assertEqual(stream.bytes, expected)
+            expect(stream.bytes == expected)
         }
     }
 
@@ -39,7 +39,7 @@ class ExtensionStatusRequestTests: TestCase {
                 [0x00, 0x05, 0x00, 0x05, 0x01, 0x00, 0x00, 0x00, 0x00]
             let statusRequest = Extension.statusRequest(.ocsp(.init()))
             try statusRequest.encode(to: stream)
-            assertEqual(stream.bytes, expected)
+            expect(stream.bytes == expected)
         }
     }
 }

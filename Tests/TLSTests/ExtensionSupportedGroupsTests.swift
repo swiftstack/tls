@@ -29,7 +29,7 @@ class ExtensionSupportedGroupsTests: TestCase {
                  0x00, 0x1a, 0x00, 0x16, 0x00, 0x0e, 0x00, 0x0d,
                  0x00, 0x0b, 0x00, 0x0c, 0x00, 0x09, 0x00, 0x0a])
             let result = try [SupportedGroup](from: stream)
-            assertEqual(result, groups)
+            expect(result == groups)
         }
     }
 
@@ -41,7 +41,7 @@ class ExtensionSupportedGroupsTests: TestCase {
                  0x00, 0x1a, 0x00, 0x16, 0x00, 0x0e, 0x00, 0x0d,
                  0x00, 0x0b, 0x00, 0x0c, 0x00, 0x09, 0x00, 0x0a])
             let result = try Extension(from: stream)
-            assertEqual(result, .supportedGroups(groups))
+            expect(result == .supportedGroups(groups))
         }
     }
 
@@ -54,7 +54,7 @@ class ExtensionSupportedGroupsTests: TestCase {
                  0x00, 0x0b, 0x00, 0x0c, 0x00, 0x09, 0x00, 0x0a]
             let stream = OutputByteStream()
             try groups.encode(to: stream)
-            assertEqual(stream.bytes, expected)
+            expect(stream.bytes == expected)
         }
     }
 
@@ -68,7 +68,7 @@ class ExtensionSupportedGroupsTests: TestCase {
             let stream = OutputByteStream()
             let supportedGroupsExtension = Extension.supportedGroups(groups)
             try supportedGroupsExtension.encode(to: stream)
-            assertEqual(stream.bytes, expected)
+            expect(stream.bytes == expected)
         }
     }
 }

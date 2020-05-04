@@ -7,7 +7,7 @@ class HandshakeTests: TestCase {
         scope {
             let stream = InputByteStream([0x0e, 0x00, 0x00, 0x00])
             let handshake = try Handshake(from: stream)
-            assertEqual(handshake, .serverHelloDone)
+            expect(handshake == .serverHelloDone)
         }
     }
 
@@ -15,7 +15,7 @@ class HandshakeTests: TestCase {
         scope {
             let stream = OutputByteStream()
             try Handshake.serverHelloDone.encode(to: stream)
-            assertEqual(stream.bytes, [0x0e, 0x00, 0x00, 0x00])
+            expect(stream.bytes == [0x0e, 0x00, 0x00, 0x00])
         }
     }
 }

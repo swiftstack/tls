@@ -233,9 +233,9 @@ class CertificateStatusTests: TestCase {
 
             switch recordLayer.content {
             case .handshake(.certificateStatus(.ocsp(let response))):
-                assertEqual(response.status, .success)
+                expect(response.status == .success)
                 // TODO:
-                // assertEqual(response.basicResponse, ...)
+                // expect(response.basicResponse == ...)
             default:
                 fail()
             }

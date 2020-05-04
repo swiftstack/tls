@@ -608,7 +608,7 @@ class CertificateTests: TestCase {
 
             switch recordLayer.content {
             case .handshake(.certificate(let certificates)):
-                assertEqual(certificates.count, 3)
+                expect(certificates.count == 3)
                 guard certificates.count == 3 else {
                     return
                 }
