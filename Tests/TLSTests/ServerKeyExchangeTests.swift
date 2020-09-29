@@ -80,40 +80,32 @@ class ServerKeyExchangeTests: TestCase {
             signature: [UInt8](bytes[82...]))
     }
 
-    func testDecode() {
-        scope {
-            let stream = InputByteStream([UInt8](bytes[9...]))
-            let result = try ServerKeyExchange(from: stream)
-            expect(result == serverKeyExchange)
-        }
+    func testDecode() throws {
+        let stream = InputByteStream([UInt8](bytes[9...]))
+        let result = try ServerKeyExchange(from: stream)
+        expect(result == serverKeyExchange)
     }
 
-    func testDecodeHandshake() {
-        scope {
-            let stream = InputByteStream(bytes)
-            let record = try RecordLayer(from: stream)
-            expect(record.version == .tls12)
-            expect(record.content == .handshake(
-                .serverKeyExchange(serverKeyExchange)))
-        }
+    func testDecodeHandshake() throws {
+        let stream = InputByteStream(bytes)
+        let record = try RecordLayer(from: stream)
+        expect(record.version == .tls12)
+        expect(record.content == .handshake(
+            .serverKeyExchange(serverKeyExchange)))
     }
 
-    func testEncode() {
-        scope {
-            let stream = OutputByteStream()
-            try serverKeyExchange.encode(to: stream)
-            expect(stream.bytes[...] == bytes[9...])
-        }
+    func testEncode() throws {
+        let stream = OutputByteStream()
+        try serverKeyExchange.encode(to: stream)
+        expect(stream.bytes[...] == bytes[9...])
     }
 
-    func testEncodeHandshake() {
-        scope {
-            let stream = OutputByteStream()
-            let record = RecordLayer(
-                version: .tls12,
-                content: .handshake(.serverKeyExchange(serverKeyExchange)))
-            try record.encode(to: stream)
-            expect(stream.bytes == bytes)
-        }
+    func testEncodeHandshake() throws {
+        let stream = OutputByteStream()
+        let record = RecordLayer(
+            version: .tls12,
+            content: .handshake(.serverKeyExchange(serverKeyExchange)))
+        try record.encode(to: stream)
+        expect(stream.bytes == bytes)
     }
 }

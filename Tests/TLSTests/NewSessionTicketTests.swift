@@ -52,24 +52,20 @@ class NewSessionTicketTests: TestCase {
             data: [UInt8](bytes[15...]))
     }
 
-    func testDecode() {
-        scope {
-            let stream = InputByteStream(bytes)
-            let record = try RecordLayer(from: stream)
-            expect(record.version == .tls12)
-            expect(record.content == .handshake(
-                .newSessionTicket(newSessionTicket)))
-        }
+    func testDecode() throws {
+        let stream = InputByteStream(bytes)
+        let record = try RecordLayer(from: stream)
+        expect(record.version == .tls12)
+        expect(record.content == .handshake(
+            .newSessionTicket(newSessionTicket)))
     }
 
-    func testEncode() {
-        scope {
-            let stream = OutputByteStream()
-            let record = RecordLayer(
-                version: .tls12,
-                content: .handshake(.newSessionTicket(newSessionTicket)))
-            try record.encode(to: stream)
-            expect(stream.bytes == bytes)
-        }
+    func testEncode() throws {
+        let stream = OutputByteStream()
+        let record = RecordLayer(
+            version: .tls12,
+            content: .handshake(.newSessionTicket(newSessionTicket)))
+        try record.encode(to: stream)
+        expect(stream.bytes == bytes)
     }
 }

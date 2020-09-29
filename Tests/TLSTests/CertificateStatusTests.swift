@@ -226,19 +226,17 @@ class CertificateStatusTests: TestCase {
         return header + status
     }
 
-    func testDecode() {
-        scope {
-            let stream = InputByteStream(bytes)
-            let recordLayer = try RecordLayer(from: stream)
+    func testDecode() throws {
+        let stream = InputByteStream(bytes)
+        let recordLayer = try RecordLayer(from: stream)
 
-            switch recordLayer.content {
-            case .handshake(.certificateStatus(.ocsp(let response))):
-                expect(response.status == .success)
-                // TODO:
-                // expect(response.basicResponse == ...)
-            default:
-                fail()
-            }
+        switch recordLayer.content {
+        case .handshake(.certificateStatus(.ocsp(let response))):
+            expect(response.status == .success)
+            // TODO:
+            // expect(response.basicResponse == ...)
+        default:
+            fail()
         }
     }
 }

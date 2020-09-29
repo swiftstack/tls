@@ -601,24 +601,22 @@ class CertificateTests: TestCase {
         return header + certificate1 + certificate2 + certificate3
     }
 
-    func testDecode() {
-        scope {
-            let stream = InputByteStream(bytes)
-            let recordLayer = try RecordLayer(from: stream)
+    func testDecode() throws {
+        let stream = InputByteStream(bytes)
+        let recordLayer = try RecordLayer(from: stream)
 
-            switch recordLayer.content {
-            case .handshake(.certificate(let certificates)):
-                expect(certificates.count == 3)
-                guard certificates.count == 3 else {
-                    return
-                }
-                // TODO: test parsed certificates
-                _ = certificates[0]
-                _ = certificates[1]
-                _ = certificates[2]
-            default:
-                fail()
+        switch recordLayer.content {
+        case .handshake(.certificate(let certificates)):
+            expect(certificates.count == 3)
+            guard certificates.count == 3 else {
+                return
             }
+            // TODO: test parsed certificates
+            _ = certificates[0]
+            _ = certificates[1]
+            _ = certificates[2]
+        default:
+            fail()
         }
     }
 }
