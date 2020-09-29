@@ -1,5 +1,4 @@
 import Test
-import Stream
 @testable import TLS
 
 class NewSessionTicketTests: TestCase {
@@ -53,19 +52,17 @@ class NewSessionTicketTests: TestCase {
     }
 
     func testDecode() throws {
-        let stream = InputByteStream(bytes)
-        let record = try RecordLayer(from: stream)
+        let record = try RecordLayer(bytes)
         expect(record.version == .tls12)
         expect(record.content == .handshake(
             .newSessionTicket(newSessionTicket)))
     }
 
     func testEncode() throws {
-        let stream = OutputByteStream()
         let record = RecordLayer(
             version: .tls12,
             content: .handshake(.newSessionTicket(newSessionTicket)))
-        try record.encode(to: stream)
-        expect(stream.bytes == bytes)
+        let result = try record.encode()
+        expect(result == bytes)
     }
 }

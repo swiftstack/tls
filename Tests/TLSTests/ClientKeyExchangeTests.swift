@@ -1,5 +1,4 @@
 import Test
-import Stream
 @testable import TLS
 
 class ClientKeyExchangeTests: TestCase {
@@ -33,31 +32,27 @@ class ClientKeyExchangeTests: TestCase {
     }
 
     func testDecode() throws {
-        let stream = InputByteStream([UInt8](bytes[9...]))
-        let result = try ClientKeyExchange(from: stream)
+        let result = try ClientKeyExchange([UInt8](bytes[9...]))
         expect(result == clientKeyExchange)
     }
 
     func testDecodeHandshake() throws {
-        let stream = InputByteStream(bytes)
-        let record = try RecordLayer(from: stream)
+        let record = try RecordLayer(bytes)
         expect(record.version == .tls12)
         expect(record.content == .handshake(
             .clientKeyExchange(clientKeyExchange)))
     }
 
     func testEncode() throws {
-        let stream = OutputByteStream()
-        try clientKeyExchange.encode(to: stream)
-        expect(stream.bytes[...] == bytes[9...])
+        let result = try clientKeyExchange.encode()
+        expect(result[...] == bytes[9...])
     }
 
     func testEncodeHandshake() throws {
-        let stream = OutputByteStream()
         let record = RecordLayer(
             version: .tls12,
             content: .handshake(.clientKeyExchange(clientKeyExchange)))
-        try record.encode(to: stream)
-        expect(stream.bytes == bytes)
+        let result = try record.encode()
+        expect(result == bytes)
     }
 }

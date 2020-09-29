@@ -1,13 +1,19 @@
 import Test
-import Stream
 @testable import TLS
 
 class ExtensionECPointFormatsTests: TestCase {
     typealias ECPointFormat = Extension.ECPointFormat
 
+    var ecPointFormatBytes: [UInt8] {
+        [0x03, 0x00, 0x01, 0x02]
+    }
+
+    var ecPointFormatExtensionBytes: [UInt8] {
+        [0x00, 0x0b, 0x00, 0x04] + ecPointFormatBytes
+    }
+
     func testDecode() throws {
-        let stream = InputByteStream([0x03, 0x00, 0x01, 0x02])
-        let result = try [ECPointFormat](from: stream)
+        let result = try [ECPointFormat](ecPointFormatBytes)
         expect(result == [
             .uncompressed,
             .ansiX962_compressed_prime,
@@ -15,9 +21,7 @@ class ExtensionECPointFormatsTests: TestCase {
     }
 
     func testDecodeExtension() throws {
-        let stream = InputByteStream(
-            [0x00, 0x0b, 0x00, 0x04, 0x03, 0x00, 0x01, 0x02])
-        let result = try Extension(from: stream)
+        let result = try Extension(ecPointFormatExtensionBytes)
         expect(result == .ecPointFormats([
             .uncompressed,
             .ansiX962_compressed_prime,
@@ -25,26 +29,21 @@ class ExtensionECPointFormatsTests: TestCase {
     }
 
     func testEncode() throws {
-        let stream = OutputByteStream()
-        let expected: [UInt8] = [0x03, 0x00, 0x01, 0x02]
         let formats: [ECPointFormat] = [
             .uncompressed,
             .ansiX962_compressed_prime,
             .ansiX962_compressed_char2
         ]
-        try formats.encode(to: stream)
-        expect(stream.bytes == expected)
+        let result = try formats.encode()
+        expect(result == ecPointFormatBytes)
     }
 
     func testEncodeExtension() throws {
-        let stream = OutputByteStream()
-        let expected: [UInt8] =
-            [0x00, 0x0b, 0x00, 0x04, 0x03, 0x00, 0x01, 0x02]
         let formatsExtension = Extension.ecPointFormats([
             .uncompressed,
             .ansiX962_compressed_prime,
             .ansiX962_compressed_char2])
-        try formatsExtension.encode(to: stream)
-        expect(stream.bytes == expected)
+        let result = try formatsExtension.encode()
+        expect(result == ecPointFormatExtensionBytes)
     }
 }

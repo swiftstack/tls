@@ -1,5 +1,4 @@
 import Test
-import Stream
 @testable import TLS
 
 class CertificateStatusTests: TestCase {
@@ -227,8 +226,7 @@ class CertificateStatusTests: TestCase {
     }
 
     func testDecode() throws {
-        let stream = InputByteStream(bytes)
-        let recordLayer = try RecordLayer(from: stream)
+        let recordLayer = try RecordLayer(bytes)
 
         switch recordLayer.content {
         case .handshake(.certificateStatus(.ocsp(let response))):

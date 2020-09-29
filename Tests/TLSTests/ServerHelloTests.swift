@@ -1,5 +1,4 @@
 import Test
-import Stream
 @testable import TLS
 
 class ServerHelloTests: TestCase {
@@ -33,9 +32,7 @@ class ServerHelloTests: TestCase {
         0x00, 0x0f, 0x00, 0x01, 0x01]
 
     func testDecode() throws {
-        let stream = InputByteStream(bytes)
-
-        let hello = try ServerHello(from: stream)
+        let hello = try ServerHello(bytes)
 
         expect(hello.version == .tls12)
         expect(hello.random.time == 3521681308)
@@ -85,8 +82,6 @@ class ServerHelloTests: TestCase {
     }
 
     func testEncode() throws {
-        let stream = OutputByteStream()
-
         let hello = ServerHello(
             version: .tls12,
             random: .init(time: 3521681308, bytes: [
@@ -109,44 +104,44 @@ class ServerHelloTests: TestCase {
                 .heartbeat(.init(mode: .allowed))
             ])
 
-        try hello.encode(to: stream)
-        expect(stream.bytes == bytes)
+        let result = try hello.encode()
+        expect(result == bytes)
 
         // TLS 1.2
-        guard stream.bytes.count >= 2 else { return }
-        expect(stream.bytes[..<2] == bytes[..<2])
+        guard result.count >= 2 else { return }
+        expect(result[..<2] == bytes[..<2])
         // time + random
-        guard stream.bytes.count >= 34 else { return }
-        expect(stream.bytes[..<34] == bytes[..<34])
+        guard result.count >= 34 else { return }
+        expect(result[..<34] == bytes[..<34])
         // session id length
-        guard stream.bytes.count >= 35 else { return }
-        expect(stream.bytes[34..<35] == bytes[34..<35])
+        guard result.count >= 35 else { return }
+        expect(result[34..<35] == bytes[34..<35])
         // chiper suite
-        guard stream.bytes.count >= 37 else { return }
-        expect(stream.bytes[35..<37] == bytes[35..<37])
+        guard result.count >= 37 else { return }
+        expect(result[35..<37] == bytes[35..<37])
         // compression method
-        guard stream.bytes.count >= 38 else { return }
-        expect(stream.bytes[37..<38] == bytes[37..<38])
+        guard result.count >= 38 else { return }
+        expect(result[37..<38] == bytes[37..<38])
         // extension length
-        guard stream.bytes.count >= 40 else { return }
-        expect(stream.bytes[38..<40] == bytes[38..<40])
+        guard result.count >= 40 else { return }
+        expect(result[38..<40] == bytes[38..<40])
         // server name
-        guard stream.bytes.count >= 44 else { return }
-        expect(stream.bytes[40..<44] == bytes[40..<44])
+        guard result.count >= 44 else { return }
+        expect(result[40..<44] == bytes[40..<44])
         // renegatiation info
-        guard stream.bytes.count >= 49 else { return }
-        expect(stream.bytes[44..<49] == bytes[44..<49])
+        guard result.count >= 49 else { return }
+        expect(result[44..<49] == bytes[44..<49])
         // ec point formats
-        guard stream.bytes.count >= 57 else { return }
-        expect(stream.bytes[49..<57] == bytes[49..<57])
+        guard result.count >= 57 else { return }
+        expect(result[49..<57] == bytes[49..<57])
         // session ticket tls
-        guard stream.bytes.count >= 61 else { return }
-        expect(stream.bytes[57..<61] == bytes[57..<61])
+        guard result.count >= 61 else { return }
+        expect(result[57..<61] == bytes[57..<61])
         // status request
-        guard stream.bytes.count >= 65 else { return }
-        expect(stream.bytes[61..<65] == bytes[61..<65])
+        guard result.count >= 65 else { return }
+        expect(result[61..<65] == bytes[61..<65])
         // heartbeat
-        guard stream.bytes.count >= 70 else { return }
-        expect(stream.bytes[65..<70] == bytes[65..<70])
+        guard result.count >= 70 else { return }
+        expect(result[65..<70] == bytes[65..<70])
     }
 }

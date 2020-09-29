@@ -1,5 +1,4 @@
 import Test
-import Stream
 @testable import TLS
 
 class RecordLayerTests: TestCase {
@@ -43,17 +42,20 @@ class RecordLayerTests: TestCase {
         // heartbeat
         0x00, 0x0f, 0x00, 0x01, 0x01]
 
-    func testDecode() throws {
-        let stream = InputByteStream(bytes)
+    var randomTime: Int { 3521681308 }
 
-        let recordLayer = try RecordLayer(from: stream)
+    var randomBytes: [UInt8] {[
+        0x71, 0x3c, 0x8b, 0x1e, 0xf3, 0x63, 0x8a, 0xa1,
+        0x92, 0xde, 0x9d, 0xcd, 0x7b, 0x85, 0xb2, 0x0f,
+        0x9e, 0xc1, 0x85, 0x4c, 0x20, 0xbb, 0xe9, 0x9e,
+        0x44, 0xad, 0xf6, 0x25
+    ]}
+
+    func testDecode() throws {
+        let recordLayer = try RecordLayer(bytes)
         expect(recordLayer.content == .handshake(.serverHello(.init(
             version: .tls12,
-            random: .init(time: 3521681308, bytes: [
-                0x71, 0x3c, 0x8b, 0x1e,
-                0xf3, 0x63, 0x8a, 0xa1, 0x92, 0xde, 0x9d, 0xcd,
-                0x7b, 0x85, 0xb2, 0x0f, 0x9e, 0xc1, 0x85, 0x4c,
-                0x20, 0xbb, 0xe9, 0x9e, 0x44, 0xad, 0xf6, 0x25]),
+            random: .init(time: randomTime, bytes: randomBytes),
             sessionId: .init(data: []),
             ciperSuite: .tls_ecdhe_rsa_with_aes_128_gcm_sha256,
             compressionMethod: .none,
@@ -71,16 +73,11 @@ class RecordLayerTests: TestCase {
     }
 
     func testEncode() throws {
-        let stream = OutputByteStream()
         let recordLayer = RecordLayer(
             version: .tls12,
             content: .handshake(.serverHello(.init(
                 version: .tls12,
-                random: .init(time: 3521681308, bytes: [
-                    0x71, 0x3c, 0x8b, 0x1e,
-                    0xf3, 0x63, 0x8a, 0xa1, 0x92, 0xde, 0x9d, 0xcd,
-                    0x7b, 0x85, 0xb2, 0x0f, 0x9e, 0xc1, 0x85, 0x4c,
-                    0x20, 0xbb, 0xe9, 0x9e, 0x44, 0xad, 0xf6, 0x25]),
+                random: .init(time: randomTime, bytes: randomBytes),
                 sessionId: .init(data: []),
                 ciperSuite: .tls_ecdhe_rsa_with_aes_128_gcm_sha256,
                 compressionMethod: .none,
@@ -95,27 +92,27 @@ class RecordLayerTests: TestCase {
                     .statusRequest(.none),
                     .heartbeat(.init(mode: .allowed))
                 ]))))
-        try recordLayer.encode(to: stream)
-        expect(stream.bytes == bytes)
+        let result = try recordLayer.encode()
+        expect(result == bytes)
 
         // handshake
-        guard stream.bytes.count >= 1 else { return }
-        expect(stream.bytes[..<1] == bytes[..<1])
+        guard result.count >= 1 else { return }
+        expect(result[..<1] == bytes[..<1])
         // TLS 1.2
-        guard stream.bytes.count >= 3 else { return }
-        expect(stream.bytes[1..<3] == bytes[1..<3])
+        guard result.count >= 3 else { return }
+        expect(result[1..<3] == bytes[1..<3])
         // length
-        guard stream.bytes.count >= 5 else { return }
-        expect(stream.bytes[3..<5] == bytes[3..<5])
+        guard result.count >= 5 else { return }
+        expect(result[3..<5] == bytes[3..<5])
         // handshake type: server hello
-        guard stream.bytes.count >= 6 else { return }
-        expect(stream.bytes[5..<6] == bytes[5..<6])
+        guard result.count >= 6 else { return }
+        expect(result[5..<6] == bytes[5..<6])
         // length
-        guard stream.bytes.count >= 9 else { return }
-        expect(stream.bytes[6..<9] == bytes[6..<9])
+        guard result.count >= 9 else { return }
+        expect(result[6..<9] == bytes[6..<9])
 
         // Server Hello
-        let helloBytes = [UInt8](stream.bytes[9...])
+        let helloBytes = [UInt8](result[9...])
         let expectedHelloBytes = [UInt8](bytes[9...])
         // TLS 1.2
         guard helloBytes.count >= 2 else { return }
@@ -153,22 +150,5 @@ class RecordLayerTests: TestCase {
         // heartbeat
         guard helloBytes.count >= 70 else { return }
         expect(helloBytes[65..<70] == expectedHelloBytes[65..<70])
-    }
-
-    func testDecodeHeartbeat() throws {
-        let stream = InputByteStream([0x18, 0x03, 0x01, 0x00, 0x00])
-        let recordLayer = try RecordLayer(from: stream)
-        expect(
-            recordLayer
-            ==
-            .init(version: .tls10, content: .heartbeat))
-    }
-
-    func testEncodeHeartbeat() throws {
-        let stream = OutputByteStream()
-        let expected: [UInt8] = [0x18, 0x03, 0x01, 0x00, 0x00]
-        let recordLayer = RecordLayer(version: .tls10, content: .heartbeat)
-        try recordLayer.encode(to: stream)
-        expect(stream.bytes == expected)
     }
 }

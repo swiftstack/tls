@@ -1,5 +1,4 @@
 import Test
-import Stream
 @testable import TLS
 
 class RandomTests: TestCase {

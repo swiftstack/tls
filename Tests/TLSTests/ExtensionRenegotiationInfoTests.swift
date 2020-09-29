@@ -1,33 +1,29 @@
 import Test
-import Stream
 @testable import TLS
 
 class ExtensionRenegotiationInfoTests: TestCase {
+    var bytes: [UInt8] { [0x00] }
+    var extensionBytes: [UInt8] { [0xff, 0x01, 0x00, 0x01] + bytes }
+
     func testDecode() throws {
-        let stream = InputByteStream([0x00])
-        let result = try Extension.RenegotiationInfo(from: stream)
+        let result = try Extension.RenegotiationInfo(bytes)
         expect(result == .init(renegotiatedConnection: []))
     }
 
     func testDecodeExtension() throws {
-        let stream = InputByteStream([0xff, 0x01, 0x00, 0x01, 0x00])
-        let result = try Extension(from: stream)
+        let result = try Extension(extensionBytes)
         expect(result == .renegotiationInfo(.init()))
     }
 
     func testEncode() throws {
-        let stream = OutputByteStream()
-        let expected: [UInt8] = [0x00]
         let info = Extension.RenegotiationInfo(renegotiatedConnection: [])
-        try info.encode(to: stream)
-        expect(stream.bytes == expected)
+        let result = try info.encode()
+        expect(result == bytes)
     }
 
     func testEncodeExtension() throws {
-        let stream = OutputByteStream()
-        let expected: [UInt8] = [0xff, 0x01, 0x00, 0x01, 0x00]
         let info = Extension.renegotiationInfo(.init())
-        try info.encode(to: stream)
-        expect(stream.bytes == expected)
+        let result = try info.encode()
+        expect(result == extensionBytes)
     }
 }
