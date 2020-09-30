@@ -1,3 +1,13 @@
+import Stream
+
+public struct CiperSuites: Equatable {
+    var items: [CiperSuite]
+
+    init(_ items: [CiperSuite]) {
+        self.items = items
+    }
+}
+
 // http://www.iana.org/assignments/tls-parameters/tls-parameters.txt
 
 public enum CiperSuite: UInt16 {
@@ -327,4 +337,28 @@ public enum CiperSuite: UInt16 {
     case tls_ecdhe_psk_with_chacha20_poly1305_sha256 = 0xccac
     case tls_dhe_psk_with_chacha20_poly1305_sha256 = 0xccad
     case tls_rsa_psk_with_chacha20_poly1305_sha256 = 0xccae
+}
+
+extension CiperSuite: StreamCodable {
+    init(from stream: StreamReader) throws {
+        let rawCiperSuite = try stream.read(UInt16.self)
+        guard let ciperSuite = CiperSuite(rawValue: rawCiperSuite) else {
+            throw TLSError.invalidCiperSuite
+        }
+        self = ciperSuite
+    }
+
+    func encode(to stream: StreamWriter) throws {
+        try stream.write(rawValue)
+    }
+}
+
+extension CiperSuites: StreamCodableCollection {
+    typealias LengthType = UInt16
+}
+
+extension CiperSuites: ExpressibleByArrayLiteral {
+    public init(arrayLiteral elements: CiperSuite...) {
+        self.init([CiperSuite](elements))
+    }
 }

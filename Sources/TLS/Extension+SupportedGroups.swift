@@ -1,6 +1,16 @@
 import Stream
 
 extension Extension {
+    public struct SupportedGroups: Equatable {
+        var items: [SupportedGroup]
+
+        init(_ items: [SupportedGroup]) {
+            self.items = items
+        }
+    }
+}
+
+extension Extension {
     // ex elliptic_curves
     public enum SupportedGroup: UInt16 {
         /* Elliptic Curve Groups (ECDHE) */
@@ -78,32 +88,7 @@ extension Extension {
     }
 }
 
-extension Array where Element == Extension.SupportedGroup {
-    init(from stream: StreamReader) throws {
-        let length = Int(try stream.read(UInt16.self))
-
-        var groups = [Element]()
-        var remain = length
-        while remain > 0 {
-            groups.append(try Element(from: stream))
-            remain -= MemoryLayout<UInt16>.size
-        }
-        self = groups
-    }
-
-    func encode(to stream: StreamWriter) throws {
-        guard count > 0 else {
-            return
-        }
-        try stream.withSubStreamWriter(sizedBy: UInt16.self) { stream in
-            for value in self {
-                try value.encode(to: stream)
-            }
-        }
-    }
-}
-
-extension Extension.SupportedGroup {
+extension Extension.SupportedGroup: StreamCodable {
     typealias SupportedGroup = Extension.SupportedGroup
 
     init(from stream: StreamReader) throws {
@@ -116,5 +101,15 @@ extension Extension.SupportedGroup {
 
     func encode(to stream: StreamWriter) throws {
         try stream.write(rawValue)
+    }
+}
+
+extension Extension.SupportedGroups: StreamCodableCollection {
+    typealias LengthType = UInt16
+}
+
+extension Extension.SupportedGroups: ExpressibleByArrayLiteral {
+    public init(arrayLiteral elements: Extension.SupportedGroup...) {
+        self.init([Extension.SupportedGroup](elements))
     }
 }

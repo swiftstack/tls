@@ -6,7 +6,7 @@ public struct ServerHello: Equatable {
     public let sessionId: SessionId // [0..32]
     public let ciperSuite: CiperSuite
     public let compressionMethod: CompressionMethod
-    public let extensions: [Extension]
+    public let extensions: Extensions
 
     public init(
         version: Version,
@@ -14,7 +14,7 @@ public struct ServerHello: Equatable {
         sessionId: SessionId,
         ciperSuite: CiperSuite,
         compressionMethod: CompressionMethod,
-        extensions: [Extension])
+        extensions: Extensions)
     {
         self.version = version
         self.random = random
@@ -47,7 +47,7 @@ extension ServerHello {
         self.sessionId = try SessionId(from: stream)
         self.ciperSuite = try CiperSuite(from: stream)
         self.compressionMethod = try CompressionMethod(from: stream)
-        self.extensions = try [Extension](from: stream)
+        self.extensions = try Extensions(from: stream)
     }
 
     public func encode(to stream: StreamWriter) throws {

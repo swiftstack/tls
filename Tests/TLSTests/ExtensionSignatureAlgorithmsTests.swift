@@ -2,9 +2,9 @@ import Test
 @testable import TLS
 
 class ExtensionSignatureAlgorithmsTests: TestCase {
-    typealias SignatureAlgorithm = Extension.SignatureAlgorithm
+    typealias SignatureAlgorithms = Extension.SignatureAlgorithms
 
-    var algorithms: [SignatureAlgorithm] {[
+    var algorithms: SignatureAlgorithms {[
         .init(hash: .sha512, signature: .rsa),
         .init(hash: .sha512, signature: .dsa),
         .init(hash: .sha512, signature: .ecdsa),
@@ -34,7 +34,7 @@ class ExtensionSignatureAlgorithmsTests: TestCase {
     }
 
     func testDecode() throws {
-        let result = try [SignatureAlgorithm](algorithmsBytes)
+        let result = try SignatureAlgorithms(algorithmsBytes)
         expect(result == algorithms)
     }
 

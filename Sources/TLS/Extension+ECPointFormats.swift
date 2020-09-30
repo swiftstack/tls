@@ -1,6 +1,18 @@
 import Stream
 
 extension Extension {
+    public struct ECPointFormats: Equatable {
+        typealias LengthType = UInt8
+
+        var items: [ECPointFormat]
+
+        init(_ items: [ECPointFormat]) {
+            self.items = items
+        }
+    }
+}
+
+extension Extension {
     public enum ECPointFormat: UInt8 {
         case uncompressed = 0x00
         case ansiX962_compressed_prime = 0x01
@@ -8,30 +20,28 @@ extension Extension {
     }
 }
 
-extension Array where Element == Extension.ECPointFormat {
-    init(from stream: StreamReader) throws {
-        let length = Int(try stream.read(UInt8.self))
+// MARK: Codable
 
-        var points = [Element]()
-        var remain = length
-        while remain > 0 {
-            let rawPoint = try stream.read(UInt8.self)
-            guard let ecPoint = Element(rawValue: rawPoint) else {
-                throw TLSError.invalidExtension
-            }
-            points.append(ecPoint)
-            remain -= MemoryLayout<UInt8>.size
+extension Extension.ECPointFormat: StreamCodable {
+    init(from stream: StreamReader) throws {
+        let rawPoint = try stream.read(UInt8.self)
+        guard let ecPoint = Self(rawValue: rawPoint) else {
+            throw TLSError.invalidExtension
         }
-        self = points
+        self = ecPoint
     }
 
     func encode(to stream: StreamWriter) throws {
-        guard count > 0 else {
-            return
-        }
-        try stream.write(UInt8(count))
-        for value in self {
-            try stream.write(value.rawValue)
-        }
+        try stream.write(rawValue)
+    }
+}
+
+extension Extension.ECPointFormats: StreamCodableCollection { }
+
+// MARK: Utils
+
+extension Extension.ECPointFormats: ExpressibleByArrayLiteral {
+    public init(arrayLiteral elements: Extension.ECPointFormat...) {
+        self.init([Extension.ECPointFormat](elements))
     }
 }

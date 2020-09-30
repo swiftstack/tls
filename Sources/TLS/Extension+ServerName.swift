@@ -1,6 +1,16 @@
 import Stream
 
 extension Extension {
+    public struct ServerNames: Equatable {
+        var items: [ServerName]
+
+        init(_ items: [ServerName]) {
+            self.items = items
+        }
+    }
+}
+
+extension Extension {
     public struct ServerName: Equatable {
         public enum NameType: UInt8 {
             case hostName = 0
@@ -15,7 +25,7 @@ extension Extension {
     }
 }
 
-extension Extension.ServerName {
+extension Extension.ServerName: StreamCodable {
     init(from stream: StreamReader) throws {
         let rawType = try stream.read(UInt8.self)
         guard let type = NameType(rawValue: rawType) else {
@@ -36,25 +46,12 @@ extension Extension.ServerName {
     }
 }
 
-extension Array where Element == Extension.ServerName {
-    init(from stream: StreamReader) throws {
-        self = try stream.withSubStreamReader(sizedBy: UInt16.self) { stream in
-            var names = [Element]()
-            while !stream.isEmpty {
-                names.append(try Element(from: stream))
-            }
-            return names
-        }
-    }
+extension Extension.ServerNames: StreamCodableCollection {
+    typealias LengthType = UInt16
+}
 
-    func encode(to stream: StreamWriter) throws {
-        guard count > 0 else {
-            return
-        }
-        try stream.withSubStreamWriter(sizedBy: UInt16.self) { stream in
-            for value in self {
-                try value.encode(to: stream)
-            }
-        }
+extension Extension.ServerNames: ExpressibleByArrayLiteral {
+    public init(arrayLiteral elements: Extension.ServerName...) {
+        self.init([Extension.ServerName](elements))
     }
 }

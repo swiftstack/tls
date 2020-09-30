@@ -1,6 +1,16 @@
 import Stream
 
 extension Extension {
+    public struct SignatureAlgorithms: Equatable {
+        var items: [SignatureAlgorithm]
+
+        init(_ items: [SignatureAlgorithm]) {
+            self.items = items
+        }
+    }
+}
+
+extension Extension {
     public struct SignatureAlgorithm: Equatable {
         public enum Hash: UInt8 {
             case none   = 0x00
@@ -32,30 +42,7 @@ extension Extension {
     }
 }
 
-extension Array where Element == Extension.SignatureAlgorithm {
-    init(from stream: StreamReader) throws {
-        self = try stream.withSubStreamReader(sizedBy: UInt16.self) { stream in
-            var algorithms = [Element]()
-            while !stream.isEmpty {
-                algorithms.append(try Element(from: stream))
-            }
-            return algorithms
-        }
-    }
-
-    func encode(to stream: StreamWriter) throws {
-        guard count > 0 else {
-            return
-        }
-        try stream.withSubStreamWriter(sizedBy: UInt16.self) { stream in
-            for value in self {
-                try value.encode(to: stream)
-            }
-        }
-    }
-}
-
-extension Extension.SignatureAlgorithm {
+extension Extension.SignatureAlgorithm: StreamCodable {
     init(from stream: StreamReader) throws {
         let rawHash = try stream.read(UInt8.self)
         let rawSignature = try stream.read(UInt8.self)
@@ -72,5 +59,15 @@ extension Extension.SignatureAlgorithm {
     func encode(to stream: StreamWriter) throws {
         try stream.write(hash.rawValue)
         try stream.write(signature.rawValue)
+    }
+}
+
+extension Extension.SignatureAlgorithms: StreamCodableCollection {
+    typealias LengthType = UInt16
+}
+
+extension Extension.SignatureAlgorithms: ExpressibleByArrayLiteral {
+    public init(arrayLiteral elements: Extension.SignatureAlgorithm...) {
+        self.init([Extension.SignatureAlgorithm](elements))
     }
 }

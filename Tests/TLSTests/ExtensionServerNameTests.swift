@@ -3,6 +3,7 @@ import Test
 
 class ExtensionServerNameTests: TestCase {
     typealias ServerName = Extension.ServerName
+    typealias ServerNames = Extension.ServerNames
 
     var bytes: [UInt8] { [0x00, 0x00, 0x05, 0x79, 0x61, 0x2e, 0x72, 0x75] }
     var manyBytes: [UInt8] { [0x00, 0x08] + bytes }
@@ -15,7 +16,7 @@ class ExtensionServerNameTests: TestCase {
     }
 
     func testDecodeMany() throws {
-        let result = try [ServerName](manyBytes)
+        let result = try ServerNames(manyBytes)
         expect(result == [.init(type: .hostName, value: "ya.ru")])
     }
 
@@ -32,7 +33,7 @@ class ExtensionServerNameTests: TestCase {
     }
 
     func testEncodeMany() throws {
-        let serverName = [ServerName]([
+        let serverName = ServerNames([
             .init(type: .hostName, value: "ya.ru")])
         let result = try serverName.encode()
         expect(result == manyBytes)

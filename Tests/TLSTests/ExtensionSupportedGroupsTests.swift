@@ -2,9 +2,9 @@ import Test
 @testable import TLS
 
 class ExtensionSupportedGroupsTests: TestCase {
-    typealias SupportedGroup = Extension.SupportedGroup
+    typealias SupportedGroups = Extension.SupportedGroups
 
-    var groups: [SupportedGroup] {[
+    var groups: SupportedGroups {[
         .secp256r1,
         .secp521r1,
         .brainpoolP512r1,
@@ -32,7 +32,7 @@ class ExtensionSupportedGroupsTests: TestCase {
     }
 
     func testDecode() throws {
-        let result = try [SupportedGroup](groupsBytes)
+        let result = try SupportedGroups(groupsBytes)
         expect(result == groups)
     }
 

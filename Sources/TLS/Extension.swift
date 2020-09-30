@@ -1,40 +1,26 @@
 import Stream
 
+public struct Extensions: Equatable {
+    var items: [Extension]
+
+    init(_ items: [Extension]) {
+        self.items = items
+    }
+}
+
 public enum Extension: Equatable {
-    case serverName([ServerName])
-    case supportedGroups([SupportedGroup])
-    case ecPointFormats([ECPointFormat])
+    case serverName(ServerNames)
+    case supportedGroups(SupportedGroups)
+    case ecPointFormats(ECPointFormats)
     case sessionTicket(SessionTicket)
-    case signatureAlgorithms([SignatureAlgorithm])
+    case signatureAlgorithms(SignatureAlgorithms)
     case statusRequest(StatusRequest)
     case heartbeat(Heartbeat)
     case renegotiationInfo(RenegotiationInfo)
 }
 
-extension Array where Element == Extension {
-    init(from stream: StreamReader) throws {
-        self = try stream.withSubStreamReader(sizedBy: UInt16.self) { stream in
-            var extensions = [Extension]()
-            while !stream.isEmpty {
-                extensions.append(try Extension(from: stream))
-            }
-            return extensions
-        }
-    }
 
-    func encode(to stream: StreamWriter) throws {
-        guard count > 0 else {
-            return
-        }
-        try stream.withSubStreamWriter(sizedBy: UInt16.self) { stream in
-            for value in self {
-                try value.encode(to: stream)
-            }
-        }
-    }
-}
-
-extension Extension {
+extension Extension: StreamDecodable {
     init(from stream: StreamReader) throws {
         let rawType = try stream.read(UInt16.self)
         let length = Int(try stream.read(UInt16.self))
@@ -71,21 +57,21 @@ extension Extension {
         self = try stream.withSubStreamReader(limitedBy: length) { stream in
             switch type {
             case .serverName:
-                return .serverName(try [ServerName](from: stream))
+                return .serverName(try .init(from: stream))
             case .supportedGroups:
-                return .supportedGroups(try [SupportedGroup](from: stream))
+                return .supportedGroups(try .init(from: stream))
             case .ecPointFormats:
-                return .ecPointFormats(try [ECPointFormat](from: stream))
+                return .ecPointFormats(try .init(from: stream))
             case .sessionTicket:
-                return .sessionTicket(try SessionTicket(from: stream))
+                return .sessionTicket(try .init(from: stream))
             case .signatureAlgorithms:
-                return .signatureAlgorithms(try [SignatureAlgorithm](from: stream))
+                return .signatureAlgorithms(try .init(from: stream))
             case .statusRequest:
-                return .statusRequest(try StatusRequest(from: stream))
+                return .statusRequest(try .init(from: stream))
             case .heartbeat:
-                return .heartbeat(try Heartbeat(from: stream))
+                return .heartbeat(try .init(from: stream))
             case .renegotiationInfo:
-                return .renegotiationInfo(try RenegotiationInfo(from: stream))
+                return .renegotiationInfo(try .init(from: stream))
             default:
                 throw TLSError.invalidExtension
             }
@@ -93,7 +79,7 @@ extension Extension {
     }
 }
 
-extension Extension {
+extension Extension: StreamEncodable {
     func encode(to stream: StreamWriter) throws {
         func write(_ rawType: RawType) throws {
             try stream.write(rawType.rawValue)
@@ -156,4 +142,20 @@ extension Extension {
         case sessionTicket = 0x0023
         case renegotiationInfo = 0xFF01
     }
+}
+
+extension Extensions: StreamCodableCollection {
+    typealias LengthType = UInt16
+}
+
+extension Extensions: ExpressibleByArrayLiteral {
+    public init(arrayLiteral elements: Extension...) {
+        self.init([Extension](elements))
+    }
+}
+
+// TODO: Implement BidirectionalCollection protocol
+
+extension Extensions {
+    var count: Int { items.count }
 }
