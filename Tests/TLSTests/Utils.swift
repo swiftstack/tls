@@ -15,7 +15,7 @@ extension Extension.StatusRequest: StreamCodable {}
 extension ServerKeyExchange: StreamCodable {}
 
 extension StreamDecodable {
-    init(_ bytes: [UInt8]) throws {
+    init(from bytes: [UInt8]) throws {
         let stream = InputByteStream(bytes)
         try self.init(from: stream)
     }
@@ -30,7 +30,7 @@ extension StreamEncodable {
 }
 
 extension StreamDecodableCollection {
-    init(_ bytes: [UInt8]) throws {
+    init(from bytes: [UInt8]) throws {
         let stream = InputByteStream(bytes)
         try self.init(from: stream)
     }

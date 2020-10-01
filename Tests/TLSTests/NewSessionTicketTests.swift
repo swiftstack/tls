@@ -52,7 +52,7 @@ class NewSessionTicketTests: TestCase {
     }
 
     func testDecode() throws {
-        let record = try RecordLayer(bytes)
+        let record = try RecordLayer(from: bytes)
         expect(record.version == .tls12)
         expect(record.content == .handshake(
             .newSessionTicket(newSessionTicket)))

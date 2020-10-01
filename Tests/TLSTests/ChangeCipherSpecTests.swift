@@ -5,7 +5,7 @@ class ChangeCipherSpecTests: TestCase {
     let bytes: [UInt8] = [0x14, 0x03, 0x03, 0x00, 0x01, 0x01]
 
     func testDecode() throws {
-        let record = try RecordLayer(bytes)
+        let record = try RecordLayer(from: bytes)
         expect(record.version == .tls12)
         expect(record.content == .changeChiperSpec(.default))
     }

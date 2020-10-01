@@ -80,12 +80,12 @@ class ServerKeyExchangeTests: TestCase {
     }
 
     func testDecode() throws {
-        let result = try ServerKeyExchange([UInt8](bytes[9...]))
+        let result = try ServerKeyExchange(from: [UInt8](bytes[9...]))
         expect(result == serverKeyExchange)
     }
 
     func testDecodeHandshake() throws {
-        let record = try RecordLayer(bytes)
+        let record = try RecordLayer(from: bytes)
         expect(record.version == .tls12)
         expect(record.content == .handshake(
             .serverKeyExchange(serverKeyExchange)))

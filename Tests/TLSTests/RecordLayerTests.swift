@@ -52,7 +52,7 @@ class RecordLayerTests: TestCase {
     ]}
 
     func testDecode() throws {
-        let recordLayer = try RecordLayer(bytes)
+        let recordLayer = try RecordLayer(from: bytes)
         expect(recordLayer.content == .handshake(.serverHello(.init(
             version: .tls12,
             random: .init(time: randomTime, bytes: randomBytes),

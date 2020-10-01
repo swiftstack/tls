@@ -34,12 +34,12 @@ class ExtensionSignatureAlgorithmsTests: TestCase {
     }
 
     func testDecode() throws {
-        let result = try SignatureAlgorithms(algorithmsBytes)
+        let result = try SignatureAlgorithms(from: algorithmsBytes)
         expect(result == algorithms)
     }
 
     func testDecodeExtension() throws {
-        let result = try Extension(algorithmsExtensionBytes)
+        let result = try Extension(from: algorithmsExtensionBytes)
         expect(result == .signatureAlgorithms(algorithms))
     }
 

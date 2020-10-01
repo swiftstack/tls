@@ -226,7 +226,7 @@ class CertificateStatusTests: TestCase {
     }
 
     func testDecode() throws {
-        let recordLayer = try RecordLayer(bytes)
+        let recordLayer = try RecordLayer(from: bytes)
 
         switch recordLayer.content {
         case .handshake(.certificateStatus(.ocsp(let response))):

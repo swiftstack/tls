@@ -32,7 +32,7 @@ class ServerHelloTests: TestCase {
         0x00, 0x0f, 0x00, 0x01, 0x01]
 
     func testDecode() throws {
-        let hello = try ServerHello(bytes)
+        let hello = try ServerHello(from: bytes)
 
         expect(hello.version == .tls12)
         expect(hello.random.time == 3521681308)

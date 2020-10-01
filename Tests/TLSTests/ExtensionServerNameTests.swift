@@ -10,18 +10,18 @@ class ExtensionServerNameTests: TestCase {
     var extensionBytes: [UInt8] { [0x00, 0x00, 0x00, 0x0a] + manyBytes }
 
     func testDecodeOne() throws {
-        let result = try ServerName(bytes)
+        let result = try ServerName(from: bytes)
         expect(result.type == .hostName)
         expect(result.value == "ya.ru")
     }
 
     func testDecodeMany() throws {
-        let result = try ServerNames(manyBytes)
+        let result = try ServerNames(from: manyBytes)
         expect(result == [.init(type: .hostName, value: "ya.ru")])
     }
 
     func testDecodeExtension() throws {
-        let result = try Extension(extensionBytes)
+        let result = try Extension(from: extensionBytes)
         expect(result == .serverName([
             .init(type: .hostName, value: "ya.ru")]))
     }

@@ -8,12 +8,12 @@ class ExtensionSessionTicketTests: TestCase {
     var ticketBytes: [UInt8] { [0x00, 0x23, 0x00, 0x05] + ticketData }
 
     func testDecodeEmpty() throws {
-        let result = try Extension(emptyTicketBytes)
+        let result = try Extension(from: emptyTicketBytes)
         expect(result == .sessionTicket(.init(data: [])))
     }
 
     func testDecodeRandom() throws {
-        let result = try Extension(ticketBytes)
+        let result = try Extension(from: ticketBytes)
         expect(result == .sessionTicket(.init(data: ticketData)))
     }
 

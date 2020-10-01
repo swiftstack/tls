@@ -6,12 +6,12 @@ class ExtensionRenegotiationInfoTests: TestCase {
     var extensionBytes: [UInt8] { [0xff, 0x01, 0x00, 0x01] + bytes }
 
     func testDecode() throws {
-        let result = try Extension.RenegotiationInfo(bytes)
+        let result = try Extension.RenegotiationInfo(from: bytes)
         expect(result == .init(renegotiatedConnection: []))
     }
 
     func testDecodeExtension() throws {
-        let result = try Extension(extensionBytes)
+        let result = try Extension(from: extensionBytes)
         expect(result == .renegotiationInfo(.init()))
     }
 

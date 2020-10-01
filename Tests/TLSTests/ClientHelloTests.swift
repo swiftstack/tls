@@ -50,7 +50,7 @@ class ClientHelloTests: TestCase {
         0x00, 0x0f, 0x00, 0x01, 0x01]
 
     func testDecode() throws {
-        let hello = try ClientHello(bytes)
+        let hello = try ClientHello(from: bytes)
 
         expect(hello.random.time == 73170025)
 

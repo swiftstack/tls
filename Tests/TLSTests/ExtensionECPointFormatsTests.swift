@@ -21,12 +21,12 @@ class ExtensionECPointFormatsTests: TestCase {
     }
 
     func testDecode() throws {
-        let result = try ECPointFormats(ecPointFormatBytes)
+        let result = try ECPointFormats(from: ecPointFormatBytes)
         expect(result == ecPointFormats)
     }
 
     func testDecodeExtension() throws {
-        let result = try Extension(ecPointFormatExtensionBytes)
+        let result = try Extension(from: ecPointFormatExtensionBytes)
         expect(result == .ecPointFormats(ecPointFormats))
     }
 

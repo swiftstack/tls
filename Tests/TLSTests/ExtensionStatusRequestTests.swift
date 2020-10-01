@@ -8,12 +8,12 @@ class ExtensionStatusRequestTests: TestCase {
     var extensionBytes: [UInt8] { [0x00, 0x05, 0x00, 0x05] + bytes }
 
     func testDecode() throws {
-        let result = try StatusRequest(bytes)
+        let result = try StatusRequest(from: bytes)
         expect(result == .ocsp(.init()))
     }
 
     func testDecodeExtension() throws {
-        let result = try Extension(extensionBytes)
+        let result = try Extension(from: extensionBytes)
         expect(result == .statusRequest(.ocsp(.init())))
     }
 

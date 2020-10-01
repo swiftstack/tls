@@ -6,12 +6,12 @@ class ExtensionHeartbeatTests: TestCase {
     var extensionBytes: [UInt8] { [0x00, 0x0f, 0x00, 0x01] + bytes }
 
     func testDecode() throws {
-        let result = try Extension.Heartbeat(bytes)
+        let result = try Extension.Heartbeat(from: bytes)
         expect(result == .init(mode: .allowed))
     }
 
     func testDecodeExtension() throws {
-        let result = try Extension(extensionBytes)
+        let result = try Extension(from: extensionBytes)
         expect(result == .heartbeat(.init(mode: .allowed)))
     }
 

@@ -32,12 +32,12 @@ class ExtensionSupportedGroupsTests: TestCase {
     }
 
     func testDecode() throws {
-        let result = try SupportedGroups(groupsBytes)
+        let result = try SupportedGroups(from: groupsBytes)
         expect(result == groups)
     }
 
     func testDecodeExtension() throws {
-        let result = try Extension(groupsExtensionBytes)
+        let result = try Extension(from: groupsExtensionBytes)
         expect(result == .supportedGroups(groups))
     }
 

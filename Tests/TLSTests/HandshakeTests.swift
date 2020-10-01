@@ -5,7 +5,7 @@ class HandshakeTests: TestCase {
     var bytes: [UInt8] { [0x0e, 0x00, 0x00, 0x00] }
 
     func testDecode() throws {
-        let handshake = try Handshake(bytes)
+        let handshake = try Handshake(from: bytes)
         expect(handshake == .serverHelloDone)
     }
 
