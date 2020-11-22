@@ -14,9 +14,9 @@ extension Extension {
     public struct SignatureAlgorithm: Equatable {
         public enum Hash: UInt8 {
             case none   = 0x00
-            @available(*, deprecated, message: "insecure, removed in TLS 1.3")
+//            @available(*, deprecated, message: "insecure, removed in TLS 1.3")
             case md5    = 0x01
-            @available(*, deprecated, message: "insecure, removed in TLS 1.3")
+//            @available(*, deprecated, message: "insecure, removed in TLS 1.3")
             case sha1   = 0x02
             case sha224 = 0x03
             case sha256 = 0x04
@@ -27,7 +27,7 @@ extension Extension {
         public enum Signature: UInt8 {
             case anonymous = 0x00
             case rsa       = 0x01
-            @available(*, deprecated, message: "insecure, removed in TLS 1.3")
+//            @available(*, deprecated, message: "insecure, removed in TLS 1.3")
             case dsa       = 0x02
             case ecdsa     = 0x03
         }
