@@ -17,10 +17,16 @@ let package = Package(
     targets: [
         .target(
             name: "TLS",
-            dependencies: ["Platform", "Crypto", "Stream"]),
+            dependencies: ["Platform", "Crypto", "Stream"],
+            swiftSettings: [
+                .unsafeFlags(["-Xfrontend", "-enable-experimental-concurrency"])
+            ]),
         .testTarget(
             name: "TLSTests",
-            dependencies: ["TLS", "Test"])
+            dependencies: ["TLS", "Test"],
+            swiftSettings: [
+                .unsafeFlags(["-Xfrontend", "-enable-experimental-concurrency"])
+            ])
     ]
 )
 
