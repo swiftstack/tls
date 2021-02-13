@@ -11,21 +11,21 @@ extension Extension {
 }
 
 extension Extension.RenegotiationInfo {
-    init(from stream: StreamReader) throws {
-        let length = Int(try stream.read(UInt8.self))
+    static func decode(from stream: StreamReader) async throws -> Self {
+        let length = Int(try await stream.read(UInt8.self))
         guard length > 0 else {
-            self.renegotiatedConnection = []
-            return
+            return .init(renegotiatedConnection: [])
         }
-        self.renegotiatedConnection = try stream.read(count: length)
+        let renegotiatedConnection = try await stream.read(count: length)
+        return .init(renegotiatedConnection: renegotiatedConnection)
     }
 
-    func encode(to stream: StreamWriter) throws {
+    func encode(to stream: StreamWriter) async throws {
         guard renegotiatedConnection.count > 0 else {
-            try stream.write(UInt8(0))
+            try await stream.write(UInt8(0))
             return
         }
-        try stream.write(UInt8(renegotiatedConnection.count))
-        try stream.write(renegotiatedConnection)
+        try await stream.write(UInt8(renegotiatedConnection.count))
+        try await stream.write(renegotiatedConnection)
     }
 }

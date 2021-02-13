@@ -43,22 +43,21 @@ extension Extension {
 }
 
 extension Extension.SignatureAlgorithm: StreamCodable {
-    init(from stream: StreamReader) throws {
-        let rawHash = try stream.read(UInt8.self)
-        let rawSignature = try stream.read(UInt8.self)
+    static func decode(from stream: StreamReader) async throws -> Self {
+        let rawHash = try await stream.read(UInt8.self)
+        let rawSignature = try await stream.read(UInt8.self)
         guard
             let hash = Hash(rawValue: rawHash),
             let signature = Signature(rawValue: rawSignature)
         else {
             throw TLSError.invalidExtension
         }
-        self.hash = hash
-        self.signature = signature
+        return .init(hash: hash, signature: signature)
     }
 
-    func encode(to stream: StreamWriter) throws {
-        try stream.write(hash.rawValue)
-        try stream.write(signature.rawValue)
+    func encode(to stream: StreamWriter) async throws {
+        try await stream.write(hash.rawValue)
+        try await stream.write(signature.rawValue)
     }
 }
 

@@ -14,36 +14,38 @@ public enum CertificateStatus: Equatable {
 }
 
 extension CertificateStatus {
-    init(from stream: StreamReader) throws {
-        guard let type = try RawType(from: stream) else {
+    static func decode(from stream: StreamReader) async throws -> Self {
+        guard let type = try await RawType.decode(from: stream) else {
             throw TLSError.invalidExtension
         }
-        self = try stream.withSubStreamReader(sizedBy: UInt24.self) { stream in
+        return try await stream.withSubStreamReader(sizedBy: UInt24.self)
+        { stream in
             switch type {
-            case .ocsp: return .ocsp(try .init(from: stream))
+            case .ocsp: return .ocsp(try await .decode(from: stream))
             }
         }
     }
 
-    func encode(to stream: StreamWriter) throws {
+    func encode(to stream: StreamWriter) async throws {
         switch self {
         case .ocsp(let response):
-            try RawType.ocsp.encode(to: stream)
-            try stream.withSubStreamWriter(sizedBy: UInt24.self) { stream in
-                try response.encode(to: stream)
+            try await RawType.ocsp.encode(to: stream)
+            try await stream.withSubStreamWriter(sizedBy: UInt24.self)
+            { stream in
+                try await response.encode(to: stream)
             }
         }
     }
 }
 
 extension OCSP.Response {
-    init(from stream: StreamReader) throws {
-        let asn1 = try ASN1(from: stream)
-        try self.init(from: asn1)
+    static func decode(from stream: StreamReader) async throws -> Self {
+        let asn1 = try await ASN1.decode(from: stream)
+        return try await .decode(from: asn1)
     }
 
-    func encode(to stream: StreamWriter) throws {
+    func encode(to stream: StreamWriter) async throws {
         let asn1 = self.encode()
-        try asn1.encode(to: stream)
+        try await asn1.encode(to: stream)
     }
 }

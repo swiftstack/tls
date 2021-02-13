@@ -41,21 +41,22 @@ extension ServerHello {
 }
 
 extension ServerHello {
-    public init(from stream: StreamReader) throws {
-        self.version = try Version(from: stream)
-        self.random = try Random(from: stream)
-        self.sessionId = try SessionId(from: stream)
-        self.ciperSuite = try CiperSuite(from: stream)
-        self.compressionMethod = try CompressionMethod(from: stream)
-        self.extensions = try Extensions(from: stream)
+    public static func decode(from stream: StreamReader) async throws -> Self {
+        return .init(
+            version: try await Version.decode(from: stream),
+            random: try await Random.decode(from: stream),
+            sessionId: try await SessionId.decode(from: stream),
+            ciperSuite: try await CiperSuite.decode(from: stream),
+            compressionMethod: try await CompressionMethod.decode(from: stream),
+            extensions: try await Extensions.decode(from: stream))
     }
 
-    public func encode(to stream: StreamWriter) throws {
-        try version.encode(to: stream)
-        try random.encode(to: stream)
-        try sessionId.encode(to: stream)
-        try ciperSuite.encode(to: stream)
-        try compressionMethod.encode(to: stream)
-        try extensions.encode(to: stream)
+    public func encode(to stream: StreamWriter) async throws {
+        try await version.encode(to: stream)
+        try await random.encode(to: stream)
+        try await sessionId.encode(to: stream)
+        try await ciperSuite.encode(to: stream)
+        try await compressionMethod.encode(to: stream)
+        try await extensions.encode(to: stream)
     }
 }

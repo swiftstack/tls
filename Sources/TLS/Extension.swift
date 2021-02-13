@@ -21,9 +21,9 @@ public enum Extension: Equatable {
 
 
 extension Extension: StreamDecodable {
-    init(from stream: StreamReader) throws {
-        let rawType = try stream.read(UInt16.self)
-        let length = Int(try stream.read(UInt16.self))
+    static func decode(from stream: StreamReader) async throws -> Self {
+        let rawType = try await stream.read(UInt16.self)
+        let length = Int(try await stream.read(UInt16.self))
 
         guard let type = RawType(rawValue: rawType) else {
             throw TLSError.invalidExtension
@@ -33,45 +33,45 @@ extension Extension: StreamDecodable {
         guard length > 0 else {
             switch type {
             case .serverName:
-                self = .serverName([])
+                return .serverName([])
             case .supportedGroups:
-                self = .supportedGroups([])
+                return .supportedGroups([])
             case .ecPointFormats:
-                self = .ecPointFormats([])
+                return .ecPointFormats([])
             case .sessionTicket:
-                self = .sessionTicket(SessionTicket(data: []))
+                return .sessionTicket(SessionTicket(data: []))
             case .signatureAlgorithms:
-                self = .signatureAlgorithms([])
+                return .signatureAlgorithms([])
             case .statusRequest:
-                self = .statusRequest(.none)
+                return .statusRequest(.none)
             case .heartbeat:
                 throw TLSError.invalidExtension
             case .renegotiationInfo:
-                self = .renegotiationInfo(RenegotiationInfo())
+                return .renegotiationInfo(RenegotiationInfo())
             default:
                 throw TLSError.invalidExtension
             }
-            return
         }
 
-        self = try stream.withSubStreamReader(limitedBy: length) { stream in
+        return try await stream.withSubStreamReader(limitedBy: length)
+        { stream in
             switch type {
             case .serverName:
-                return .serverName(try .init(from: stream))
+                return .serverName(try await .decode(from: stream))
             case .supportedGroups:
-                return .supportedGroups(try .init(from: stream))
+                return .supportedGroups(try await .decode(from: stream))
             case .ecPointFormats:
-                return .ecPointFormats(try .init(from: stream))
+                return .ecPointFormats(try await .decode(from: stream))
             case .sessionTicket:
-                return .sessionTicket(try .init(from: stream))
+                return .sessionTicket(try await .decode(from: stream))
             case .signatureAlgorithms:
-                return .signatureAlgorithms(try .init(from: stream))
+                return .signatureAlgorithms(try await .decode(from: stream))
             case .statusRequest:
-                return .statusRequest(try .init(from: stream))
+                return .statusRequest(try await .decode(from: stream))
             case .heartbeat:
-                return .heartbeat(try .init(from: stream))
+                return .heartbeat(try await .decode(from: stream))
             case .renegotiationInfo:
-                return .renegotiationInfo(try .init(from: stream))
+                return .renegotiationInfo(try await .decode(from: stream))
             default:
                 throw TLSError.invalidExtension
             }
@@ -80,32 +80,32 @@ extension Extension: StreamDecodable {
 }
 
 extension Extension: StreamEncodable {
-    func encode(to stream: StreamWriter) throws {
-        func write(_ rawType: RawType) throws {
-            try stream.write(rawType.rawValue)
+    func encode(to stream: StreamWriter) async throws {
+        func write(_ rawType: RawType) async throws {
+            try await stream.write(rawType.rawValue)
         }
 
         switch self {
-        case .serverName: try write(.serverName)
-        case .supportedGroups: try write(.supportedGroups)
-        case .ecPointFormats: try write(.ecPointFormats)
-        case .sessionTicket: try write(.sessionTicket)
-        case .signatureAlgorithms: try write(.signatureAlgorithms)
-        case .statusRequest: try write(.statusRequest)
-        case .heartbeat: try write(.heartbeat)
-        case .renegotiationInfo: try write(.renegotiationInfo)
+        case .serverName: try await write(.serverName)
+        case .supportedGroups: try await write(.supportedGroups)
+        case .ecPointFormats: try await write(.ecPointFormats)
+        case .sessionTicket: try await write(.sessionTicket)
+        case .signatureAlgorithms: try await write(.signatureAlgorithms)
+        case .statusRequest: try await write(.statusRequest)
+        case .heartbeat: try await write(.heartbeat)
+        case .renegotiationInfo: try await write(.renegotiationInfo)
         }
 
-        try stream.withSubStreamWriter(sizedBy: UInt16.self) { stream in
+        try await stream.withSubStreamWriter(sizedBy: UInt16.self) { stream in
             switch self {
-            case .serverName(let value): try value.encode(to: stream)
-            case .supportedGroups(let value): try value.encode(to: stream)
-            case .ecPointFormats(let value): try value.encode(to: stream)
-            case .sessionTicket(let value): try value.encode(to: stream)
-            case .signatureAlgorithms(let value): try value.encode(to: stream)
-            case .statusRequest(let value): try value.encode(to: stream)
-            case .heartbeat(let value): try value.encode(to: stream)
-            case .renegotiationInfo(let value): try value.encode(to: stream)
+            case .serverName(let value): try await value.encode(to: stream)
+            case .supportedGroups(let value): try await value.encode(to: stream)
+            case .ecPointFormats(let value): try await value.encode(to: stream)
+            case .sessionTicket(let value): try await value.encode(to: stream)
+            case .signatureAlgorithms(let value): try await value.encode(to: stream)
+            case .statusRequest(let value): try await value.encode(to: stream)
+            case .heartbeat(let value): try await value.encode(to: stream)
+            case .renegotiationInfo(let value): try await value.encode(to: stream)
             }
         }
     }

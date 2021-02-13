@@ -14,15 +14,15 @@ extension Extension {
 }
 
 extension Extension.Heartbeat {
-    init(from stream: StreamReader) throws {
-        let rawMode = try stream.read(UInt8.self)
+    static func decode(from stream: StreamReader) async throws -> Self {
+        let rawMode = try await stream.read(UInt8.self)
         guard let mode = Mode(rawValue: rawMode) else {
             throw TLSError.invalidExtension
         }
-        self.mode = mode
+        return .init(mode: mode)
     }
 
-    func encode(to stream: StreamWriter) throws {
-        try stream.write(mode.rawValue)
+    func encode(to stream: StreamWriter) async throws {
+        try await stream.write(mode.rawValue)
     }
 }

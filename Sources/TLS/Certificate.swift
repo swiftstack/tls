@@ -2,13 +2,15 @@ import Crypto
 import Stream
 
 extension Array where Element == X509.Certificate {
-    init(from stream: StreamReader) throws {
-        self = try stream.withSubStreamReader(sizedBy: UInt24.self) { stream in
+    static func decode(from stream: StreamReader) async throws -> Self {
+        return try await stream.withSubStreamReader(sizedBy: UInt24.self)
+        { stream in
             var certificates = [X509.Certificate]()
             while !stream.isEmpty {
-                let x509 = try stream.withSubStreamReader(sizedBy: UInt24.self)
-                { stream in
-                    return try X509.Certificate(from: stream)
+                let x509 = try await stream.withSubStreamReader(
+                    sizedBy: UInt24.self
+                ) { stream in
+                    return try await X509.Certificate.decode(from: stream)
                 }
                 certificates.append(x509)
             }
@@ -16,14 +18,15 @@ extension Array where Element == X509.Certificate {
         }
     }
 
-    func encode(to stream: StreamWriter) throws {
+    func encode(to stream: StreamWriter) async throws {
         guard count > 0 else {
             return
         }
-        try stream.withSubStreamWriter(sizedBy: UInt24.self) { stream in
+        try await stream.withSubStreamWriter(sizedBy: UInt24.self) { stream in
             for value in self {
-                try stream.withSubStreamWriter(sizedBy: UInt24.self) { stream in
-                    try value.encode(to: stream)
+                try await stream.withSubStreamWriter(sizedBy: UInt24.self)
+                { stream in
+                    try await value.encode(to: stream)
                 }
             }
         }
@@ -31,13 +34,13 @@ extension Array where Element == X509.Certificate {
 }
 
 extension X509.Certificate {
-    init(from stream: StreamReader) throws {
-        let asn1 = try ASN1(from: stream)
-        try self.init(from: asn1)
+    static func decode(from stream: StreamReader) async throws -> Self {
+        let asn1 = try await ASN1.decode(from: stream)
+        return try await .decode(from: asn1)
     }
 
-    func encode(to stream: StreamWriter) throws {
+    func encode(to stream: StreamWriter) async throws {
         let asn1 = self.encode()
-        try asn1.encode(to: stream)
+        try await asn1.encode(to: stream)
     }
 }

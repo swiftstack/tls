@@ -91,16 +91,16 @@ extension Extension {
 extension Extension.SupportedGroup: StreamCodable {
     typealias SupportedGroup = Extension.SupportedGroup
 
-    init(from stream: StreamReader) throws {
-        let rawGroup = try stream.read(UInt16.self)
+    static func decode(from stream: StreamReader) async throws -> Self {
+        let rawGroup = try await stream.read(UInt16.self)
         guard let group = SupportedGroup(rawValue: rawGroup) else {
             throw TLSError.invalidExtension
         }
-        self = group
+        return group
     }
 
-    func encode(to stream: StreamWriter) throws {
-        try stream.write(rawValue)
+    func encode(to stream: StreamWriter) async throws {
+        try await stream.write(rawValue)
     }
 }
 

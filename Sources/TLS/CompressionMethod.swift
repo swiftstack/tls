@@ -13,16 +13,16 @@ public enum CompressionMethod: UInt8 {
 }
 
 extension CompressionMethod: StreamCodable {
-    init(from stream: StreamReader) throws {
-        let rawMethod = try stream.read(UInt8.self)
+    static func decode(from stream: StreamReader) async throws -> Self {
+        let rawMethod = try await stream.read(UInt8.self)
         guard let method = CompressionMethod(rawValue: rawMethod) else {
             throw TLSError.invalidCompressionMethod
         }
-        self = method
+        return method
     }
 
-    func encode(to stream: StreamWriter) throws {
-        try stream.write(rawValue)
+    func encode(to stream: StreamWriter) async throws {
+        try await stream.write(rawValue)
     }
 }
 

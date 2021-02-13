@@ -23,16 +23,16 @@ extension Extension {
 // MARK: Codable
 
 extension Extension.ECPointFormat: StreamCodable {
-    init(from stream: StreamReader) throws {
-        let rawPoint = try stream.read(UInt8.self)
+    static func decode(from stream: StreamReader) async throws -> Self {
+        let rawPoint = try await stream.read(UInt8.self)
         guard let ecPoint = Self(rawValue: rawPoint) else {
             throw TLSError.invalidExtension
         }
-        self = ecPoint
+        return ecPoint
     }
 
-    func encode(to stream: StreamWriter) throws {
-        try stream.write(rawValue)
+    func encode(to stream: StreamWriter) async throws {
+        try await stream.write(rawValue)
     }
 }
 

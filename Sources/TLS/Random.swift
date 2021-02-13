@@ -24,14 +24,15 @@ extension Random {
 }
 
 extension Random {
-    init(from stream: StreamReader) throws {
-        self.time = Int(try stream.read(UInt32.self))
-        self.bytes = try stream.read(count: 28)
+    static func decode(from stream: StreamReader) async throws -> Self {
+        let time = Int(try await stream.read(UInt32.self))
+        let bytes = try await stream.read(count: 28)
+        return .init(time: time, bytes: bytes)
     }
 
-    func encode(to stream: StreamWriter) throws {
+    func encode(to stream: StreamWriter) async throws {
         assert(bytes.count == 28)
-        try stream.write(UInt32(time))
-        try stream.write(bytes)
+        try await stream.write(UInt32(time))
+        try await stream.write(bytes)
     }
 }

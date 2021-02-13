@@ -26,23 +26,24 @@ extension Extension {
 }
 
 extension Extension.ServerName: StreamCodable {
-    init(from stream: StreamReader) throws {
-        let rawType = try stream.read(UInt8.self)
+    static func decode(from stream: StreamReader) async throws -> Self {
+        let rawType = try await stream.read(UInt8.self)
         guard let type = NameType(rawValue: rawType) else {
             throw TLSError.invalidExtension
         }
-        self.type = type
 
-        let length = Int(try stream.read(UInt16.self))
-        self.value = try stream.read(count: length) { bytes in
+        let length = Int(try await stream.read(UInt16.self))
+        let value = try await stream.read(count: length) { bytes in
             return String(decoding: bytes, as: UTF8.self)
         }
+
+        return .init(type: type, value: value)
     }
 
-    func encode(to stream: StreamWriter) throws {
-        try stream.write(type.rawValue)
-        try stream.write(UInt16(value.utf8.count))
-        try stream.write(value)
+    func encode(to stream: StreamWriter) async throws {
+        try await stream.write(type.rawValue)
+        try await stream.write(UInt16(value.utf8.count))
+        try await stream.write(value)
     }
 }
 

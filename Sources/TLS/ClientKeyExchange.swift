@@ -9,13 +9,13 @@ public struct ClientKeyExchange: Equatable {
 }
 
 extension ClientKeyExchange {
-    init(from stream: StreamReader) throws {
-        let length = Int(try stream.read(UInt8.self))
-        self.pubkey = try stream.read(count: length)
+    static func decode(from stream: StreamReader) async throws -> Self {
+        let length = Int(try await stream.read(UInt8.self))
+        return .init(pubkey: try await stream.read(count: length))
     }
 
-    func encode(to stream: StreamWriter) throws {
-        try stream.write(UInt8(pubkey.count))
-        try stream.write(pubkey)
+    func encode(to stream: StreamWriter) async throws {
+        try await stream.write(UInt8(pubkey.count))
+        try await stream.write(pubkey)
     }
 }

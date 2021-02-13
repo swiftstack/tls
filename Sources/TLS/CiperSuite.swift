@@ -340,16 +340,16 @@ public enum CiperSuite: UInt16 {
 }
 
 extension CiperSuite: StreamCodable {
-    init(from stream: StreamReader) throws {
-        let rawCiperSuite = try stream.read(UInt16.self)
+    static func decode(from stream: StreamReader) async throws -> Self {
+        let rawCiperSuite = try await stream.read(UInt16.self)
         guard let ciperSuite = CiperSuite(rawValue: rawCiperSuite) else {
             throw TLSError.invalidCiperSuite
         }
-        self = ciperSuite
+        return ciperSuite
     }
 
-    func encode(to stream: StreamWriter) throws {
-        try stream.write(rawValue)
+    func encode(to stream: StreamWriter) async throws {
+        try await stream.write(rawValue)
     }
 }
 

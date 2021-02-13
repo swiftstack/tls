@@ -25,49 +25,52 @@ extension Extension {
 }
 
 extension Extension.OCSPStatusRequest {
-    init(from stream: StreamReader) throws {
-        let respondersLength = Int(try stream.read(UInt16.self))
+    static func decode(from stream: StreamReader) async throws -> Self {
+        let responderIdList: [UInt8]
+        let respondersLength = Int(try await stream.read(UInt16.self))
         switch respondersLength {
-        case 0: self.responderIdList = []
-        default: self.responderIdList = try stream.read(count: respondersLength)
+        case 0: responderIdList = []
+        default: responderIdList = try await stream.read(count: respondersLength)
         }
 
-        let extensionsLength = Int(try stream.read(UInt16.self))
+        let extensions: [UInt8]
+        let extensionsLength = Int(try await stream.read(UInt16.self))
         switch extensionsLength {
-        case 0: self.extensions = []
-        default: self.extensions = try stream.read(count: extensionsLength)
+        case 0: extensions = []
+        default: extensions = try await stream.read(count: extensionsLength)
         }
+        return .init(responderIdList: responderIdList, extensions: extensions)
     }
 
-    func encode(to stream: StreamWriter) throws {
-        try stream.write(UInt16(responderIdList.count))
+    func encode(to stream: StreamWriter) async throws {
+        try await stream.write(UInt16(responderIdList.count))
         if responderIdList.count > 0 {
-            try stream.write(responderIdList)
+            try await stream.write(responderIdList)
         }
-        try stream.write(UInt16(extensions.count))
+        try await stream.write(UInt16(extensions.count))
         if extensions.count > 0 {
-            try stream.write(extensions)
+            try await stream.write(extensions)
         }
     }
 }
 
 extension Extension.StatusRequest {
-    init(from stream: StreamReader) throws {
-        guard let type = try RawType(from: stream) else {
+    static func decode(from stream: StreamReader) async throws -> Self {
+        guard let type = try await RawType.decode(from: stream) else {
             throw TLSError.invalidExtension
         }
         switch type {
-        case .ocsp: self = .ocsp(try .init(from: stream))
+        case .ocsp: return .ocsp(try await .decode(from: stream))
         }
     }
 
-    func encode(to stream: StreamWriter) throws {
+    func encode(to stream: StreamWriter) async throws {
         switch self {
         case .none:
             return
         case .ocsp(let request):
-            try RawType.ocsp.encode(to: stream)
-            try request.encode(to: stream)
+            try await RawType.ocsp.encode(to: stream)
+            try await request.encode(to: stream)
         }
     }
 }

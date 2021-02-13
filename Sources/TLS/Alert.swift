@@ -52,21 +52,20 @@ extension Alert {
 }
 
 extension Alert {
-    init(from stream: StreamReader) throws {
-        let rawLevel = try stream.read(UInt8.self)
-        let rawDescription = try stream.read(UInt8.self)
+    static func decode(from stream: StreamReader) async throws -> Self {
+        let rawLevel = try await stream.read(UInt8.self)
+        let rawDescription = try await stream.read(UInt8.self)
 
         guard let level = Level(rawValue: rawLevel),
             let description = Description(rawValue: rawDescription) else {
                 throw TLSError.invalidAlert
         }
 
-        self.level = level
-        self.description = description
+        return .init(level: level, description: description)
     }
 
-    func encode(to stream: StreamWriter) throws {
-        try stream.write(level.rawValue)
-        try stream.write(description.rawValue)
+    func encode(to stream: StreamWriter) async throws {
+        try await stream.write(level.rawValue)
+        try await stream.write(description.rawValue)
     }
 }

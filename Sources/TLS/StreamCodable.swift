@@ -1,11 +1,11 @@
 import Stream
 
 protocol StreamDecodable {
-    init(from stream: StreamReader) throws
+    static func decode(from stream: StreamReader) async throws -> Self
 }
 
 protocol StreamEncodable {
-    func encode(to stream: StreamWriter) throws
+    func encode(to stream: StreamWriter) async throws
 }
 
 protocol StreamDecodableCollection {
@@ -26,27 +26,29 @@ protocol StreamCodable: StreamEncodable, StreamDecodable {}
 protocol StreamCodableCollection: StreamEncodableCollection, StreamDecodableCollection {}
 
 extension StreamDecodableCollection {
-    init(from stream: StreamReader) throws {
-        let items = try stream.withSubStreamReader(sizedBy: LengthType.self)
-        { stream -> [Element] in
+    static func decode(from stream: StreamReader) async throws -> Self {
+        let items = try await stream.withSubStreamReader(
+            sizedBy: LengthType.self
+        ) { stream -> [Element] in
             var items = [Element]()
             while !stream.isEmpty {
-                items.append(try Element(from: stream))
+                items.append(try await Element.decode(from: stream))
             }
             return items
         }
-        self.init(items)
+        return .init(items)
     }
 }
 
 extension StreamEncodableCollection {
-    func encode(to stream: StreamWriter) throws {
+    func encode(to stream: StreamWriter) async throws {
         guard items.count > 0 else {
             return
         }
-        try stream.withSubStreamWriter(sizedBy: LengthType.self) { stream in
+        try await stream.withSubStreamWriter(sizedBy: LengthType.self)
+        { stream in
             for value in self.items {
-                try value.encode(to: stream)
+                try await value.encode(to: stream)
             }
         }
     }

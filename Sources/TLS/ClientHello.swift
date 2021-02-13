@@ -26,21 +26,22 @@ public struct ClientHello: Equatable {
 }
 
 extension ClientHello {
-    public init(from stream: StreamReader) throws {
-        self.version = try Version(from: stream)
-        self.random = try Random(from: stream)
-        self.sessionId = try SessionId(from: stream)
-        self.ciperSuites = try CiperSuites(from: stream)
-        self.compressionMethods = try CompressionMethods(from: stream)
-        self.extensions = try Extensions(from: stream)
+    public static func decode(from stream: StreamReader) async throws -> Self {
+        return .init(
+            version: try await Version.decode(from: stream),
+            random: try await Random.decode(from: stream),
+            sessionId: try await SessionId.decode(from: stream),
+            ciperSuites: try await CiperSuites.decode(from: stream),
+            compressionMethods: try await CompressionMethods.decode(from: stream),
+            extensions: try await Extensions.decode(from: stream))
     }
 
-    public func encode(to stream: StreamWriter) throws {
-        try version.encode(to: stream)
-        try random.encode(to: stream)
-        try sessionId.encode(to: stream)
-        try ciperSuites.encode(to: stream)
-        try compressionMethods.encode(to: stream)
-        try extensions.encode(to: stream)
+    public func encode(to stream: StreamWriter) async throws {
+        try await version.encode(to: stream)
+        try await random.encode(to: stream)
+        try await sessionId.encode(to: stream)
+        try await ciperSuites.encode(to: stream)
+        try await compressionMethods.encode(to: stream)
+        try await extensions.encode(to: stream)
     }
 }

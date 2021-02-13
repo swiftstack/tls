@@ -17,15 +17,15 @@ extension Version {
 }
 
 extension Version {
-    init(from stream: StreamReader) throws {
-        let rawVersion = try stream.read(UInt16.self)
+    static func decode(from stream: StreamReader) async throws -> Self {
+        let rawVersion = try await stream.read(UInt16.self)
         guard let version = Version(rawValue: rawVersion) else {
             throw TLSError.invalidProtocolVerion
         }
-        self = version
+        return version
     }
 
-    func encode(to stream: StreamWriter) throws {
-        try stream.write(rawValue)
+    func encode(to stream: StreamWriter) async throws {
+        try await stream.write(rawValue)
     }
 }

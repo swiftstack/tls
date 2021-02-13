@@ -9,19 +9,18 @@ public struct SessionId: Equatable {
 }
 
 extension SessionId {
-    init(from stream: StreamReader) throws {
-        let length = Int(try stream.read(UInt8.self))
+    static func decode(from stream: StreamReader) async throws -> Self {
+        let length = Int(try await stream.read(UInt8.self))
 
         guard length > 0 else {
-            self.data = []
-            return
+            return .init(data: [])
         }
 
-        self.data = try stream.read(count: length)
+        return .init(data: try await stream.read(count: length))
     }
 
-    func encode(to stream: StreamWriter) throws {
-        try stream.write(UInt8(data.count))
-        try stream.write(data)
+    func encode(to stream: StreamWriter) async throws {
+        try await stream.write(UInt8(data.count))
+        try await stream.write(data)
     }
 }

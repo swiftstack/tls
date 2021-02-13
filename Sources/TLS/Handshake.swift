@@ -40,38 +40,39 @@ extension Handshake {
 }
 
 extension Handshake.RawType {
-    init(from stream: StreamReader) throws {
-        let rawType = try stream.read(UInt8.self)
+    static func decode(from stream: StreamReader) async throws -> Self {
+        let rawType = try await stream.read(UInt8.self)
         guard let type = Handshake.RawType(rawValue: rawType) else {
             throw TLSError.invalidHandshake
         }
-        self = type
+        return type
     }
 
-    func encode(to stream: StreamWriter) throws {
-        try stream.write(self.rawValue)
+    func encode(to stream: StreamWriter) async throws {
+        try await stream.write(self.rawValue)
     }
 }
 
 extension Handshake {
-    init(from stream: StreamReader) throws {
-        let type = try RawType(from: stream)
-        self = try stream.withSubStreamReader(sizedBy: UInt24.self) { stream in
+    static func decode(from stream: StreamReader) async throws -> Self {
+        let type = try await RawType.decode(from: stream)
+        return try await stream.withSubStreamReader(sizedBy: UInt24.self)
+        { stream in
             switch type {
             case .clientHello:
-                return .clientHello(try ClientHello(from: stream))
+                return .clientHello(try await ClientHello.decode(from: stream))
             case .serverHello:
-                return .serverHello(try ServerHello(from: stream))
+                return .serverHello(try await ServerHello.decode(from: stream))
             case .newSessionTicket:
-                return .newSessionTicket(try NewSessionTicket(from: stream))
+                return .newSessionTicket(try await NewSessionTicket.decode(from: stream))
             case .certificate:
-                return .certificate(try [X509.Certificate](from: stream))
+                return .certificate(try await [X509.Certificate].decode(from: stream))
             case .serverKeyExchange:
-                return .serverKeyExchange(try ServerKeyExchange(from: stream))
+                return .serverKeyExchange(try await ServerKeyExchange.decode(from: stream))
             case .clientKeyExchange:
-                return .clientKeyExchange(try ClientKeyExchange(from: stream))
+                return .clientKeyExchange(try await ClientKeyExchange.decode(from: stream))
             case .certificateStatus:
-                return .certificateStatus(try CertificateStatus(from: stream))
+                return .certificateStatus(try await CertificateStatus.decode(from: stream))
             case .serverHelloDone:
                 return .serverHelloDone
             default:
@@ -80,29 +81,29 @@ extension Handshake {
         }
     }
 
-    func encode(to stream: StreamWriter) throws {
-        func write(rawType type: RawType) throws {
-            try type.encode(to: stream)
+    func encode(to stream: StreamWriter) async throws {
+        func write(rawType type: RawType) async throws {
+            try await type.encode(to: stream)
         }
         switch self {
-        case .clientHello: try write(rawType: .clientHello)
-        case .serverHello: try write(rawType: .serverHello)
-        case .newSessionTicket: try write(rawType: .newSessionTicket)
-        case .certificate: try write(rawType: .certificate)
-        case .serverKeyExchange: try write(rawType: .serverKeyExchange)
-        case .clientKeyExchange: try write(rawType: .clientKeyExchange)
-        case .serverHelloDone: try write(rawType: .serverHelloDone)
+        case .clientHello: try await write(rawType: .clientHello)
+        case .serverHello: try await write(rawType: .serverHello)
+        case .newSessionTicket: try await write(rawType: .newSessionTicket)
+        case .certificate: try await write(rawType: .certificate)
+        case .serverKeyExchange: try await write(rawType: .serverKeyExchange)
+        case .clientKeyExchange: try await write(rawType: .clientKeyExchange)
+        case .serverHelloDone: try await write(rawType: .serverHelloDone)
         default: fatalError("not implemented")
         }
 
-        try stream.withSubStreamWriter(sizedBy: UInt24.self) { stream in
+        try await stream.withSubStreamWriter(sizedBy: UInt24.self) { stream in
             switch self {
-            case .clientHello(let value): try value.encode(to: stream)
-            case .serverHello(let value): try value.encode(to: stream)
-            case .newSessionTicket(let value): try value.encode(to: stream)
-            case .certificate(let value): try value.encode(to: stream)
-            case .serverKeyExchange(let value): try value.encode(to: stream)
-            case .clientKeyExchange(let value): try value.encode(to: stream)
+            case .clientHello(let value): try await value.encode(to: stream)
+            case .serverHello(let value): try await value.encode(to: stream)
+            case .newSessionTicket(let value): try await value.encode(to: stream)
+            case .certificate(let value): try await value.encode(to: stream)
+            case .serverKeyExchange(let value): try await value.encode(to: stream)
+            case .clientKeyExchange(let value): try await value.encode(to: stream)
             case .serverHelloDone: return
             default: fatalError("not implemented")
             }

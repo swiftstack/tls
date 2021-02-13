@@ -11,15 +11,16 @@ public struct NewSessionTicket: Equatable {
 }
 
 extension NewSessionTicket {
-    init(from stream: StreamReader) throws {
-        self.lifetime = Int(try stream.read(UInt32.self))
-        let length = Int(try stream.read(UInt16.self))
-        self.data = try stream.read(count: length)
+    static func decode(from stream: StreamReader) async throws -> Self {
+        let lifetime = Int(try await stream.read(UInt32.self))
+        let length = Int(try await stream.read(UInt16.self))
+        let data = try await stream.read(count: length)
+        return .init(lifetime: lifetime, data: data)
     }
 
-    func encode(to stream: StreamWriter) throws {
-        try stream.write(UInt32(lifetime))
-        try stream.write(UInt16(data.count))
-        try stream.write(data)
+    func encode(to stream: StreamWriter) async throws {
+        try await stream.write(UInt32(lifetime))
+        try await stream.write(UInt16(data.count))
+        try await stream.write(data)
     }
 }
