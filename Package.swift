@@ -21,14 +21,50 @@ let package = Package(
             swiftSettings: [
                 .unsafeFlags(["-Xfrontend", "-enable-experimental-concurrency"])
             ]),
-        .testTarget(
-            name: "TLSTests",
-            dependencies: ["TLS", "Test"],
-            swiftSettings: [
-                .unsafeFlags(["-Xfrontend", "-enable-experimental-concurrency"])
-            ])
     ]
 )
+
+// MARK: - tests
+
+testTarget("TLS") { test in
+    test("Alert")
+    test("Certificate")
+    test("CertificateStatus")
+    test("ChangeCipherSpec")
+    test("ClientHello")
+    test("ClientKeyExchange")
+    test("ExtensionECPointFormats")
+    test("ExtensionHeartbeat")
+    test("ExtensionRenegotiationInfo")
+    test("ExtensionServerName")
+    test("ExtensionSessionTicket")
+    test("ExtensionSignatureAlgorithms")
+    test("ExtensionStatusRequest")
+    test("ExtensionSupportedGroups")
+    test("Handshake")
+    test("Heartbeat")
+    test("NewSessionTicket")
+    test("Random")
+    test("RecordLayer")
+    test("ServerHello")
+    test("ServerHelloDone")
+    test("ServerKeyExchange")
+}
+
+func testTarget(_ target: String, task: ((String) -> Void) -> Void) {
+    task { test in addTest(target: target, name: test) }
+}
+
+func addTest(target: String, name: String) {
+    package.targets.append(
+        .executableTarget(
+            name: "Tests/\(target)/\(name)",
+            dependencies: ["TLS", "Test"],
+            path: "Tests/\(target)/\(name)",
+            swiftSettings: [
+                .unsafeFlags(["-Xfrontend", "-enable-experimental-concurrency"])
+            ]))
+}
 
 // MARK: - custom package source
 
