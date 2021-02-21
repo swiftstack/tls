@@ -49,6 +49,7 @@ testTarget("TLS") { test in
     test("ServerHello")
     test("ServerHelloDone")
     test("ServerKeyExchange")
+    test("Version")
 }
 
 func testTarget(_ target: String, task: ((String) -> Void) -> Void) {

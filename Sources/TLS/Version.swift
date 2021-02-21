@@ -16,7 +16,7 @@ extension Version {
     }
 }
 
-extension Version {
+extension Version: StreamCodable {
     static func decode(from stream: StreamReader) async throws -> Self {
         let rawVersion = try await stream.read(UInt16.self)
         guard let version = Version(rawValue: rawVersion) else {
