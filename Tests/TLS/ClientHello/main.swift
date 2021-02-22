@@ -5,284 +5,179 @@ let bytes: [UInt8] = [
     // TLS 1.2
     0x03, 0x03,
     // time + random
-    0x04, 0x5c, 0x7c, 0x69, 0xb0, 0x0f, 0x73, 0x18,
-    0x56, 0xae, 0x7c, 0x3f, 0x7c, 0x19, 0x13, 0x19,
-    0x6a, 0xfd, 0xd0, 0x76, 0xb6, 0x7f, 0x55, 0x74,
-    0xaa, 0xd8, 0x23, 0x1d, 0x31, 0x12, 0xdc, 0x54,
-    // sessionId length
-    0x00,
+    0xfe, 0xd9, 0xad, 0x34, 0xbc, 0x4e, 0x31, 0xaa,
+    0x70, 0x82, 0x07, 0x5f, 0x72, 0x32, 0xaa, 0x33,
+    0x37, 0xa8, 0x91, 0x07, 0xb8, 0xfe, 0xc5, 0x0e,
+    0x6b, 0x68, 0x76, 0xa1, 0xfd, 0x31, 0x94, 0x75,
+    // session id length
+    0x20,
+    //session id
+    0xf5, 0x35, 0x67, 0x91, 0xe0, 0x9c, 0x62, 0x3d,
+    0xe8, 0x7c, 0x77, 0x20, 0x2f, 0x3c, 0x22, 0xcc,
+    0x71, 0x9d, 0x7e, 0xb5, 0xef, 0x23, 0x58, 0xfe,
+    0x63, 0x65, 0xa4, 0x77, 0xfc, 0x7b, 0x38, 0xf9,
     // ciper suites length
-    0x00, 0x2c,
+    0x00, 0x06,
     // ciper suites
-    0xc0, 0x2c, 0xc0, 0x2b, 0xc0, 0x24, 0xc0, 0x23,
-    0xc0, 0x0a, 0xc0, 0x09, 0xc0, 0x08, 0xc0, 0x30,
-    0xc0, 0x2f, 0xc0, 0x28, 0xc0, 0x27, 0xc0, 0x14,
-    0xc0, 0x13, 0xc0, 0x12, 0x00, 0x9d, 0x00, 0x9c,
-    0x00, 0x3d, 0x00, 0x3c, 0x00, 0x35, 0x00, 0x2f,
-    0x00, 0x0a, 0x00, 0xff,
-    // compression methods
-    0x01, 0x00,
-    // extensions length
-    0x00, 0x6c,
-    // server name
-    0x00, 0x00, 0x00, 0x0a, 0x00, 0x08, 0x00, 0x00,
-    0x05, 0x79, 0x61, 0x2e, 0x72, 0x75,
-    // ec point formats
-    0x00, 0x0b, 0x00, 0x04, 0x03, 0x00, 0x01, 0x02,
-    // supported groups (elliptic curves)
-    0x00, 0x0a, 0x00, 0x1c, 0x00, 0x1a, 0x00, 0x17,
-    0x00, 0x19, 0x00, 0x1c, 0x00, 0x1b, 0x00, 0x18,
-    0x00, 0x1a, 0x00, 0x16, 0x00, 0x0e, 0x00, 0x0d,
-    0x00, 0x0b, 0x00, 0x0c, 0x00, 0x09, 0x00, 0x0a,
-    // SessionTicket TLS
-    0x00, 0x23, 0x00, 0x00,
-    // signature algorithms
-    0x00, 0x0d, 0x00, 0x20, 0x00, 0x1e, 0x06, 0x01,
-    0x06, 0x02, 0x06, 0x03, 0x05, 0x01, 0x05, 0x02,
-    0x05, 0x03, 0x04, 0x01, 0x04, 0x02, 0x04, 0x03,
-    0x03, 0x01, 0x03, 0x02, 0x03, 0x03, 0x02, 0x01,
-    0x02, 0x02, 0x02, 0x03,
-    // status request
-    0x00, 0x05, 0x00, 0x05, 0x01, 0x00, 0x00, 0x00,
+    0x13, 0x02, 0x13, 0x03, 0x13, 0x01,
+    // compression methods length
+    0x01,
+    // compression method: null
     0x00,
-    // heartbeat
-    0x00, 0x0f, 0x00, 0x01, 0x01]
+    // extensions length
+    0x00, 0x69,
+    // server name
+    0x00, 0x00, 0x00, 0x12, 0x00, 0x10, 0x00, 0x00,
+    0x0d, 0x73, 0x77, 0x69, 0x66, 0x74, 0x73, 0x74,
+    0x61, 0x63, 0x6b, 0x2e, 0x69, 0x6f,
+    // supported groups
+    0x00, 0x0a, 0x00, 0x0a, 0x00, 0x08, 0x00, 0x1d,
+    0x00, 0x17, 0x00, 0x19, 0x00, 0x18,
+    // signature algorithms
+    0x00, 0x0d, 0x00, 0x0a, 0x00, 0x08, 0x04, 0x03,
+    0x05, 0x03, 0x06, 0x03, 0x08, 0x07,
+    // supported versions
+    0x00, 0x2b, 0x00, 0x03, 0x02, 0x03, 0x04,
+    // psk key exchange modes
+    0x00, 0x2d, 0x00, 0x02, 0x01, 0x01,
+    // key share extension (kse)
+    0x00, 0x33,
+    // kse length
+    0x00, 0x26,
+    // kse client length
+    0x00, 0x24,
+    // kse group
+    0x00, 0x1d,
+    // kse key length
+    0x00, 0x20,
+    // kse key
+    0xe1, 0xc7, 0x66, 0x42, 0xb6, 0x44, 0xd1, 0xf0,
+    0x8b, 0x90, 0x35, 0xce, 0xf7, 0xe3, 0x8e, 0xbb,
+    0x3b, 0x96, 0xfe, 0x7e, 0x4f, 0xd1, 0xc2, 0xbb,
+    0x72, 0x91, 0x85, 0x89, 0x42, 0xd6, 0xb3, 0x49
+]
 
-test.case("Decode") {
+test.case("decode client hello") {
     let hello = try await ClientHello.decode(from: bytes)
 
-    expect(hello.random.time == 73170025)
+    expect(hello.random.time == 4275678516)
 
     expect(hello.random.bytes == [
-        0xb0, 0x0f, 0x73, 0x18, 0x56, 0xae, 0x7c, 0x3f,
-        0x7c, 0x19, 0x13, 0x19, 0x6a, 0xfd, 0xd0, 0x76,
-        0xb6, 0x7f, 0x55, 0x74, 0xaa, 0xd8, 0x23, 0x1d,
-        0x31, 0x12, 0xdc, 0x54
+        0xbc, 0x4e, 0x31, 0xaa,
+        0x70, 0x82, 0x07, 0x5f, 0x72, 0x32, 0xaa, 0x33,
+        0x37, 0xa8, 0x91, 0x07, 0xb8, 0xfe, 0xc5, 0x0e,
+        0x6b, 0x68, 0x76, 0xa1, 0xfd, 0x31, 0x94, 0x75
     ])
 
-    expect(hello.sessionId == .init(data: []))
+    expect(hello.sessionId == .init(data: [
+        0xf5, 0x35, 0x67, 0x91, 0xe0, 0x9c, 0x62, 0x3d,
+        0xe8, 0x7c, 0x77, 0x20, 0x2f, 0x3c, 0x22, 0xcc,
+        0x71, 0x9d, 0x7e, 0xb5, 0xef, 0x23, 0x58, 0xfe,
+        0x63, 0x65, 0xa4, 0x77, 0xfc, 0x7b, 0x38, 0xf9]))
 
     expect(hello.ciperSuites == [
-        .tls_ecdhe_ecdsa_with_aes_256_gcm_sha384,
-        .tls_ecdhe_ecdsa_with_aes_128_gcm_sha256,
-        .tls_ecdhe_ecdsa_with_aes_256_cbc_sha384,
-        .tls_ecdhe_ecdsa_with_aes_128_cbc_sha256,
-        .tls_ecdhe_ecdsa_with_aes_256_cbc_sha,
-        .tls_ecdhe_ecdsa_with_aes_128_cbc_sha,
-        .tls_ecdhe_ecdsa_with_3des_ede_cbc_sha,
-        .tls_ecdhe_rsa_with_aes_256_gcm_sha384,
-        .tls_ecdhe_rsa_with_aes_128_gcm_sha256,
-        .tls_ecdhe_rsa_with_aes_256_cbc_sha384,
-        .tls_ecdhe_rsa_with_aes_128_cbc_sha256,
-        .tls_ecdhe_rsa_with_aes_256_cbc_sha,
-        .tls_ecdhe_rsa_with_aes_128_cbc_sha,
-        .tls_ecdhe_rsa_with_3des_ede_cbc_sha,
-        .tls_rsa_with_aes_256_gcm_sha384,
-        .tls_rsa_with_aes_128_gcm_sha256,
-        .tls_rsa_with_aes_256_cbc_sha256,
-        .tls_rsa_with_aes_128_cbc_sha256,
-        .tls_rsa_with_aes_256_cbc_sha,
-        .tls_rsa_with_aes_128_cbc_sha,
-        .tls_rsa_with_3des_ede_cbc_sha,
-        .tls_empty_renegotiation_info_scsv
-        ])
+        .tls_aes_256_gcm_sha384,
+        .tls_chacha20_poly1305_sha256,
+        .tls_aes_128_gcm_sha256])
 
     expect(hello.compressionMethods == [.none])
 
-    expect(hello.extensions.count == 7)
+    expect(hello.extensions.items.count == 6)
 
     expect(
         hello.extensions[safe: 0]
         ==
-        .serverName([.init(type: .hostName, value: "ya.ru")]))
+        .serverName([.init(type: .hostName, value: "swiftstack.io")]))
 
     expect(
         hello.extensions[safe: 1]
         ==
-        .ecPointFormats([
-            .uncompressed,
-            .ansiX962_compressed_prime,
-            .ansiX962_compressed_char2]))
+        .supportedGroups([
+            .x25519,
+            .secp256r1,
+            .secp521r1,
+            .secp384r1]))
 
     expect(
         hello.extensions[safe: 2]
         ==
-        .supportedGroups([
-            .secp256r1,
-            .secp521r1,
-            .brainpoolP512r1,
-            .brainpoolP384r1,
-            .secp384r1,
-            .brainpoolP256r1,
-            .secp256k1,
-            .sect571r1,
-            .sect571k1,
-            .sect409k1,
-            .sect409r1,
-            .sect283k1,
-            .sect283r1]))
+        .signatureAlgorithms([
+            .ecdsa_secp256r1_sha256,
+            .ecdsa_secp384r1_sha384,
+            .ecdsa_secp521r1_sha512,
+            .ed25519
+        ]))
 
     expect(
         hello.extensions[safe: 3]
         ==
-        .sessionTicket(.init(data: [])))
+        .supportedVersions([.tls13]))
 
     expect(
         hello.extensions[safe: 4]
         ==
-        .signatureAlgorithms([
-            .init(hash: .sha512, signature: .rsa),
-            .init(hash: .sha512, signature: .dsa),
-            .init(hash: .sha512, signature: .ecdsa),
-            .init(hash: .sha384, signature: .rsa),
-            .init(hash: .sha384, signature: .dsa),
-            .init(hash: .sha384, signature: .ecdsa),
-            .init(hash: .sha256, signature: .rsa),
-            .init(hash: .sha256, signature: .dsa),
-            .init(hash: .sha256, signature: .ecdsa),
-            .init(hash: .sha224, signature: .rsa),
-            .init(hash: .sha224, signature: .dsa),
-            .init(hash: .sha224, signature: .ecdsa),
-            .init(hash: .sha1, signature: .rsa),
-            .init(hash: .sha1, signature: .dsa),
-            .init(hash: .sha1, signature: .ecdsa),
-        ]))
+        .pskKeyExchangeModes([.psk_dhe_ke]))
 
     expect(
         hello.extensions[safe: 5]
         ==
-        .statusRequest(.ocsp(.init())))
-
-    expect(
-        hello.extensions[safe: 6]
-        ==
-        .heartbeat(.init(mode: .allowed)))
+        .keyShare([.init(
+            group: .x25519,
+            keyExchange: [
+                0xe1, 0xc7, 0x66, 0x42, 0xb6, 0x44, 0xd1, 0xf0,
+                0x8b, 0x90, 0x35, 0xce, 0xf7, 0xe3, 0x8e, 0xbb,
+                0x3b, 0x96, 0xfe, 0x7e, 0x4f, 0xd1, 0xc2, 0xbb,
+                0x72, 0x91, 0x85, 0x89, 0x42, 0xd6, 0xb3, 0x49])]))
 }
 
-test.case("Encode") {
+test.case("encode client hello") {
     let hello = ClientHello(
         version: .tls12,
-        random: .init(time: 73170025, bytes: [
-            0xb0, 0x0f, 0x73, 0x18, 0x56, 0xae, 0x7c, 0x3f,
-            0x7c, 0x19, 0x13, 0x19, 0x6a, 0xfd, 0xd0, 0x76,
-            0xb6, 0x7f, 0x55, 0x74, 0xaa, 0xd8, 0x23, 0x1d,
-            0x31, 0x12, 0xdc, 0x54
-            ]),
-        sessionId: .init(data: []),
+        random: .init(time: 4275678516, bytes: [
+                                    0xbc, 0x4e, 0x31, 0xaa,
+            0x70, 0x82, 0x07, 0x5f, 0x72, 0x32, 0xaa, 0x33,
+            0x37, 0xa8, 0x91, 0x07, 0xb8, 0xfe, 0xc5, 0x0e,
+            0x6b, 0x68, 0x76, 0xa1, 0xfd, 0x31, 0x94, 0x75
+        ]),
+        sessionId: .init(data: [
+            0xf5, 0x35, 0x67, 0x91, 0xe0, 0x9c, 0x62, 0x3d,
+            0xe8, 0x7c, 0x77, 0x20, 0x2f, 0x3c, 0x22, 0xcc,
+            0x71, 0x9d, 0x7e, 0xb5, 0xef, 0x23, 0x58, 0xfe,
+            0x63, 0x65, 0xa4, 0x77, 0xfc, 0x7b, 0x38, 0xf9]),
         ciperSuites: [
-            .tls_ecdhe_ecdsa_with_aes_256_gcm_sha384,
-            .tls_ecdhe_ecdsa_with_aes_128_gcm_sha256,
-            .tls_ecdhe_ecdsa_with_aes_256_cbc_sha384,
-            .tls_ecdhe_ecdsa_with_aes_128_cbc_sha256,
-            .tls_ecdhe_ecdsa_with_aes_256_cbc_sha,
-            .tls_ecdhe_ecdsa_with_aes_128_cbc_sha,
-            .tls_ecdhe_ecdsa_with_3des_ede_cbc_sha,
-            .tls_ecdhe_rsa_with_aes_256_gcm_sha384,
-            .tls_ecdhe_rsa_with_aes_128_gcm_sha256,
-            .tls_ecdhe_rsa_with_aes_256_cbc_sha384,
-            .tls_ecdhe_rsa_with_aes_128_cbc_sha256,
-            .tls_ecdhe_rsa_with_aes_256_cbc_sha,
-            .tls_ecdhe_rsa_with_aes_128_cbc_sha,
-            .tls_ecdhe_rsa_with_3des_ede_cbc_sha,
-            .tls_rsa_with_aes_256_gcm_sha384,
-            .tls_rsa_with_aes_128_gcm_sha256,
-            .tls_rsa_with_aes_256_cbc_sha256,
-            .tls_rsa_with_aes_128_cbc_sha256,
-            .tls_rsa_with_aes_256_cbc_sha,
-            .tls_rsa_with_aes_128_cbc_sha,
-            .tls_rsa_with_3des_ede_cbc_sha,
-            .tls_empty_renegotiation_info_scsv
+            .tls_aes_256_gcm_sha384,
+            .tls_chacha20_poly1305_sha256,
+            .tls_aes_128_gcm_sha256,
+            //.deprecated(.tls_empty_renegotiation_info_scsv)
         ],
         compressionMethods: [.none],
         extensions: [
             .serverName([
-                .init(type: .hostName, value: "ya.ru")]),
-            .ecPointFormats([
-                .uncompressed,
-                .ansiX962_compressed_prime,
-                .ansiX962_compressed_char2]),
+                .init(type: .hostName, value: "swiftstack.io")]),
             .supportedGroups([
+                .x25519,
                 .secp256r1,
                 .secp521r1,
-                .brainpoolP512r1,
-                .brainpoolP384r1,
-                .secp384r1,
-                .brainpoolP256r1,
-                .secp256k1,
-                .sect571r1,
-                .sect571k1,
-                .sect409k1,
-                .sect409r1,
-                .sect283k1,
-                .sect283r1]),
-            .sessionTicket(
-                .init(data: [])),
+                .secp384r1]),
             .signatureAlgorithms([
-                .init(hash: .sha512, signature: .rsa),
-                .init(hash: .sha512, signature: .dsa),
-                .init(hash: .sha512, signature: .ecdsa),
-                .init(hash: .sha384, signature: .rsa),
-                .init(hash: .sha384, signature: .dsa),
-                .init(hash: .sha384, signature: .ecdsa),
-                .init(hash: .sha256, signature: .rsa),
-                .init(hash: .sha256, signature: .dsa),
-                .init(hash: .sha256, signature: .ecdsa),
-                .init(hash: .sha224, signature: .rsa),
-                .init(hash: .sha224, signature: .dsa),
-                .init(hash: .sha224, signature: .ecdsa),
-                .init(hash: .sha1, signature: .rsa),
-                .init(hash: .sha1, signature: .dsa),
-                .init(hash: .sha1, signature: .ecdsa),
-                ]),
-            .statusRequest(.ocsp(.init())),
-            .heartbeat(.init(mode: .allowed))
+                .ecdsa_secp256r1_sha256,
+                .ecdsa_secp384r1_sha384,
+                .ecdsa_secp521r1_sha512,
+                .ed25519]),
+            .supportedVersions([
+                .tls13]),
+            .pskKeyExchangeModes([.psk_dhe_ke]),
+            .keyShare([.init(
+                group: .x25519,
+                keyExchange: [
+                    0xe1, 0xc7, 0x66, 0x42, 0xb6, 0x44, 0xd1, 0xf0,
+                    0x8b, 0x90, 0x35, 0xce, 0xf7, 0xe3, 0x8e, 0xbb,
+                    0x3b, 0x96, 0xfe, 0x7e, 0x4f, 0xd1, 0xc2, 0xbb,
+                    0x72, 0x91, 0x85, 0x89, 0x42, 0xd6, 0xb3, 0x49])])
         ])
 
     let result = try await hello.encode()
     expect(result == bytes)
-
-    // TLS 1.2
-    guard result.count >= 2 else { return }
-    expect(result[..<2] == bytes[..<2])
-    // time + random
-    guard result.count >= 34 else { return }
-    expect(result[2..<34] == bytes[2..<34])
-    // sessionId length
-    guard result.count >= 35 else { return }
-    expect(result[34..<35] == bytes[34..<35])
-    // ciper suites length
-    guard result.count >= 37 else { return }
-    expect(result[35..<37] == bytes[35..<37])
-    // ciper suites
-    guard result.count >= 80 else { return }
-    expect(result[37..<80] == bytes[37..<80])
-    // compression methods
-    guard result.count >= 82 else { return }
-    expect(result[80..<82] == bytes[80..<82])
-    // extensions length
-    guard result.count >= 84 else { return }
-    expect(result[82..<84] == bytes[82..<84])
-    // server name
-    guard result.count >= 98 else { return }
-    expect(result[84..<98] == bytes[84..<98])
-    // ec point formats
-    guard result.count >= 106 else { return }
-    expect(result[98..<106] == bytes[98..<106])
-    // supported groups (elliptic curves)
-    guard result.count >= 138 else { return }
-    expect(result[106..<138] == bytes[106..<138])
-    // SessionTicket TLS
-    guard result.count >= 142 else { return }
-    expect(result[138..<142] == bytes[138..<142])
-    // signature algorithms
-    guard result.count >= 178 else { return }
-    expect(result[142..<178] == bytes[142..<178])
-    // status request
-    guard result.count >= 187 else { return }
-    expect(result[178..<187] == bytes[178..<187])
-    // heartbeat
-    guard result.count >= 192 else { return }
-    expect(result[187..<192] == bytes[187..<192])
 }
 
 test.run()

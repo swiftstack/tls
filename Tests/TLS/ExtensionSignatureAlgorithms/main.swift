@@ -4,50 +4,38 @@ import Test
 typealias SignatureAlgorithms = Extension.SignatureAlgorithms
 
 let algorithms: SignatureAlgorithms = [
-    .init(hash: .sha512, signature: .rsa),
-    .init(hash: .sha512, signature: .dsa),
-    .init(hash: .sha512, signature: .ecdsa),
-    .init(hash: .sha384, signature: .rsa),
-    .init(hash: .sha384, signature: .dsa),
-    .init(hash: .sha384, signature: .ecdsa),
-    .init(hash: .sha256, signature: .rsa),
-    .init(hash: .sha256, signature: .dsa),
-    .init(hash: .sha256, signature: .ecdsa),
-    .init(hash: .sha224, signature: .rsa),
-    .init(hash: .sha224, signature: .dsa),
-    .init(hash: .sha224, signature: .ecdsa),
-    .init(hash: .sha1, signature: .rsa),
-    .init(hash: .sha1, signature: .dsa),
-    .init(hash: .sha1, signature: .ecdsa),
+    .ecdsa_secp521r1_sha512,
+    .ecdsa_secp384r1_sha384,
+    .ecdsa_secp256r1_sha256,
+    .ed25519,
 ]
 
 let algorithmsBytes: [UInt8] = [
-    0x00, 0x1e, 0x06, 0x01, 0x06, 0x02, 0x06, 0x03,
-    0x05, 0x01, 0x05, 0x02, 0x05, 0x03, 0x04, 0x01,
-    0x04, 0x02, 0x04, 0x03, 0x03, 0x01, 0x03, 0x02,
-    0x03, 0x03, 0x02, 0x01, 0x02, 0x02, 0x02, 0x03
-]
+    // length
+    0x00, 0x08,
+    // algorithms
+    0x06, 0x03, 0x05, 0x03, 0x04, 0x03, 0x08, 0x07]
 
 let algorithmsExtensionBytes: [UInt8] =
-    [0x00, 0x0d, 0x00, 0x20] + algorithmsBytes
+    [0x00, 0x0d, 0x00, 0x0a] + algorithmsBytes
 
-test.case("Decode") {
+test.case("decode signature_algorithms") {
     let result = try await SignatureAlgorithms.decode(from: algorithmsBytes)
     expect(result == algorithms)
 }
 
-test.case("DecodeExtension") {
-    let result = try await Extension.decode(from: algorithmsExtensionBytes)
+test.case("decode signature_algorithms extension") {
+    let result = try await ClientHello.Extension.decode(from: algorithmsExtensionBytes)
     expect(result == .signatureAlgorithms(algorithms))
 }
 
-test.case("Encode") {
+test.case("encode signature_algorithms") {
     let result = try await algorithms.encode()
     expect(result == algorithmsBytes)
 }
 
-test.case("EncodeExtension") {
-    let algorithmsExtension = Extension.signatureAlgorithms(algorithms)
+test.case("encode signature_algorithms extension") {
+    let algorithmsExtension = ClientHello.Extension.signatureAlgorithms(algorithms)
     let result = try await algorithmsExtension.encode()
     expect(result == algorithmsExtensionBytes)
 }

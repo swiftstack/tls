@@ -10,8 +10,8 @@ test.case("Decode") {
 }
 
 test.case("DecodeExtension") {
-    let result = try await Extension.decode(from: extensionBytes)
-    expect(result == .renegotiationInfo(.init()))
+    let result = try await ClientHello.Extension.decode(from: extensionBytes)
+    expect(result == .obsolete(.renegotiationInfo(.init())))
 }
 
 test.case("Encode") {
@@ -21,7 +21,7 @@ test.case("Encode") {
 }
 
 test.case("EncodeExtension") {
-    let info = Extension.renegotiationInfo(.init())
+    let info = Extension.Obsolete.renegotiationInfo(.init())
     let result = try await info.encode()
     expect(result == extensionBytes)
 }

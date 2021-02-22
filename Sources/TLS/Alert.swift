@@ -42,6 +42,7 @@ extension Alert {
         case inappropriateFallback = 86
         case userCanceled = 90
         case noRenegotiation = 100
+        case missingExtension = 109
         case unsupportedExtension = 110
         case certificateUnobtainable = 111
         case unrecognizedName = 112

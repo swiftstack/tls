@@ -20,7 +20,7 @@ test.case("DecodeMany") {
 }
 
 test.case("DecodeExtension") {
-    let result = try await Extension.decode(from: extensionBytes)
+    let result = try await ClientHello.Extension.decode(from: extensionBytes)
     expect(result == .serverName([
         .init(type: .hostName, value: "ya.ru")]))
 }
@@ -39,7 +39,7 @@ test.case("EncodeMany") {
 }
 
 test.case("EncodeExtension") {
-    let serverNameExtension = Extension.serverName([
+    let serverNameExtension = ClientHello.Extension.serverName([
         .init(type: .hostName, value: "ya.ru")])
     let result = try await serverNameExtension.encode()
     expect(result == extensionBytes)

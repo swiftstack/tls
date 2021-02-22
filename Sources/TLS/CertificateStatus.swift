@@ -13,7 +13,7 @@ public enum CertificateStatus: Equatable {
     }
 }
 
-extension CertificateStatus {
+extension CertificateStatus: StreamCodable {
     static func decode(from stream: StreamReader) async throws -> Self {
         guard let type = try await RawType.decode(from: stream) else {
             throw TLSError.invalidExtension

@@ -1,46 +1,65 @@
-import Crypto
+import UInt24
 import Stream
 
-extension Array where Element == X509.Certificate {
+public struct Certificates: Equatable {
+    let context: UInt8
+    let sertificates: [Certificate]
+}
+
+public struct Certificate: Equatable {
+    let bytes: [UInt8]
+    let extensions: [UInt8]
+}
+
+extension Certificates {
     static func decode(from stream: StreamReader) async throws -> Self {
-        return try await stream.withSubStreamReader(sizedBy: UInt24.self)
-        { stream in
-            var certificates = [X509.Certificate]()
+        let context = try await stream.read(UInt8.self)
+
+        let sertificates = try await stream.withSubStreamReader(
+            sizedBy: UInt24.self
+        ) { stream -> [Certificate] in
+            var items = [Certificate]()
             while !stream.isEmpty {
-                let x509 = try await stream.withSubStreamReader(
-                    sizedBy: UInt24.self
-                ) { stream in
-                    return try await X509.Certificate.decode(from: stream)
-                }
-                certificates.append(x509)
+                items.append(try await Certificate.decode(from: stream))
             }
-            return certificates
+            return items
         }
+
+        return .init(context: context, sertificates: sertificates)
     }
 
     func encode(to stream: StreamWriter) async throws {
-        guard count > 0 else {
-            return
-        }
-        try await stream.withSubStreamWriter(sizedBy: UInt24.self) { stream in
-            for value in self {
-                try await stream.withSubStreamWriter(sizedBy: UInt24.self)
-                { stream in
-                    try await value.encode(to: stream)
-                }
+        try await stream.write(context)
+        try await stream.withSubStreamWriter(sizedBy: UInt24.self)
+        { stream in
+            for value in self.sertificates {
+                try await value.encode(to: stream)
             }
         }
     }
 }
 
-extension X509.Certificate {
-    static func decode(from stream: StreamReader) async throws -> Self {
-        let asn1 = try await ASN1.decode(from: stream)
-        return try await .decode(from: asn1)
+extension Certificate {
+    public static func decode(from stream: StreamReader) async throws -> Self {
+        let bytes = try await stream.withSubStreamReader(sizedBy: UInt24.self)
+        { stream in
+            return try await stream.readUntilEnd()
+        }
+        let ext = try await stream.withSubStreamReader(sizedBy: UInt16.self)
+        { stream in
+            return try await stream.readUntilEnd()
+        }
+        return .init(bytes: bytes, extensions: ext)
     }
 
-    func encode(to stream: StreamWriter) async throws {
-        let asn1 = self.encode()
-        try await asn1.encode(to: stream)
+    public func encode(to stream: StreamWriter) async throws {
+        try await stream.withSubStreamWriter(sizedBy: UInt24.self)
+        { stream in
+            try await stream.write(bytes)
+        }
+        try await stream.withSubStreamWriter(sizedBy: UInt16.self)
+        { stream in
+            try await stream.write(extensions)
+        }
     }
 }

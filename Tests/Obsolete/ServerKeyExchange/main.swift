@@ -73,7 +73,7 @@ let bytes: [UInt8] = [
 let serverKeyExchange: ServerKeyExchange = .init(
     curve: .secp256r1,
     pubkey: [UInt8](bytes[13..<78]),
-    algorithm: .init(hash: .sha512, signature: .rsa),
+    algorithm: .rsa_pkcs1_sha512,
     signature: [UInt8](bytes[82...]))
 
 test.case("Decode") {
@@ -85,7 +85,7 @@ test.case("DecodeHandshake") {
     let record = try await RecordLayer.decode(from: bytes)
     expect(record.version == .tls12)
     expect(record.content == .handshake(
-        .serverKeyExchange(serverKeyExchange)))
+        .obsolete(.serverKeyExchange(serverKeyExchange))))
 }
 
 test.case("Encode") {
@@ -96,7 +96,7 @@ test.case("Encode") {
 test.case("EncodeHandshake") {
     let record = RecordLayer(
         version: .tls12,
-        content: .handshake(.serverKeyExchange(serverKeyExchange)))
+        content: .handshake(.obsolete(.serverKeyExchange(serverKeyExchange))))
     let result = try await record.encode()
     expect(result == bytes)
 }

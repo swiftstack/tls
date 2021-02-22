@@ -69,3 +69,20 @@ extension Extensions {
     }
 }
 
+extension ClientHello.Extensions {
+    subscript(safe index: Int) -> Element? {
+        guard index < items.count else {
+            return nil
+        }
+        return items[index]
+    }
+}
+
+extension ServerHello.Extensions {
+    subscript(safe index: Int) -> Element? {
+        guard index < items.count else {
+            return nil
+        }
+        return items[index]
+    }
+}

@@ -15,11 +15,7 @@ extension Random {
     }
 
     static func generate() -> [UInt8] {
-        var bytes = [UInt8](repeating: 0, count: Random.bytesSize)
-        for i in 0..<Random.bytesSize {
-            bytes[i] = UInt8.random(in: 0...UInt8.max)
-        }
-        return bytes
+        return (0..<bytesSize).map { _ in .random(in: 0...UInt8.max) }
     }
 }
 

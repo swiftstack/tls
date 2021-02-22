@@ -10,7 +10,7 @@ test.case("Decode") {
 }
 
 test.case("DecodeExtension") {
-    let result = try await Extension.decode(from: extensionBytes)
+    let result = try await Extension.Encrypted.decode(from: extensionBytes)
     expect(result == .heartbeat(.init(mode: .allowed)))
 }
 
@@ -21,7 +21,7 @@ test.case("Encode") {
 }
 
 test.case("EncodeExtension") {
-    let heartbeat = Extension.heartbeat(.init(mode: .allowed))
+    let heartbeat = Extension.Encrypted.heartbeat(.init(mode: .allowed))
     let result = try await heartbeat.encode()
     expect(result == extensionBytes)
 }

@@ -1,15 +1,15 @@
 import Test
 @testable import TLS
 
-let bytes: [UInt8] = [0x0e, 0x00, 0x00, 0x00]
+let bytes: [UInt8] = [0x14, 0x00, 0x00, 0x00]
 
-test.case("Decode") {
+test.case("decode handshake finished") {
     let handshake = try await Handshake.decode(from: bytes)
-    expect(handshake == .serverHelloDone)
+    expect(handshake == .finished([]))
 }
 
-test.case("Encode") {
-    let result = try await Handshake.serverHelloDone.encode()
+test.case("encode handshake finished") {
+    let result = try await Handshake.finished([]).encode()
     expect(result == bytes)
 }
 

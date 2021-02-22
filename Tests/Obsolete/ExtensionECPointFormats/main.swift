@@ -21,7 +21,7 @@ test.case("Decode") {
 }
 
 test.case("DecodeExtension") {
-    let result = try await Extension.decode(from: ecPointFormatExtensionBytes)
+    let result = try await Extension.Obsolete.decode(from: ecPointFormatExtensionBytes)
     expect(result == .ecPointFormats(ecPointFormats))
 }
 
@@ -31,7 +31,7 @@ test.case("Encode") {
 }
 
 test.case("EncodeExtension") {
-    let formatsExtension = Extension.ecPointFormats(ecPointFormats)
+    let formatsExtension = Extension.Obsolete.ecPointFormats(ecPointFormats)
     let result = try await formatsExtension.encode()
     expect(result == ecPointFormatExtensionBytes)
 }

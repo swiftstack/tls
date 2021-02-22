@@ -1,7 +1,15 @@
 import Test
 @testable import TLS
 
-let bytes: [UInt8] = [0x14, 0x03, 0x03, 0x00, 0x01, 0x01]
+let bytes: [UInt8] = [
+    // content type: change cipher spec
+    0x14,
+    // tls version: 1.2
+    0x03, 0x03,
+    // length: 1
+    0x00, 0x01,
+    // change cipher spec message
+    0x01]
 
 test.case("Decode") {
     let record = try await RecordLayer.decode(from: bytes)

@@ -12,8 +12,8 @@ test.case("Decode") {
 }
 
 test.case("DecodeExtension") {
-    let result = try await Extension.decode(from: extensionBytes)
-    expect(result == .statusRequest(.ocsp(.init())))
+    let result = try await ClientHello.Extension.decode(from: extensionBytes)
+    expect(result == .obsolete(.statusRequest(.ocsp(.init()))))
 }
 
 test.case("Encode") {
@@ -23,7 +23,7 @@ test.case("Encode") {
 }
 
 test.case("EncodeExtension") {
-    let statusRequest = Extension.statusRequest(.ocsp(.init()))
+    let statusRequest = Extension.Obsolete.statusRequest(.ocsp(.init()))
     let result = try await statusRequest.encode()
     expect(result == extensionBytes)
 }

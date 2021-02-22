@@ -36,7 +36,7 @@ extension ServerHello {
         self.sessionId = sessionId
         self.ciperSuite = ciperSuite
         self.compressionMethod = .none
-        self.extensions = []
+        self.extensions = .init()
     }
 }
 
