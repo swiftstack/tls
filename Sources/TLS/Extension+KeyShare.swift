@@ -18,9 +18,9 @@ extension Extension {
             case x25519 = 0x001d
         }
         public let group: NamedGroup
-        public let keyExchange: [UInt8]
+        public let keyExchange: PublicKey
 
-        public init(group: NamedGroup, keyExchange: [UInt8]) {
+        public init(group: NamedGroup, keyExchange: PublicKey) {
             self.group = group
             self.keyExchange = keyExchange
         }
@@ -35,15 +35,16 @@ extension Extension.KeyShare: StreamCodable {
         }
 
         let length = Int(try await stream.read(UInt16.self))
-        let keyExchange = try await stream.read(count: length)
+        let rawKey = try await stream.read(count: length)
+        let publicKey = try PublicKey(rawRepresentation: rawKey)
 
-        return .init(group: group, keyExchange: keyExchange)
+        return .init(group: group, keyExchange: publicKey)
     }
 
     func encode(to stream: StreamWriter) async throws {
         try await stream.write(group.rawValue)
-        try await stream.write(UInt16(keyExchange.count))
-        try await stream.write(keyExchange)
+        try await stream.write(UInt16(keyExchange.bytes.count))
+        try await stream.write(keyExchange.bytes)
     }
 }
 
