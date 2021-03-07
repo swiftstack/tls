@@ -23,7 +23,7 @@ extension RecordLayer {
         case changeChiperSpec(ChangeCiperSpec)
         case alert(Alert)
         case handshake(Handshake)
-        case applicationData([UInt8])
+        case applicationData(ApplicationData)
         case heartbeat
     }
 }
@@ -51,13 +51,13 @@ extension RecordLayer {
         { stream -> Content in
             switch type {
             case .changeChiperSpec:
-                return .changeChiperSpec(try await ChangeCiperSpec.decode(from: stream))
+                return .changeChiperSpec(try await .decode(from: stream))
             case .alert:
-                return .alert(try await Alert.decode(from: stream))
+                return .alert(try await .decode(from: stream))
             case .handshake:
-                return .handshake(try await Handshake.decode(from: stream))
+                return .handshake(try await .decode(from: stream))
             case .applicationData:
-                return .applicationData(try await stream.readUntilEnd())
+                return .applicationData(try await .decode(from: stream))
             case .heartbeat:
                 return .heartbeat
             }
@@ -69,6 +69,7 @@ extension RecordLayer {
         func write(_ type: ContentType) async throws {
             try await stream.write(type.rawValue)
         }
+
         switch content {
         case .changeChiperSpec: try await write(.changeChiperSpec)
         case .alert: try await write(.alert)
@@ -84,7 +85,7 @@ extension RecordLayer {
             case .changeChiperSpec(let value): try await value.encode(to: stream)
             case .alert(let value): try await value.encode(to: stream)
             case .handshake(let value): try await value.encode(to: stream)
-            case .applicationData(let value): try await stream.write(value)
+            case .applicationData(let value): try await value.encode(to: stream)
             case .heartbeat: break
             }
         }
