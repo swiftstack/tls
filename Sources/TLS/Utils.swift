@@ -21,7 +21,7 @@ extension ClientHello: StreamCodable {}
 extension ServerHello: StreamCodable {}
 extension Handshake: StreamCodable {}
 extension Alert: StreamCodable {}
-extension RecordLayer: StreamCodable {}
+extension Record: StreamCodable {}
 extension ClientKeyExchange: StreamCodable {}
 extension Extension.Heartbeat: StreamCodable {}
 extension Extension.RenegotiationInfo: StreamCodable {}

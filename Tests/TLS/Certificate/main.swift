@@ -28,12 +28,12 @@ let value: Certificates = .init(
     context: 0,
     sertificates: [.init(bytes: [0x42], extensions: [])])
 
-let record: RecordLayer = .init(
+let record: Record = .init(
     version: .tls12,
     content: .handshake(.certificate(value)))
 
 test.case("decode handshake certificates") {
-    let result = try await RecordLayer.decode(from: bytes)
+    let result = try await Record.decode(from: bytes)
     expect(result == record)
 }
 

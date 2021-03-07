@@ -46,7 +46,7 @@ testTarget("TLS") { test in
     test("Heartbeat")
     test("NewSessionTicket")
     test("Random")
-    test("RecordLayer")
+    test("Record")
     test("ServerHello")
     test("Version")
 }

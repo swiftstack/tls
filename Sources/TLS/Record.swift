@@ -1,6 +1,6 @@
 import Stream
 
-public struct RecordLayer: Equatable {
+public struct Record: Equatable {
     public let version: Version
     public let content: Content
 
@@ -10,7 +10,7 @@ public struct RecordLayer: Equatable {
     }
 }
 
-extension RecordLayer {
+extension Record {
     fileprivate enum ContentType: UInt8 {
         case changeChiperSpec = 20
         case alert = 21
@@ -28,10 +28,10 @@ extension RecordLayer {
     }
 }
 
-extension RecordLayer.ContentType {
+extension Record.ContentType {
     static func decode(from stream: StreamReader) async throws -> Self {
         let rawType = try await stream.read(UInt8.self)
-        guard let type = RecordLayer.ContentType(rawValue: rawType) else {
+        guard let type = Record.ContentType(rawValue: rawType) else {
             throw TLSError.invalidRecordContentType
         }
         return type
@@ -42,7 +42,7 @@ extension RecordLayer.ContentType {
     }
 }
 
-extension RecordLayer {
+extension Record {
     public static func decode(from stream: StreamReader) async throws -> Self {
         let type = try await ContentType.decode(from: stream)
 

@@ -82,7 +82,7 @@ test.case("Decode") {
 }
 
 test.case("DecodeHandshake") {
-    let record = try await RecordLayer.decode(from: bytes)
+    let record = try await Record.decode(from: bytes)
     expect(record.version == .tls12)
     expect(record.content == .handshake(
         .obsolete(.serverKeyExchange(serverKeyExchange))))
@@ -94,7 +94,7 @@ test.case("Encode") {
 }
 
 test.case("EncodeHandshake") {
-    let record = RecordLayer(
+    let record = Record(
         version: .tls12,
         content: .handshake(.obsolete(.serverKeyExchange(serverKeyExchange))))
     let result = try await record.encode()
