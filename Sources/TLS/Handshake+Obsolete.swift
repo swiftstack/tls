@@ -65,13 +65,18 @@ extension Handshake.Obsolete {
         default: fatalError("not implemented")
         }
 
-        try await stream.withSubStreamWriter(sizedBy: UInt24.self) { stream in
-            switch self {
-            case .serverKeyExchange(let value): try await value.encode(to: stream)
-            case .clientKeyExchange(let value): try await value.encode(to: stream)
-            case .serverHelloDone: return
-            default: fatalError("not implemented")
+        func write(_ encodable: StreamEncodable) async throws {
+            try await stream.withSubStreamWriter(sizedBy: UInt24.self)
+            { stream in
+                try await encodable.encode(to: stream)
             }
+        }
+        switch self {
+        case .serverKeyExchange(let value): try await write(value)
+        case .clientKeyExchange(let value): try await write(value)
+        case .certificateStatus(let value): try await write(value)
+        case .serverHelloDone: return
+        default: fatalError("not implemented")
         }
     }
 }

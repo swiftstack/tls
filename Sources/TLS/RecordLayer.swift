@@ -80,14 +80,19 @@ extension RecordLayer {
 
         try await version.encode(to: stream)
 
-        try await stream.withSubStreamWriter(sizedBy: UInt16.self) { stream in
-            switch content {
-            case .changeChiperSpec(let value): try await value.encode(to: stream)
-            case .alert(let value): try await value.encode(to: stream)
-            case .handshake(let value): try await value.encode(to: stream)
-            case .applicationData(let value): try await value.encode(to: stream)
-            case .heartbeat: break
+        func write(_ encodable: StreamEncodable) async throws {
+            try await stream.withSubStreamWriter(sizedBy: UInt16.self)
+            { stream in
+                try await encodable.encode(to: stream)
             }
+        }
+
+        switch content {
+        case .changeChiperSpec(let value): try await write(value)
+        case .alert(let value): try await write(value)
+        case .handshake(let value): try await write(value)
+        case .applicationData(let value): try await write(value)
+        case .heartbeat: try await stream.write(UInt16(0))
         }
     }
 }

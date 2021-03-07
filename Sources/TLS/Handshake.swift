@@ -102,17 +102,22 @@ extension Handshake {
         default: fatalError("not implemented")
         }
 
-        try await stream.withSubStreamWriter(sizedBy: UInt24.self) { stream in
-            switch self {
-            case .clientHello(let value): try await value.encode(to: stream)
-            case .serverHello(let value): try await value.encode(to: stream)
-            case .newSessionTicket(let value): try await value.encode(to: stream)
-            case .certificate(let value): try await value.encode(to: stream)
-            case .certificateVerify(let value): try await value.encode(to: stream)
-            case .encryptedExtensions(let value): try await value.encode(to: stream)
-            case .finished(let value): try await value.encode(to: stream)
-            default: fatalError("not implemented")
+        func write(_ encodable: StreamEncodable) async throws {
+            try await stream.withSubStreamWriter(sizedBy: UInt24.self)
+            { stream in
+                try await encodable.encode(to: stream)
             }
+        }
+
+        switch self {
+        case .clientHello(let value): try await write(value)
+        case .serverHello(let value): try await write(value)
+        case .newSessionTicket(let value): try await write(value)
+        case .certificate(let value): try await write(value)
+        case .certificateVerify(let value): try await write(value)
+        case .encryptedExtensions(let value): try await write(value)
+        case .finished(let value): try await write(value)
+        default: fatalError("not implemented")
         }
     }
 }
