@@ -11,7 +11,7 @@ public struct Certificate: Equatable {
     let extensions: [UInt8]
 }
 
-extension Certificates {
+extension Certificates: StreamCodable {
     static func decode(from stream: StreamReader) async throws -> Self {
         let context = try await stream.read(UInt8.self)
 

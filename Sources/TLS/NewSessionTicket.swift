@@ -12,7 +12,7 @@ public struct NewSessionTicket: Equatable {
     }
 }
 
-extension NewSessionTicket {
+extension NewSessionTicket: StreamCodable {
     static func decode(from stream: StreamReader) async throws -> Self {
         let lifetime = Int(try await stream.read(UInt32.self))
         let ageAdd = Int(try await stream.read(UInt32.self))

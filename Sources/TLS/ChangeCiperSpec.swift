@@ -4,7 +4,7 @@ public enum ChangeCiperSpec: UInt8 {
     case `default` = 1
 }
 
-extension ChangeCiperSpec {
+extension ChangeCiperSpec: StreamCodable {
     static func decode(from stream: StreamReader) async throws -> Self {
         let rawSpec = try await stream.read(UInt8.self)
         guard let spec = ChangeCiperSpec(rawValue: rawSpec) else {

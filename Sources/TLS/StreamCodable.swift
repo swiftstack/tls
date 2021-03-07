@@ -8,14 +8,14 @@ protocol StreamEncodable {
     func encode(to stream: StreamWriter) async throws
 }
 
-protocol StreamDecodableCollection {
+protocol StreamDecodableCollection: StreamDecodable {
     associatedtype LengthType: FixedWidthInteger
     associatedtype Element: StreamDecodable
 
     init(_ items: [Element])
 }
 
-protocol StreamEncodableCollection {
+protocol StreamEncodableCollection: StreamEncodable {
     associatedtype LengthType: FixedWidthInteger
     associatedtype Element: StreamEncodable
 
