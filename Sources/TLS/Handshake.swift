@@ -17,7 +17,7 @@ public enum Handshake: Equatable {
 }
 
 extension Handshake {
-    fileprivate enum RawType: UInt8 {
+    fileprivate enum ContentType: UInt8 {
         case clientHello = 1
         case serverHello = 2
         case newSessionTicket = 4
@@ -31,10 +31,10 @@ extension Handshake {
     }
 }
 
-extension Handshake.RawType {
+extension Handshake.ContentType {
     static func decode(from stream: StreamReader) async throws -> Self {
         let rawType = try await stream.read(UInt8.self)
-        guard let type = Handshake.RawType(rawValue: rawType) else {
+        guard let type = Handshake.ContentType(rawValue: rawType) else {
             throw TLSError.invalidHandshakeType
         }
         return type
@@ -48,7 +48,7 @@ extension Handshake.RawType {
 extension Handshake {
     static func decode(from stream: StreamReader) async throws -> Self {
         let rawType = try await stream.read(UInt8.self)
-        guard let type = RawType(rawValue: rawType) else {
+        guard let type = ContentType(rawValue: rawType) else {
             #if DEBUG
             return .obsolete(try await .decodeContent(rawType: rawType, from: stream))
             #else
@@ -87,7 +87,7 @@ extension Handshake {
         }
         #endif
 
-        func write(rawType type: RawType) async throws {
+        func write(rawType type: ContentType) async throws {
             try await stream.write(type.rawValue)
         }
 
