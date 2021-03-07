@@ -9,7 +9,7 @@ public enum Handshake: Equatable {
     case certificateRequest
     case certificate(Certificates)
     case certificateVerify(CertificateVerify)
-    case finished([UInt8])
+    case finished(Finished)
     case newSessionTicket(NewSessionTicket)
     case keyUpdate
 
@@ -72,7 +72,7 @@ extension Handshake {
             case .encryptedExtensions:
                 return .encryptedExtensions(try await .decode(from: stream))
             case .finished:
-                return .finished(try await stream.readUntilEnd())
+                return .finished(try await .decode(from: stream))
             default:
                 throw TLSError.invalidHandshake
             }
@@ -110,7 +110,7 @@ extension Handshake {
             case .certificate(let value): try await value.encode(to: stream)
             case .certificateVerify(let value): try await value.encode(to: stream)
             case .encryptedExtensions(let value): try await value.encode(to: stream)
-            case .finished(let value): try await stream.write(value)
+            case .finished(let value): try await value.encode(to: stream)
             default: fatalError("not implemented")
             }
         }
