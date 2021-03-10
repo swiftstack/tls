@@ -42,9 +42,6 @@ extension StreamDecodableCollection {
 
 extension StreamEncodableCollection {
     func encode(to stream: StreamWriter) async throws {
-        guard items.count > 0 else {
-            return
-        }
         try await stream.withSubStreamWriter(sizedBy: LengthType.self)
         { stream in
             for value in self.items {

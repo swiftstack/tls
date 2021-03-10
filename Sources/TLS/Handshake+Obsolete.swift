@@ -75,7 +75,7 @@ extension Handshake.Obsolete {
         case .serverKeyExchange(let value): try await write(value)
         case .clientKeyExchange(let value): try await write(value)
         case .certificateStatus(let value): try await write(value)
-        case .serverHelloDone: return
+        case .serverHelloDone: try await stream.write(UInt24(0))
         default: fatalError("not implemented")
         }
     }

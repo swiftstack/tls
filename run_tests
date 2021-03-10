@@ -11,6 +11,7 @@ export DYLD_LIBRARY_PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/
 .build/debug/Tests/TLS/ChangeCipherSpec
 .build/debug/Tests/TLS/ClientHello
 .build/debug/Tests/TLS/ExtensionALPN
+.build/debug/Tests/TLS/ExtensionEncryptedExtensions
 .build/debug/Tests/TLS/ExtensionExtendedMasterSecret
 .build/debug/Tests/TLS/ExtensionHeartbeat
 .build/debug/Tests/TLS/ExtensionKeyShare

@@ -12,5 +12,6 @@ public enum TLSError: Error {
     case invalidServerHelloExtension
     case invalidEncryptedExtension
     case invalidChangeCiperSpec
+    case invalidEarlyDataIndication
     case invalidAlert
 }
