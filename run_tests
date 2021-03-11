@@ -24,6 +24,7 @@ export DYLD_LIBRARY_PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/
 .build/debug/Tests/TLS/ExtensionSupportedVersions
 .build/debug/Tests/TLS/Handshake
 .build/debug/Tests/TLS/Heartbeat
+.build/debug/Tests/TLS/Keys
 .build/debug/Tests/TLS/NewSessionTicket
 .build/debug/Tests/TLS/PerRecordNonce
 .build/debug/Tests/TLS/Random

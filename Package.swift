@@ -48,6 +48,7 @@ testTarget("TLS") { test in
     test("ExtensionSupportedVersions")
     test("Handshake")
     test("Heartbeat")
+    test("Keys")
     test("NewSessionTicket")
     test("PerRecordNonce")
     test("Random")
