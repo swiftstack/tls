@@ -8,10 +8,43 @@ public struct Record: Equatable {
         self.version = version
         self.content = content
     }
+
+    struct Header {
+        let rawType: UInt8
+        let rawVersion: UInt16
+        let rawLength: UInt16
+    }
+}
+
+extension Record.Header {
+    var type: Record.ContentType? { .init(rawValue: rawType) }
+    var version: Version? { .init(rawValue: rawVersion) }
+    var length: Int { Int(rawLength) }
+
+    init(type: Record.ContentType, version: Version = .tls12, payloadLength: Int) {
+        self.rawType = type.rawValue
+        self.rawVersion = version.rawValue
+        self.rawLength = UInt16(payloadLength)
+    }
+}
+
+extension Record.Header: StreamCodable {
+    static func decode(from stream: StreamReader) async throws -> Record.Header {
+        try await .init(
+            rawType: stream.read(UInt8.self),
+            rawVersion: stream.read(UInt16.self),
+            rawLength: stream.read(UInt16.self))
+    }
+
+    func encode(to stream: StreamWriter) async throws {
+        try await stream.write(rawType)
+        try await stream.write(rawVersion)
+        try await stream.write(rawLength)
+    }
 }
 
 extension Record {
-    fileprivate enum ContentType: UInt8 {
+    enum ContentType: UInt8 {
         case changeChiperSpec = 20
         case alert = 21
         case handshake = 22

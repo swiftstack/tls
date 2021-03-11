@@ -34,6 +34,7 @@ testTarget("TLS") { test in
     test("Certificate")
     test("ChangeCipherSpec")
     test("ClientHello")
+    test("ClientSession")
     test("ExtensionALPN")
     test("ExtensionEncryptedExtensions")
     test("ExtensionExtendedMasterSecret")

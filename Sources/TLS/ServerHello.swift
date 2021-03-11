@@ -8,6 +8,11 @@ public struct ServerHello: Equatable {
     public let compressionMethod: CompressionMethod
     public let extensions: Extensions
 
+    var publicKey: PublicKey? {
+        guard let keyShare = extensions.keyShare else { return nil }
+        return keyShare.keyExchange
+    }
+
     public init(
         version: Version,
         random: Random,
