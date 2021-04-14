@@ -27,6 +27,11 @@ let package = Package(
     ]
 )
 
+#if os(Linux)
+package.dependencies.append(.package(name: "CryptoKit"))
+package.targets[0].dependencies.append("CryptoKit")
+#endif
+
 // MARK: - tests
 
 testTarget("TLS") { test in
