@@ -22,6 +22,7 @@ let package = Package(
             name: "TLS",
             dependencies: ["Platform", "Crypto", "Stream"],
             swiftSettings: [
+                .unsafeFlags(["-Xfrontend", "-disable-availability-checking"]),
                 .unsafeFlags(["-Xfrontend", "-enable-experimental-concurrency"])
             ]),
     ]
@@ -86,6 +87,7 @@ func addTest(target: String, name: String) {
             dependencies: ["TLS", "Test"],
             path: "Tests/\(target)/\(name)",
             swiftSettings: [
+                .unsafeFlags(["-Xfrontend", "-disable-availability-checking"]),
                 .unsafeFlags(["-Xfrontend", "-enable-experimental-concurrency"])
             ]))
 }
