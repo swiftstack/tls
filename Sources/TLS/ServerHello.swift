@@ -19,8 +19,8 @@ public struct ServerHello: Equatable {
         sessionId: SessionId,
         ciperSuite: CiperSuite,
         compressionMethod: CompressionMethod,
-        extensions: Extensions)
-    {
+        extensions: Extensions
+    ) {
         self.version = version
         self.random = random
         self.sessionId = sessionId

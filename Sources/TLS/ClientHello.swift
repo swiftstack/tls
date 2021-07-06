@@ -14,8 +14,8 @@ public struct ClientHello: Equatable {
         sessionId: SessionId,
         ciperSuites: CiperSuites,
         compressionMethods: CompressionMethods,
-        extensions: Extensions)
-    {
+        extensions: Extensions
+    ) {
         self.version = version
         self.random = random
         self.sessionId = sessionId

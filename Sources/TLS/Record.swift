@@ -21,7 +21,11 @@ extension Record.Header {
     var version: Version? { .init(rawValue: rawVersion) }
     var length: Int { Int(rawLength) }
 
-    init(type: Record.ContentType, version: Version = .tls12, payloadLength: Int) {
+    init(
+        type: Record.ContentType,
+        version: Version = .tls12,
+        payloadLength: Int)
+    {
         self.rawType = type.rawValue
         self.rawVersion = version.rawValue
         self.rawLength = UInt16(payloadLength)
@@ -29,7 +33,9 @@ extension Record.Header {
 }
 
 extension Record.Header: StreamCodable {
-    static func decode(from stream: StreamReader) async throws -> Record.Header {
+    static func decode(
+        from stream: StreamReader
+    ) async throws -> Record.Header {
         try await .init(
             rawType: stream.read(UInt8.self),
             rawVersion: stream.read(UInt16.self),

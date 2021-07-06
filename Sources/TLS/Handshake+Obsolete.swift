@@ -31,8 +31,8 @@ extension Handshake.Obsolete {
 extension Handshake.Obsolete {
     static func decodeContent(
         rawType: UInt8,
-        from stream: StreamReader) async throws -> Self
-    {
+        from stream: StreamReader
+    ) async throws -> Self {
         guard let type = RawType(rawValue: rawType) else {
             throw TLSError.invalidHandshakeType
         }

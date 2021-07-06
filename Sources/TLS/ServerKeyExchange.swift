@@ -14,8 +14,8 @@ public struct ServerKeyExchange: Equatable {
         curve: Extension.SupportedGroup,
         pubkey: [UInt8],
         algorithm: Extension.SignatureAlgorithm,
-        signature: [UInt8])
-    {
+        signature: [UInt8]
+    ) {
         self.curve = curve
         self.pubkey = pubkey
         self.algorithm = algorithm
