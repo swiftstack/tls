@@ -9,13 +9,13 @@ let package = Package(
     products: [
         .library(
             name: "TLS",
-            targets: ["TLS"])
+            targets: ["TLS"]),
     ],
     dependencies: [
         .package(name: "Platform"),
         .package(name: "Crypto"),
         .package(name: "Stream"),
-        .package(name: "Test")
+        .package(name: "Test"),
     ],
     targets: [
         .target(
