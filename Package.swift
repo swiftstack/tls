@@ -4,7 +4,8 @@ import PackageDescription
 let package = Package(
     name: "TLS",
     platforms: [
-        .macOS(.v11)
+        .iOS(.v14),
+        .macOS(.v11),
     ],
     products: [
         .library(
