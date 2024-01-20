@@ -24,8 +24,8 @@ extension Extension {
         case padding = 0x0015
         case encryptThenMac = 0x0016
         case extendedMasterSecret = 0x0017
-        case tokenBinding = 0x0018 // (TEMPORARY - registered 2016-02-04, expires 2017-02-04)
-        case cachedInfo  = 0x0019
+        case tokenBinding = 0x0018 // (TEMPORARY, expires 2017-02-04)
+        case cachedInfo = 0x0019
         case recordSizeLimit = 0x001c
         case sessionTicket = 0x0023
         case preSharedKey = 0x0029

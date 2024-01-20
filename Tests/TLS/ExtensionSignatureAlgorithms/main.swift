@@ -25,7 +25,8 @@ test("decode signature_algorithms") {
 }
 
 test("decode signature_algorithms extension") {
-    let result = try await ClientHello.Extension.decode(from: algorithmsExtensionBytes)
+    let result = try await ClientHello.Extension
+        .decode(from: algorithmsExtensionBytes)
     expect(result == .signatureAlgorithms(algorithms))
 }
 
@@ -35,7 +36,8 @@ test("encode signature_algorithms") {
 }
 
 test("encode signature_algorithms extension") {
-    let algorithmsExtension = ClientHello.Extension.signatureAlgorithms(algorithms)
+    let algorithmsExtension = ClientHello.Extension
+        .signatureAlgorithms(algorithms)
     let result = try await algorithmsExtension.encode()
     expect(result == algorithmsExtensionBytes)
 }

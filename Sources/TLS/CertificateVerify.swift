@@ -7,7 +7,8 @@ public struct CertificateVerify: Equatable {
 
 extension CertificateVerify: StreamCodable {
     static func decode(from stream: StreamReader) async throws -> Self {
-        let algorithm = try await Extension.SignatureAlgorithm.decode(from: stream)
+        let algorithm = try await Extension.SignatureAlgorithm
+            .decode(from: stream)
         let length = try await stream.read(UInt16.self)
         let bytes = try await stream.read(count: Int(length))
         return .init(algorithm: algorithm, signature: bytes)

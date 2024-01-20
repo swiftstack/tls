@@ -42,8 +42,11 @@ extension ClientSession {
         }
 
         // FIXME: [Concurrency] crash
-        // func perform(using hello: ClientHello) async throws -> HandshakeDerivedKeys {
-        //    try await perform(helloBytes: Handshake.clientHello(hello).encode())
+        // func perform(
+        //     using hello: ClientHello
+        // ) async throws -> HandshakeDerivedKeys {
+        //     let helloBytes = try await Handshake.clientHello(hello).encode()
+        //     try await perform(helloBytes: helloBytes)
         // }
 
         func perform(helloBytes: [UInt8]) async throws -> HandshakeDerivedKeys {
@@ -72,8 +75,13 @@ extension ClientSession {
                     throw TLSError.unexpectedRecordContentType
                 }
 
-                let data = try await stream.read(count: header.length) { buffer in
-                    try decrypt(buffer, using: keys.traffic.read, authenticating: ad)
+                let data = try await stream.read(
+                    count: header.length
+                ) { buffer in
+                    try decrypt(
+                        buffer,
+                        using: keys.traffic.read,
+                        authenticating: ad)
                 }
 
                 let dataStream = InputByteStream(data)
@@ -170,7 +178,10 @@ extension ClientSession {
             try await send(header: header, payload: encryptedPayload)
         }
 
-        private func send(header: Record.Header, payload: [UInt8]) async throws {
+        private func send(
+            header: Record.Header,
+            payload: [UInt8]
+        ) async throws {
             try await header.encode(to: stream)
             try await stream.write(payload)
             try await stream.flush()

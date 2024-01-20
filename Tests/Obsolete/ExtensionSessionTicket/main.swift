@@ -23,7 +23,8 @@ test("EncodeEmpty") {
 }
 
 test("EncodeEmptyRandom") {
-    let sessionTicket = Extension.Obsolete.sessionTicket(.init(data: ticketData))
+    let sessionTicket = Extension.Obsolete
+        .sessionTicket(.init(data: ticketData))
     let result = try await sessionTicket.encode()
     expect(result == ticketBytes)
 }

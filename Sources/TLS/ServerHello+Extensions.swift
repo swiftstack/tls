@@ -2,13 +2,13 @@ import Stream
 
 // https://tools.ietf.org/html/rfc8446#section-4.2
 
-//+--------------------------------------------------+-------------+
-//| Server Hello Extension                           |     TLS 1.3 |
-//+--------------------------------------------------+-------------+
-//| key_share (RFC 8446)                             | CH, SH, HRR |
-//| pre_shared_key (RFC 8446)                        |      CH, SH |
-//| supported_versions (RFC 8446)                    | CH, SH, HRR |
-//+--------------------------------------------------+-------------+
+// +--------------------------------------------------+-------------+
+// | Server Hello Extension                           |     TLS 1.3 |
+// +--------------------------------------------------+-------------+
+// | key_share (RFC 8446)                             | CH, SH, HRR |
+// | pre_shared_key (RFC 8446)                        |      CH, SH |
+// | supported_versions (RFC 8446)                    | CH, SH, HRR |
+// +--------------------------------------------------+-------------+
 
 extension ServerHello {
     public typealias KeyShare = TLS.Extension.KeyShare
@@ -70,15 +70,14 @@ extension ServerHello.Extension: StreamDecodable {
             #endif
         }
 
-        return try await stream.withSubStreamReader(limitedBy: length)
-        { stream in
+        return try await stream.withSubStreamReader(limitedBy: length) { sub in
             switch type {
             case .supportedVersions:
-                return .supportedVersions(try await .decode(from: stream))
+                return .supportedVersions(try await .decode(from: sub))
             case .keyShare:
-                return .keyShare(try await .decode(from: stream))
+                return .keyShare(try await .decode(from: sub))
             default:
-                return .obsolete(try await .decodeContent(for: type, from: stream))
+                return .obsolete(try await .decodeContent(for: type, from: sub))
             }
         }
     }
@@ -96,10 +95,10 @@ extension ServerHello.Extension: StreamEncodable {
         default: throw TLSError.invalidServerHelloExtension
         }
 
-        try await stream.withSubStreamWriter(sizedBy: UInt16.self) { stream in
+        try await stream.withSubStreamWriter(sizedBy: UInt16.self) { sub in
             switch self {
-            case .supportedVersions(let value): try await value.encode(to: stream)
-            case .keyShare(let value): try await value.encode(to: stream)
+            case .supportedVersions(let value): try await value.encode(to: sub)
+            case .keyShare(let value): try await value.encode(to: sub)
             default: throw TLSError.invalidServerHelloExtension
             }
         }

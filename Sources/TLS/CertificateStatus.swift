@@ -18,10 +18,11 @@ extension CertificateStatus: StreamCodable {
         guard let type = try await RawType.decode(from: stream) else {
             throw TLSError.invalidExtension
         }
-        return try await stream.withSubStreamReader(sizedBy: UInt24.self)
-        { stream in
+        return try await stream.withSubStreamReader(
+            sizedBy: UInt24.self
+        ) { sub in
             switch type {
-            case .ocsp: return .ocsp(try await .decode(from: stream))
+            case .ocsp: return .ocsp(try await .decode(from: sub))
             }
         }
     }
@@ -30,9 +31,8 @@ extension CertificateStatus: StreamCodable {
         switch self {
         case .ocsp(let response):
             try await RawType.ocsp.encode(to: stream)
-            try await stream.withSubStreamWriter(sizedBy: UInt24.self)
-            { stream in
-                try await response.encode(to: stream)
+            try await stream.withSubStreamWriter(sizedBy: UInt24.self) { sub in
+                try await response.encode(to: sub)
             }
         }
     }

@@ -26,19 +26,16 @@ extension Extension {
 
 extension Extension.OCSPStatusRequest {
     static func decode(from stream: StreamReader) async throws -> Self {
-        let responderIdList: [UInt8]
         let respondersLength = Int(try await stream.read(UInt16.self))
-        switch respondersLength {
-        case 0: responderIdList = []
-        default: responderIdList = try await stream.read(count: respondersLength)
-        }
+        let responderIdList = respondersLength != 0
+            ? try await stream.read(count: respondersLength)
+            : []
 
-        let extensions: [UInt8]
         let extensionsLength = Int(try await stream.read(UInt16.self))
-        switch extensionsLength {
-        case 0: extensions = []
-        default: extensions = try await stream.read(count: extensionsLength)
-        }
+        let extensions = extensionsLength != 0
+            ? try await stream.read(count: extensionsLength)
+            : []
+
         return .init(responderIdList: responderIdList, extensions: extensions)
     }
 

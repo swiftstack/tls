@@ -8,7 +8,7 @@ extension HKDF {
         label: HkdfLabel.Label,
         context: [UInt8],
         length: Int
-    ) -> SymmetricKey where H : HashFunction {
+    ) -> SymmetricKey where H: HashFunction {
         let label = HkdfLabel(length: length, label: label, context: context)
         return HKDF<H>.expand(
             pseudoRandomKey: key,
@@ -23,7 +23,7 @@ extension HKDF {
         inputKeyMaterial key: SymmetricKey,
         label: HkdfLabel.Label,
         digest: H.Digest
-    ) -> SymmetricKey where H : HashFunction {
+    ) -> SymmetricKey where H: HashFunction {
         return HKDF<H>.expandLabel(
             pseudoRandomKey: key,
             label: label,

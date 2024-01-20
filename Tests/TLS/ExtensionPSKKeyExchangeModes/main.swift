@@ -17,7 +17,8 @@ test("decode psk_key_exchange_modes") {
 }
 
 test("decode psk_key_exchange_modes extension") {
-    let result = try await ClientHello.Extension.decode(from: modesExtensionBytes)
+    let result = try await ClientHello.Extension
+        .decode(from: modesExtensionBytes)
     expect(result == .pskKeyExchangeModes(modes))
 }
 
@@ -27,7 +28,8 @@ test("encode psk_key_exchange_modes") {
 }
 
 test("encode psk_key_exchange_modes extension") {
-    let pskKeyExchangeModesExtension = ClientHello.Extension.pskKeyExchangeModes(modes)
+    let pskKeyExchangeModesExtension = ClientHello.Extension
+        .pskKeyExchangeModes(modes)
     let result = try await pskKeyExchangeModesExtension.encode()
     expect(result == modesExtensionBytes)
 }

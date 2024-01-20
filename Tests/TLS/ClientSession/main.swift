@@ -24,11 +24,17 @@ class TestStream: Stream {
         self.outputStream = .init()
     }
 
-    func read(to pointer: UnsafeMutableRawPointer, byteCount: Int) async throws -> Int {
+    func read(
+        to pointer: UnsafeMutableRawPointer,
+        byteCount: Int
+    ) async throws -> Int {
         try inputStream.read(to: pointer, byteCount: byteCount)
     }
 
-    func write(from buffer: UnsafeRawPointer, byteCount: Int) async throws -> Int {
+    func write(
+        from buffer: UnsafeRawPointer,
+        byteCount: Int
+    ) async throws -> Int {
         outputStream.write(from: buffer, byteCount: byteCount)
     }
 }

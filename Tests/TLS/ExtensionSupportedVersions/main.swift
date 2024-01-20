@@ -18,7 +18,8 @@ test("Decode") {
 }
 
 test("DecodeExtension") {
-    let result = try await ClientHello.Extension.decode(from: versionsExtensionBytes)
+    let result = try await ClientHello.Extension
+        .decode(from: versionsExtensionBytes)
     expect(result == .supportedVersions(versions))
 }
 
@@ -28,7 +29,8 @@ test("Encode") {
 }
 
 test("EncodeExtension") {
-    let supportedVersionsExtension = ClientHello.Extension.supportedVersions(versions)
+    let supportedVersionsExtension = ClientHello.Extension
+        .supportedVersions(versions)
     let result = try await supportedVersionsExtension.encode()
     expect(result == versionsExtensionBytes)
 }

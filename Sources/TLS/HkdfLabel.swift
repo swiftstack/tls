@@ -23,7 +23,7 @@ struct HkdfLabel {
         case clientCertificateVerify = "TLS 1.3, client CertificateVerify"
         case serverCertificateVerify = "TLS 1.3, server CertificateVerify"
         case key = "key"
-        case iv  = "iv"
+        case iv = "iv"
     }
 
     var rawRepresentation: [UInt8] {

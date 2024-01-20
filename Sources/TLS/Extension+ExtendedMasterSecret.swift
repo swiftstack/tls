@@ -3,7 +3,7 @@ import Stream
 extension Extension {
     public struct ExtendedMasterSecret: Equatable {
         public init() {
-            
+
         }
     }
 }

@@ -25,13 +25,17 @@ test("decode key_share extension") {
 }
 
 test("encode key_share") {
-    let keyShare = Extension.KeysShare([.init(group: .x25519, keyExchange: key)])
+    let keyShare = Extension.KeysShare([.init(
+        group: .x25519,
+        keyExchange: key)])
     let result = try await keyShare.encode()
     expect(result == bytes)
 }
 
 test("encode key_share extension") {
-    let keyShare = ClientHello.Extension.keyShare([.init(group: .x25519, keyExchange: key)])
+    let keyShare = ClientHello.Extension.keyShare([.init(
+        group: .x25519,
+        keyExchange: key)])
     let result = try await keyShare.encode()
     expect(result == extensionBytes)
 }

@@ -40,45 +40,79 @@ extension Extension {
 
         public var rawValue: UInt16 {
             switch self {
-            case .rsa_pkcs1_sha256: return Raw.rsa_pkcs1_sha256.rawValue
-            case .rsa_pkcs1_sha384: return Raw.rsa_pkcs1_sha384.rawValue
-            case .rsa_pkcs1_sha512: return Raw.rsa_pkcs1_sha512.rawValue
-            case .ecdsa_secp256r1_sha256: return Raw.ecdsa_secp256r1_sha256.rawValue
-            case .ecdsa_secp384r1_sha384: return Raw.ecdsa_secp384r1_sha384.rawValue
-            case .ecdsa_secp521r1_sha512: return Raw.ecdsa_secp521r1_sha512.rawValue
-            case .rsa_pss_rsae_sha256: return Raw.rsa_pss_rsae_sha256.rawValue
-            case .rsa_pss_rsae_sha384: return Raw.rsa_pss_rsae_sha384.rawValue
-            case .rsa_pss_rsae_sha512: return Raw.rsa_pss_rsae_sha512.rawValue
-            case .ed25519: return Raw.ed25519.rawValue
-            case .ed448: return Raw.ed448.rawValue
-            case .rsa_pss_pss_sha256: return Raw.rsa_pss_pss_sha256.rawValue
-            case .rsa_pss_pss_sha384: return Raw.rsa_pss_pss_sha384.rawValue
-            case .rsa_pss_pss_sha512: return Raw.rsa_pss_pss_sha512.rawValue
-            case .rsa_pkcs1_sha1: return Raw.rsa_pkcs1_sha1.rawValue
-            case .ecdsa_sha1: return Raw.ecdsa_sha1.rawValue
-            case .unknown(let value): return value
+            case .rsa_pkcs1_sha256:
+                return Raw.rsa_pkcs1_sha256.rawValue
+            case .rsa_pkcs1_sha384:
+                return Raw.rsa_pkcs1_sha384.rawValue
+            case .rsa_pkcs1_sha512:
+                return Raw.rsa_pkcs1_sha512.rawValue
+            case .ecdsa_secp256r1_sha256:
+                return Raw.ecdsa_secp256r1_sha256.rawValue
+            case .ecdsa_secp384r1_sha384:
+                return Raw.ecdsa_secp384r1_sha384.rawValue
+            case .ecdsa_secp521r1_sha512:
+                return Raw.ecdsa_secp521r1_sha512.rawValue
+            case .rsa_pss_rsae_sha256:
+                return Raw.rsa_pss_rsae_sha256.rawValue
+            case .rsa_pss_rsae_sha384:
+                return Raw.rsa_pss_rsae_sha384.rawValue
+            case .rsa_pss_rsae_sha512:
+                return Raw.rsa_pss_rsae_sha512.rawValue
+            case .ed25519:
+                return Raw.ed25519.rawValue
+            case .ed448:
+                return Raw.ed448.rawValue
+            case .rsa_pss_pss_sha256:
+                return Raw.rsa_pss_pss_sha256.rawValue
+            case .rsa_pss_pss_sha384:
+                return Raw.rsa_pss_pss_sha384.rawValue
+            case .rsa_pss_pss_sha512:
+                return Raw.rsa_pss_pss_sha512.rawValue
+            case .rsa_pkcs1_sha1:
+                return Raw.rsa_pkcs1_sha1.rawValue
+            case .ecdsa_sha1:
+                return Raw.ecdsa_sha1.rawValue
+            case .unknown(let value):
+                return value
             }
         }
 
         public init(rawValue: UInt16) {
             switch rawValue {
-            case Raw.rsa_pkcs1_sha256.rawValue: self = .rsa_pkcs1_sha256
-            case Raw.rsa_pkcs1_sha384.rawValue: self = .rsa_pkcs1_sha384
-            case Raw.rsa_pkcs1_sha512.rawValue: self = .rsa_pkcs1_sha512
-            case Raw.ecdsa_secp256r1_sha256.rawValue: self = .ecdsa_secp256r1_sha256
-            case Raw.ecdsa_secp384r1_sha384.rawValue: self = .ecdsa_secp384r1_sha384
-            case Raw.ecdsa_secp521r1_sha512.rawValue: self = .ecdsa_secp521r1_sha512
-            case Raw.rsa_pss_rsae_sha256.rawValue: self = .rsa_pss_rsae_sha256
-            case Raw.rsa_pss_rsae_sha384.rawValue: self = .rsa_pss_rsae_sha384
-            case Raw.rsa_pss_rsae_sha512.rawValue: self = .rsa_pss_rsae_sha512
-            case Raw.ed25519.rawValue: self = .ed25519
-            case Raw.ed448.rawValue: self = .ed448
-            case Raw.rsa_pss_pss_sha256.rawValue: self = .rsa_pss_pss_sha256
-            case Raw.rsa_pss_pss_sha384.rawValue: self = .rsa_pss_pss_sha384
-            case Raw.rsa_pss_pss_sha512.rawValue: self = .rsa_pss_pss_sha512
-            case Raw.rsa_pkcs1_sha1.rawValue: self = .rsa_pkcs1_sha1
-            case Raw.ecdsa_sha1.rawValue: self = .ecdsa_sha1
-            default: self = .unknown(rawValue)
+            case Raw.rsa_pkcs1_sha256.rawValue:
+                self = .rsa_pkcs1_sha256
+            case Raw.rsa_pkcs1_sha384.rawValue:
+                self = .rsa_pkcs1_sha384
+            case Raw.rsa_pkcs1_sha512.rawValue:
+                self = .rsa_pkcs1_sha512
+            case Raw.ecdsa_secp256r1_sha256.rawValue:
+                self = .ecdsa_secp256r1_sha256
+            case Raw.ecdsa_secp384r1_sha384.rawValue:
+                self = .ecdsa_secp384r1_sha384
+            case Raw.ecdsa_secp521r1_sha512.rawValue:
+                self = .ecdsa_secp521r1_sha512
+            case Raw.rsa_pss_rsae_sha256.rawValue:
+                self = .rsa_pss_rsae_sha256
+            case Raw.rsa_pss_rsae_sha384.rawValue:
+                self = .rsa_pss_rsae_sha384
+            case Raw.rsa_pss_rsae_sha512.rawValue:
+                self = .rsa_pss_rsae_sha512
+            case Raw.ed25519.rawValue:
+                self = .ed25519
+            case Raw.ed448.rawValue:
+                self = .ed448
+            case Raw.rsa_pss_pss_sha256.rawValue:
+                self = .rsa_pss_pss_sha256
+            case Raw.rsa_pss_pss_sha384.rawValue:
+                self = .rsa_pss_pss_sha384
+            case Raw.rsa_pss_pss_sha512.rawValue:
+                self = .rsa_pss_pss_sha512
+            case Raw.rsa_pkcs1_sha1.rawValue:
+                self = .rsa_pkcs1_sha1
+            case Raw.ecdsa_sha1.rawValue:
+                self = .ecdsa_sha1
+            default:
+                self = .unknown(rawValue)
             }
         }
 
@@ -107,7 +141,7 @@ extension Extension {
         }
 
         /* Reserved Code Points */
-        //case private_use(0xFE00..0xFFFF),
+        // case private_use(0xFE00..0xFFFF),
 
         private enum Hash: UInt8 {
             case none   = 0x00
