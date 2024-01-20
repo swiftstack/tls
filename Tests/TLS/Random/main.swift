@@ -1,14 +1,14 @@
 import Test
 @testable import TLS
 
-test.case("random") {
+test("random") {
     let random = Random()
     expect(random.time > 0)
     expect(random.bytes.count == 28)
     expect(Random().bytes != Random().bytes)
 }
 
-test.case("silly random check") {
+test("silly random check") {
     let random = Random()
     guard !random.bytes.isEmpty else {
         return
@@ -25,4 +25,4 @@ test.case("silly random check") {
     }
 }
 
-test.run()
+await run()

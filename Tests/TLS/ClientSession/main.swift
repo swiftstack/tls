@@ -33,7 +33,7 @@ class TestStream: Stream {
     }
 }
 
-test.case("handshake example") {
+test("handshake example") {
     let stream = TestStream(serverData: Server.combined)
     let session = ClientSession(privateKey: Client.privateKey, stream: stream)
     try await session.handshake(Client.hello)
@@ -43,7 +43,7 @@ test.case("handshake example") {
     expect(finishedBytes == Client.finishedRecord)
 }
 
-test.run()
+await run()
 
 // MARK: Static data
 

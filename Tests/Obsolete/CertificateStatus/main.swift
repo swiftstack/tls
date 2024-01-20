@@ -222,7 +222,7 @@ let status: [UInt8] = [
 
 let bytes: [UInt8] = header + status
 
-test.case("Decode") {
+test("Decode") {
 //    let recordLayer = try await RecordLayer.decode(from: bytes)
 
 //    switch recordLayer.content {
@@ -235,4 +235,4 @@ test.case("Decode") {
 //    }
 }
 
-test.run()
+await run()

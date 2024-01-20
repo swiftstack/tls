@@ -76,24 +76,24 @@ let serverKeyExchange: ServerKeyExchange = .init(
     algorithm: .rsa_pkcs1_sha512,
     signature: [UInt8](bytes[82...]))
 
-test.case("Decode") {
+test("Decode") {
     let result = try await ServerKeyExchange.decode(from: [UInt8](bytes[9...]))
     expect(result == serverKeyExchange)
 }
 
-test.case("DecodeHandshake") {
+test("DecodeHandshake") {
     let record = try await Record.decode(from: bytes)
     expect(record.version == .tls12)
     expect(record.content == .handshake(
         .obsolete(.serverKeyExchange(serverKeyExchange))))
 }
 
-test.case("Encode") {
+test("Encode") {
     let result = try await serverKeyExchange.encode()
     expect(result[...] == bytes[9...])
 }
 
-test.case("EncodeHandshake") {
+test("EncodeHandshake") {
     let record = Record(
         version: .tls12,
         content: .handshake(.obsolete(.serverKeyExchange(serverKeyExchange))))
@@ -101,4 +101,4 @@ test.case("EncodeHandshake") {
     expect(result == bytes)
 }
 
-test.run()
+await run()

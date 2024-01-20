@@ -3,14 +3,14 @@ import Test
 
 let bytes: [UInt8] = [0x14, 0x00, 0x00, 0x00]
 
-test.case("decode handshake finished") {
+test("decode handshake finished") {
     let handshake = try await Handshake.decode(from: bytes)
     expect(handshake == .finished(.init(hmac: [])))
 }
 
-test.case("encode handshake finished") {
+test("encode handshake finished") {
     let result = try await Handshake.finished(.init(hmac: [])).encode()
     expect(result == bytes)
 }
 
-test.run()
+await run()

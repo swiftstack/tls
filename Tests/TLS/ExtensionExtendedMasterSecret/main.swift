@@ -3,12 +3,12 @@ import Test
 
 typealias ExtendedMasterSecret = Extension.ExtendedMasterSecret
 
-test.case("decode ... extension") {
+test("decode ... extension") {
 
 }
 
-test.case("encode ... extension") {
+test("encode ... extension") {
 
 }
 
-test.run()
+await run()

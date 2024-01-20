@@ -14,26 +14,26 @@ let bytes: [UInt8] =
 let extensionBytes: [UInt8] =
     [0x00, 0x33, 0x00, 0x26] + bytes
 
-test.case("decode key_share") {
+test("decode key_share") {
     let result = try await Extension.KeysShare.decode(from: bytes)
     expect(result == [.init(group: .x25519, keyExchange: key)])
 }
 
-test.case("decode key_share extension") {
+test("decode key_share extension") {
     let result = try await ClientHello.Extension.decode(from: extensionBytes)
     expect(result == .keyShare([.init(group: .x25519, keyExchange: key)]))
 }
 
-test.case("encode key_share") {
+test("encode key_share") {
     let keyShare = Extension.KeysShare([.init(group: .x25519, keyExchange: key)])
     let result = try await keyShare.encode()
     expect(result == bytes)
 }
 
-test.case("encode key_share extension") {
+test("encode key_share extension") {
     let keyShare = ClientHello.Extension.keyShare([.init(group: .x25519, keyExchange: key)])
     let result = try await keyShare.encode()
     expect(result == extensionBytes)
 }
 
-test.run()
+await run()

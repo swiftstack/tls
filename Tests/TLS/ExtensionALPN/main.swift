@@ -18,25 +18,25 @@ let bytes: [UInt8] = [
 let extensionBytes: [UInt8] =
     [0x00, 0x10, 0x00, 0x0e] + bytes
 
-test.case("decode next protocol") {
+test("decode next protocol") {
     let result = try await ALPN.decode(from: bytes)
     expect(result == alpn)
 }
 
-test.case("decode next protocol extension") {
+test("decode next protocol extension") {
     let result = try await ClientHello.Extension.decode(from: extensionBytes)
     expect(result == .alpn(alpn))
 }
 
-test.case("encode next protocol") {
+test("encode next protocol") {
     let result = try await alpn.encode()
     expect(result == bytes)
 }
 
-test.case("encode next protocol extension") {
+test("encode next protocol extension") {
     let alpnExtension = ClientHello.Extension.alpn(alpn)
     let result = try await alpnExtension.encode()
     expect(result == extensionBytes)
 }
 
-test.run()
+await run()

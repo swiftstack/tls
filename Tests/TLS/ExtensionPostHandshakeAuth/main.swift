@@ -6,15 +6,15 @@ typealias PostHandshakeAuth = Extension.PostHandshakeAuth
 let value = PostHandshakeAuth()
 let bytes: [UInt8] = [0x00, 0x31, 0x00, 0x00]
 
-test.case("decode post_handshake_auth extension") {
+test("decode post_handshake_auth extension") {
     let result = try await ClientHello.Extension.decode(from: bytes)
     expect(result == .postHandshakeAuth(value))
 }
 
-test.case("encode post_handshake_auth extension") {
+test("encode post_handshake_auth extension") {
     let phaExtension = ClientHello.Extension.postHandshakeAuth(value)
     let result = try await phaExtension.encode()
     expect(result == bytes)
 }
 
-test.run()
+await run()

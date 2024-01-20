@@ -17,25 +17,25 @@ let groupsBytes: [UInt8] = [
 let groupsExtensionBytes: [UInt8] =
     [0x00, 0x0a, 0x00, 0x0c] + groupsBytes
 
-test.case("decode named groups") {
+test("decode named groups") {
     let result = try await SupportedGroups.decode(from: groupsBytes)
     expect(result == groups)
 }
 
-test.case("decode named groups extension") {
+test("decode named groups extension") {
     let result = try await ClientHello.Extension.decode(from: groupsExtensionBytes)
     expect(result == .supportedGroups(groups))
 }
 
-test.case("encode named groups") {
+test("encode named groups") {
     let result = try await groups.encode()
     expect(result == groupsBytes)
 }
 
-test.case("encode named groups extension") {
+test("encode named groups extension") {
     let supportedGroupsExtension = ClientHello.Extension.supportedGroups(groups)
     let result = try await supportedGroupsExtension.encode()
     expect(result == groupsExtensionBytes)
 }
 
-test.run()
+await run()

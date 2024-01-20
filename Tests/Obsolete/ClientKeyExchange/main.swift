@@ -28,24 +28,24 @@ let bytes: [UInt8] = [
 
 let clientKeyExchange: ClientKeyExchange = .init(pubkey: [UInt8](bytes[10...]))
 
-test.case("Decode") {
+test("Decode") {
     let result = try await ClientKeyExchange.decode(from: [UInt8](bytes[9...]))
     expect(result == clientKeyExchange)
 }
 
-test.case("DecodeHandshake") {
+test("DecodeHandshake") {
     let record = try await Record.decode(from: bytes)
     expect(record.version == .tls12)
     expect(record.content == .handshake(
         .obsolete(.clientKeyExchange(clientKeyExchange))))
 }
 
-test.case("Encode") {
+test("Encode") {
     let result = try await clientKeyExchange.encode()
     expect(result[...] == bytes[9...])
 }
 
-test.case("EncodeHandshake") {
+test("EncodeHandshake") {
     let record = Record(
         version: .tls12,
         content: .handshake(.obsolete(.clientKeyExchange(clientKeyExchange))))
@@ -53,4 +53,4 @@ test.case("EncodeHandshake") {
     expect(result == bytes)
 }
 
-test.run()
+await run()

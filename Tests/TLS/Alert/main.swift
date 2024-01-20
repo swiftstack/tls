@@ -3,16 +3,16 @@ import Test
 
 let bytes: [UInt8] = [0x01, 0x00]
 
-test.case("Decode") {
+test("Decode") {
     let alert = try await Alert.decode(from: bytes)
     expect(alert.level == .warning)
     expect(alert.description == .closeNotify)
 }
 
-test.case("Encode") {
+test("Encode") {
     let alert = Alert(level: .warning, description: .closeNotify)
     let result = try await alert.encode()
     expect(result == bytes)
 }
 
-test.run()
+await run()

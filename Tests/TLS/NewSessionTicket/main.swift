@@ -66,14 +66,14 @@ let newSessionTicket: NewSessionTicket = .init(
 let handshake = Handshake.newSessionTicket(
     newSessionTicket)
 
-test.case("decode new session ticket") {
+test("decode new session ticket") {
     let result = try await Handshake.decode(from: bytes)
     expect(result == handshake)
 }
 
-test.case("encode new session ticket") {
+test("encode new session ticket") {
     let result = try await handshake.encode()
     expect(result == bytes)
 }
 
-test.run()
+await run()

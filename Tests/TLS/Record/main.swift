@@ -11,12 +11,12 @@ let bytes: [UInt8] = [
     // data
     0x04, 0x02]
 
-test.case("decode record layer") {
+test("decode record layer") {
     let recordLayer = try await Record.decode(from: bytes)
     expect(recordLayer.content == .applicationData([0x04, 0x02]))
 }
 
-test.case("encode record layer") {
+test("encode record layer") {
     let recordLayer = Record(
         version: .tls12,
         content: .applicationData([0x04, 0x02]))
@@ -24,4 +24,4 @@ test.case("encode record layer") {
     expect(result == bytes)
 }
 
-test.run()
+await run()

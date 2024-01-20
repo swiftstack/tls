@@ -32,14 +32,14 @@ let record: Record = .init(
     version: .tls12,
     content: .handshake(.certificate(value)))
 
-test.case("decode handshake certificates") {
+test("decode handshake certificates") {
     let result = try await Record.decode(from: bytes)
     expect(result == record)
 }
 
-test.case("encode handshake certificates") {
+test("encode handshake certificates") {
     let result = try await record.encode()
     expect(result == bytes)
 }
 
-test.run()
+await run()

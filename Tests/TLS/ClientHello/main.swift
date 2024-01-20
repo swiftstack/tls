@@ -57,7 +57,7 @@ let bytes: [UInt8] = [
     0x72, 0x91, 0x85, 0x89, 0x42, 0xd6, 0xb3, 0x49
 ]
 
-test.case("decode client hello") {
+test("decode client hello") {
     let hello = try await ClientHello.decode(from: bytes)
 
     expect(hello.random.time == 4275678516)
@@ -130,7 +130,7 @@ test.case("decode client hello") {
                 0x72, 0x91, 0x85, 0x89, 0x42, 0xd6, 0xb3, 0x49])]))
 }
 
-test.case("encode client hello") {
+test("encode client hello") {
     let hello = ClientHello(
         version: .tls12,
         random: .init(time: 4275678516, bytes: [
@@ -180,4 +180,4 @@ test.case("encode client hello") {
     expect(result == bytes)
 }
 
-test.run()
+await run()

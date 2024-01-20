@@ -21,7 +21,7 @@ extension SymmetricKey {
         """
 }
 
-test.case("tls 1.3 derived") {
+test("tls 1.3 derived") {
     let derived = Keys<SHA256>.derivedForHandshakeSecret
     expect(derived == .derived)
 }
@@ -33,7 +33,7 @@ extension SymmetricKey {
         """
 }
 
-test.case("tls handshake secret") {
+test("tls handshake secret") {
     let sharedSecret = try Client.privateKey
         .sharedSecretFromKeyAgreement(with: Server.publicKey)
 
@@ -70,7 +70,7 @@ extension SymmetricKey {
         """
 }
 
-test.case("derive handshake traffic secrets") {
+test("derive handshake traffic secrets") {
     var hash = SHA256()
     hash.update(data: Client.hello)
     hash.update(data: Server.hello)
@@ -89,7 +89,7 @@ test.case("derive handshake traffic secrets") {
     expect(clientHandshakeTrafficSecret == .clientHandshakeTrafficSecret)
 }
 
-test.case("derive master secret") {
+test("derive master secret") {
     let derivedForMasterSecret = Keys<SHA256>.derivedForMasterSecret(
         handshakeSecret: .handshakeSecret)
 
@@ -114,7 +114,7 @@ extension PerRecordNonce {
         baseIV: SymmetricKey.hsServerBaseIV.bytes)
 }
 
-test.case("derive server write keys") {
+test("derive server write keys") {
     let writeKeys = Keys<SHA256>.peerTrafficKeys(
         secret: .serverHandshakeTrafficSecret)
 
@@ -135,7 +135,7 @@ extension PerRecordNonce {
         baseIV: SymmetricKey.hsClientBaseIV.bytes)
 }
 
-test.case("derive client write keys") {
+test("derive client write keys") {
     let writeKeys = Keys<SHA256>.peerTrafficKeys(
         secret: .clientHandshakeTrafficSecret)
 
@@ -143,7 +143,7 @@ test.case("derive client write keys") {
     expect(writeKeys.iv == .hsClientPRN)
 }
 
-test.run()
+await run()
 
 // MARK: Static data
 

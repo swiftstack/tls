@@ -3,15 +3,15 @@ import Test
 
 let bytes: [UInt8] = [0x18, 0x03, 0x01, 0x00, 0x00]
 
-test.case("DecodeHeartbeat") {
+test("DecodeHeartbeat") {
     let recordLayer = try await Record.decode(from: bytes)
     expect(recordLayer == .init(version: .tls10, content: .heartbeat))
 }
 
-test.case("EncodeHeartbeat") {
+test("EncodeHeartbeat") {
     let recordLayer = Record(version: .tls10, content: .heartbeat)
     let result = try await recordLayer.encode()
     expect(result == bytes)
 }
 
-test.run()
+await run()
