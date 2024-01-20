@@ -36,15 +36,16 @@ extension Handshake.Obsolete {
         guard let type = RawType(rawValue: rawType) else {
             throw TLSError.invalidHandshakeType
         }
-        return try await stream.withSubStreamReader(sizedBy: UInt24.self)
-        { stream in
+        return try await stream.withSubStreamReader(
+            sizedBy: UInt24.self
+        ) { sub in
             switch type {
             case .serverKeyExchange:
-                return .serverKeyExchange(try await .decode(from: stream))
+                return .serverKeyExchange(try await .decode(from: sub))
             case .clientKeyExchange:
-                return .clientKeyExchange(try await .decode(from: stream))
+                return .clientKeyExchange(try await .decode(from: sub))
             case .certificateStatus:
-                return .certificateStatus(try await .decode(from: stream))
+                return .certificateStatus(try await .decode(from: sub))
             case .serverHelloDone:
                 return .serverHelloDone
             default:
@@ -66,9 +67,8 @@ extension Handshake.Obsolete {
         }
 
         func write(_ encodable: StreamEncodable) async throws {
-            try await stream.withSubStreamWriter(sizedBy: UInt24.self)
-            { stream in
-                try await encodable.encode(to: stream)
+            try await stream.withSubStreamWriter(sizedBy: UInt24.self) { sub in
+                try await encodable.encode(to: sub)
             }
         }
         switch self {

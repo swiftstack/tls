@@ -27,8 +27,8 @@ class ClientSession<T: Stream> {
 
     let privateKey: PrivateKey
 
-    var derivedKeys: HandshakeDerivedKeys? = nil
-    var trafficKeys: TrafficKeys? = nil
+    var derivedKeys: HandshakeDerivedKeys?
+    var trafficKeys: TrafficKeys?
 
     let configuration: Configuration
     let stream: BufferedStream<T>
@@ -69,7 +69,10 @@ class ClientSession<T: Stream> {
         deriveApplicationKeys(using: derivedKeys)
     }
 
-    func handle(contentType: Record.ContentType, payload: [UInt8]) async throws {
+    func handle(
+        contentType: Record.ContentType,
+        payload: [UInt8]
+    ) async throws {
         switch contentType {
         case .handshake:
             let stream = InputByteStream(payload)

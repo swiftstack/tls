@@ -17,10 +17,10 @@ extension Certificates: StreamCodable {
 
         let sertificates = try await stream.withSubStreamReader(
             sizedBy: UInt24.self
-        ) { stream -> [Certificate] in
+        ) { sub -> [Certificate] in
             var items = [Certificate]()
-            while !stream.isEmpty {
-                items.append(try await Certificate.decode(from: stream))
+            while !sub.isEmpty {
+                items.append(try await Certificate.decode(from: sub))
             }
             return items
         }
@@ -30,10 +30,9 @@ extension Certificates: StreamCodable {
 
     func encode(to stream: StreamWriter) async throws {
         try await stream.write(context)
-        try await stream.withSubStreamWriter(sizedBy: UInt24.self)
-        { stream in
-            for value in self.sertificates {
-                try await value.encode(to: stream)
+        try await stream.withSubStreamWriter(sizedBy: UInt24.self) { sub in
+            for value in sertificates {
+                try await value.encode(to: sub)
             }
         }
     }
@@ -41,25 +40,25 @@ extension Certificates: StreamCodable {
 
 extension Certificate {
     public static func decode(from stream: StreamReader) async throws -> Self {
-        let bytes = try await stream.withSubStreamReader(sizedBy: UInt24.self)
-        { stream in
-            return try await stream.readUntilEnd()
+        let bytes = try await stream.withSubStreamReader(
+            sizedBy: UInt24.self
+        ) { sub in
+            try await sub.readUntilEnd()
         }
-        let ext = try await stream.withSubStreamReader(sizedBy: UInt16.self)
-        { stream in
-            return try await stream.readUntilEnd()
+        let ext = try await stream.withSubStreamReader(
+            sizedBy: UInt16.self
+        ) { sub in
+            return try await sub.readUntilEnd()
         }
         return .init(bytes: bytes, extensions: ext)
     }
 
     public func encode(to stream: StreamWriter) async throws {
-        try await stream.withSubStreamWriter(sizedBy: UInt24.self)
-        { stream in
-            try await stream.write(bytes)
+        try await stream.withSubStreamWriter(sizedBy: UInt24.self) { sub in
+            try await sub.write(bytes)
         }
-        try await stream.withSubStreamWriter(sizedBy: UInt16.self)
-        { stream in
-            try await stream.write(extensions)
+        try await stream.withSubStreamWriter(sizedBy: UInt16.self) { sub in
+            try await sub.write(extensions)
         }
     }
 }

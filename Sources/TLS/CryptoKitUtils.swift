@@ -47,7 +47,7 @@ extension AES.GCM {
 
 extension SymmetricKey {
     var bytes: [UInt8] {
-        self.withUnsafeBytes{ [UInt8]($0) }
+        self.withUnsafeBytes { [UInt8]($0) }
     }
 }
 

@@ -11,7 +11,7 @@ let bytes: [UInt8] = [
     0x6b, 0x68, 0x76, 0xa1, 0xfd, 0x31, 0x94, 0x75,
     // session id length
     0x20,
-    //session id
+    // session id
     0xf5, 0x35, 0x67, 0x91, 0xe0, 0x9c, 0x62, 0x3d,
     0xe8, 0x7c, 0x77, 0x20, 0x2f, 0x3c, 0x22, 0xcc,
     0x71, 0x9d, 0x7e, 0xb5, 0xef, 0x23, 0x58, 0xfe,
@@ -148,7 +148,7 @@ test("encode client hello") {
             .tls_aes_256_gcm_sha384,
             .tls_chacha20_poly1305_sha256,
             .tls_aes_128_gcm_sha256,
-            //.deprecated(.tls_empty_renegotiation_info_scsv)
+            // .deprecated(.tls_empty_renegotiation_info_scsv)
         ],
         compressionMethods: [.none],
         extensions: [

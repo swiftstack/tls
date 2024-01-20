@@ -24,8 +24,8 @@ extension Record.Header {
     init(
         type: Record.ContentType,
         version: Version = .tls12,
-        payloadLength: Int)
-    {
+        payloadLength: Int
+    ) {
         self.rawType = type.rawValue
         self.rawVersion = version.rawValue
         self.rawLength = UInt16(payloadLength)
@@ -86,17 +86,18 @@ extension Record {
         let type = try await ContentType.decode(from: stream)
 
         let version = try await Version.decode(from: stream)
-        let content = try await stream.withSubStreamReader(sizedBy: UInt16.self)
-        { stream -> Content in
+        let content = try await stream.withSubStreamReader(
+            sizedBy: UInt16.self
+        ) { sub -> Content in
             switch type {
             case .changeChiperSpec:
-                return .changeChiperSpec(try await .decode(from: stream))
+                return .changeChiperSpec(try await .decode(from: sub))
             case .alert:
-                return .alert(try await .decode(from: stream))
+                return .alert(try await .decode(from: sub))
             case .handshake:
-                return .handshake(try await .decode(from: stream))
+                return .handshake(try await .decode(from: sub))
             case .applicationData:
-                return .applicationData(try await .decode(from: stream))
+                return .applicationData(try await .decode(from: sub))
             case .heartbeat:
                 return .heartbeat
             }
@@ -120,9 +121,8 @@ extension Record {
         try await version.encode(to: stream)
 
         func write(_ encodable: StreamEncodable) async throws {
-            try await stream.withSubStreamWriter(sizedBy: UInt16.self)
-            { stream in
-                try await encodable.encode(to: stream)
+            try await stream.withSubStreamWriter(sizedBy: UInt16.self) { sub in
+                try await encodable.encode(to: sub)
             }
         }
 

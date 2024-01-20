@@ -3,17 +3,15 @@ public class PerRecordNonce {
     var sequenceNumber: UInt64
 
     public var nextIV: [UInt8] {
-        get {
-            var result = baseIV
-            result ^= sequenceNumber
-            sequenceNumber += 1
-            return result
-        }
+        var result = baseIV
+        result ^= sequenceNumber
+        sequenceNumber += 1
+        return result
     }
 
     public init(baseIV: [UInt8]) {
-        //An AEAD algorithm where N_MAX is less than 8 bytes
-        //   MUST NOT be used with TLS.
+        // An AEAD algorithm where N_MAX is less than 8 bytes
+        //    MUST NOT be used with TLS.
         precondition(baseIV.count >= 8)
         self.baseIV = baseIV
         self.sequenceNumber = 0
@@ -21,7 +19,7 @@ public class PerRecordNonce {
 }
 
 extension Array where Element == UInt8 {
-    fileprivate static func ^=(lhs: inout Self, rhs: UInt64) {
+    fileprivate static func ^= (lhs: inout Self, rhs: UInt64) {
         lhs.withUnsafeMutableBufferPointer { buffer in
             Swift.withUnsafeBytes(of: rhs.bigEndian) { bytes in
                 for i in 0..<8 {
@@ -33,7 +31,7 @@ extension Array where Element == UInt8 {
 }
 
 extension PerRecordNonce: Equatable {
-    public static func ==(lhs: PerRecordNonce, rhs: PerRecordNonce) -> Bool {
+    public static func == (lhs: PerRecordNonce, rhs: PerRecordNonce) -> Bool {
         return lhs.baseIV == rhs.baseIV
             && lhs.sequenceNumber == rhs.sequenceNumber
     }

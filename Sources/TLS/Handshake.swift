@@ -50,29 +50,32 @@ extension Handshake {
         let rawType = try await stream.read(UInt8.self)
         guard let type = ContentType(rawValue: rawType) else {
             #if DEBUG
-            return .obsolete(try await .decodeContent(rawType: rawType, from: stream))
+            return .obsolete(try await .decodeContent(
+                rawType: rawType,
+                from: stream))
             #else
             throw TLSError.invalidHandshakeType
             #endif
         }
 
-        return try await stream.withSubStreamReader(sizedBy: UInt24.self)
-        { stream in
+        return try await stream.withSubStreamReader(
+            sizedBy: UInt24.self
+        ) { sub in
             switch type {
             case .clientHello:
-                return .clientHello(try await .decode(from: stream))
+                return .clientHello(try await .decode(from: sub))
             case .serverHello:
-                return .serverHello(try await .decode(from: stream))
+                return .serverHello(try await .decode(from: sub))
             case .newSessionTicket:
-                return .newSessionTicket(try await .decode(from: stream))
+                return .newSessionTicket(try await .decode(from: sub))
             case .certificate:
-                return .certificate(try await .decode(from: stream))
+                return .certificate(try await .decode(from: sub))
             case .certificateVerify:
-                return .certificateVerify(try await .decode(from: stream))
+                return .certificateVerify(try await .decode(from: sub))
             case .encryptedExtensions:
-                return .encryptedExtensions(try await .decode(from: stream))
+                return .encryptedExtensions(try await .decode(from: sub))
             case .finished:
-                return .finished(try await .decode(from: stream))
+                return .finished(try await .decode(from: sub))
             default:
                 throw TLSError.invalidHandshake
             }
@@ -87,25 +90,24 @@ extension Handshake {
         }
         #endif
 
-        func write(rawType type: ContentType) async throws {
+        func write(_ type: ContentType) async throws {
             try await stream.write(type.rawValue)
         }
 
         switch self {
-        case .clientHello: try await write(rawType: .clientHello)
-        case .serverHello: try await write(rawType: .serverHello)
-        case .newSessionTicket: try await write(rawType: .newSessionTicket)
-        case .certificate: try await write(rawType: .certificate)
-        case .certificateVerify: try await write(rawType: .certificateVerify)
-        case .encryptedExtensions: try await write(rawType: .encryptedExtensions)
-        case .finished: try await write(rawType: .finished)
+        case .clientHello: try await write(.clientHello)
+        case .serverHello: try await write(.serverHello)
+        case .newSessionTicket: try await write(.newSessionTicket)
+        case .certificate: try await write(.certificate)
+        case .certificateVerify: try await write(.certificateVerify)
+        case .encryptedExtensions: try await write(.encryptedExtensions)
+        case .finished: try await write(.finished)
         default: fatalError("not implemented")
         }
 
         func write(_ encodable: StreamEncodable) async throws {
-            try await stream.withSubStreamWriter(sizedBy: UInt24.self)
-            { stream in
-                try await encodable.encode(to: stream)
+            try await stream.withSubStreamWriter(sizedBy: UInt24.self) { sub in
+                try await encodable.encode(to: sub)
             }
         }
 

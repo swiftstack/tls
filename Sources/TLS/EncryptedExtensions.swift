@@ -1,18 +1,18 @@
 import Stream
 
-//+--------------------------------------------------+-------------+
-//| Encrypted Extension                              |     TLS 1.3 |
-//+--------------------------------------------------+-------------+
-//| server_name [RFC6066]                            |      CH, EE |
-//| max_fragment_length [RFC6066]                    |      CH, EE |
-//| supported_groups [RFC7919]                       |      CH, EE |
-//| use_srtp [RFC5764]                               |      CH, EE |
-//| heartbeat [RFC6520]                              |      CH, EE |
-//| application_layer_protocol_negotiation [RFC7301] |      CH, EE |
-//| client_certificate_type [RFC7250]                |      CH, EE |
-//| server_certificate_type [RFC7250]                |      CH, EE |
-//| early_data (RFC 8446)                            | CH, EE, NST |
-//+--------------------------------------------------+-------------+
+// +--------------------------------------------------+-------------+
+// | Encrypted Extension                              |     TLS 1.3 |
+// +--------------------------------------------------+-------------+
+// | server_name [RFC6066]                            |      CH, EE |
+// | max_fragment_length [RFC6066]                    |      CH, EE |
+// | supported_groups [RFC7919]                       |      CH, EE |
+// | use_srtp [RFC5764]                               |      CH, EE |
+// | heartbeat [RFC6520]                              |      CH, EE |
+// | application_layer_protocol_negotiation [RFC7301] |      CH, EE |
+// | client_certificate_type [RFC7250]                |      CH, EE |
+// | server_certificate_type [RFC7250]                |      CH, EE |
+// | early_data (RFC 8446)                            | CH, EE, NST |
+// +--------------------------------------------------+-------------+
 
 public struct EncryptedExtensions: Equatable {
     var items: [Extension.Encrypted]
@@ -27,12 +27,12 @@ extension Extension {
         case serverName(ServerName?)
         case recordSizeLimit(RecordSizeLimit)
         case supportedGroups(SupportedGroups)
-        //case useSRTP(UseSRTP)
+        // case useSRTP(UseSRTP)
         case heartbeat(Heartbeat)
         case alpn(ALPN)
-        //case clientCertificateType(ClientSertificateType)
-        //case serverCertificateType(ServerSertificateType)
-        //case earlyData(EarlyData)
+        // case clientCertificateType(ClientSertificateType)
+        // case serverCertificateType(ServerSertificateType)
+        // case earlyData(EarlyData)
         case obsolete(Obsolete)
         case unknown(Unknown)
     }
@@ -62,21 +62,20 @@ extension Extension.Encrypted: StreamDecodable {
             }
         }
 
-        return try await stream.withSubStreamReader(limitedBy: length)
-        { stream in
+        return try await stream.withSubStreamReader(limitedBy: length) { sub in
             switch type {
             case .serverName:
-                return .serverName(try await .decode(from: stream))
+                return .serverName(try await .decode(from: sub))
             case .recordSizeLimit:
-                return .recordSizeLimit(try await .decode(from: stream))
+                return .recordSizeLimit(try await .decode(from: sub))
             case .supportedGroups:
-                return .supportedGroups(try await .decode(from: stream))
+                return .supportedGroups(try await .decode(from: sub))
             case .heartbeat:
-                return .heartbeat(try await .decode(from: stream))
+                return .heartbeat(try await .decode(from: sub))
             case .alpn:
-                return .alpn(try await .decode(from: stream))
+                return .alpn(try await .decode(from: sub))
             default:
-                return .obsolete(try await .decodeContent(for: type, from: stream))
+                return .obsolete(try await .decodeContent(for: type, from: sub))
             }
         }
     }
@@ -97,13 +96,13 @@ extension Extension.Encrypted: StreamEncodable {
         default: return
         }
 
-        try await stream.withSubStreamWriter(sizedBy: UInt16.self) { stream in
+        try await stream.withSubStreamWriter(sizedBy: UInt16.self) { sub in
             switch self {
-            case .serverName(let .some(value)): try await value.encode(to: stream)
-            case .recordSizeLimit(let value): try await value.encode(to: stream)
-            case .supportedGroups(let value): try await value.encode(to: stream)
-            case .heartbeat(let value): try await value.encode(to: stream)
-            case .alpn(let value): try await value.encode(to: stream)
+            case .serverName(let .some(value)): try await value.encode(to: sub)
+            case .recordSizeLimit(let value): try await value.encode(to: sub)
+            case .supportedGroups(let value): try await value.encode(to: sub)
+            case .heartbeat(let value): try await value.encode(to: sub)
+            case .alpn(let value): try await value.encode(to: sub)
             default: return
             }
         }

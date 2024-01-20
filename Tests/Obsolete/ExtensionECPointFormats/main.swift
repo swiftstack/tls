@@ -16,12 +16,14 @@ let ecPointFormatExtensionBytes: [UInt8] =
     [0x00, 0x0b, 0x00, 0x04] + ecPointFormatBytes
 
 test("Decode") {
-    let result = try await ECPointFormats.decode(from: ecPointFormatBytes)
+    let result = try await ECPointFormats
+        .decode(from: ecPointFormatBytes)
     expect(result == ecPointFormats)
 }
 
 test("DecodeExtension") {
-    let result = try await Extension.Obsolete.decode(from: ecPointFormatExtensionBytes)
+    let result = try await Extension.Obsolete
+        .decode(from: ecPointFormatExtensionBytes)
     expect(result == .ecPointFormats(ecPointFormats))
 }
 
@@ -31,7 +33,8 @@ test("Encode") {
 }
 
 test("EncodeExtension") {
-    let formatsExtension = Extension.Obsolete.ecPointFormats(ecPointFormats)
+    let formatsExtension = Extension.Obsolete
+        .ecPointFormats(ecPointFormats)
     let result = try await formatsExtension.encode()
     expect(result == ecPointFormatExtensionBytes)
 }

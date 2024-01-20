@@ -27,13 +27,13 @@ public struct ClientHello: Equatable {
 
 extension ClientHello {
     public static func decode(from stream: StreamReader) async throws -> Self {
-        return .init(
-            version: try await Version.decode(from: stream),
-            random: try await Random.decode(from: stream),
-            sessionId: try await SessionId.decode(from: stream),
-            ciperSuites: try await CiperSuites.decode(from: stream),
-            compressionMethods: try await CompressionMethods.decode(from: stream),
-            extensions: try await Extensions.decode(from: stream))
+        .init(
+            version: try await .decode(from: stream),
+            random: try await .decode(from: stream),
+            sessionId: try await .decode(from: stream),
+            ciperSuites: try await .decode(from: stream),
+            compressionMethods: try await .decode(from: stream),
+            extensions: try await .decode(from: stream))
     }
 
     public func encode(to stream: StreamWriter) async throws {

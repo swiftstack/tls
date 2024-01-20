@@ -5,7 +5,8 @@ public struct Session {
     public let certificate: [UInt8]?
     public let compressionMethod: CompressionMethod
     public let cipherSpec: CipherSpec
-    public let masterSecret: [UInt8] // 48-byte secret shared between the client and server.
+    // 48-byte secret shared between the client and server.
+    public let masterSecret: [UInt8]
     public let isResumable: Bool
 }
 

@@ -1,7 +1,7 @@
 struct GenericBlockCipher {
     let content: [UInt8] // SSLCompressed.length
     let MAC: [UInt8] // CipherSpec.hash_size
-    let padding: [UInt8] //GenericBlockCipher.padding_length
+    let padding: [UInt8] // GenericBlockCipher.padding_length
     let padding_length: UInt8
 }
 

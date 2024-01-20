@@ -82,9 +82,8 @@ extension Extension.Obsolete: StreamDecodable {
             return try empty(rawType: type)
         }
 
-        return try await stream.withSubStreamReader(limitedBy: length)
-        { stream in
-            try await decodeContent(for: type, from: stream)
+        return try await stream.withSubStreamReader(limitedBy: length) { sub in
+            try await decodeContent(for: type, from: sub)
         }
     }
 }
@@ -96,24 +95,38 @@ extension Extension.Obsolete: StreamEncodable {
         }
 
         switch self {
-        case .ecPointFormats: try await write(.ecPointFormats)
-        case .sessionTicket: try await write(.sessionTicket)
-        case .statusRequest: try await write(.statusRequest)
-        case .encryptThenMac: try await write(.encryptThenMac)
-        case .extendedMasterSecret: try await write(.extendedMasterSecret)
-        case .nextProtocolNegotiation: try await write(.nextProtocolNegotiation)
-        case .renegotiationInfo: try await write(.renegotiationInfo)
+        case .ecPointFormats:
+            try await write(.ecPointFormats)
+        case .sessionTicket:
+            try await write(.sessionTicket)
+        case .statusRequest:
+            try await write(.statusRequest)
+        case .encryptThenMac:
+            try await write(.encryptThenMac)
+        case .extendedMasterSecret:
+            try await write(.extendedMasterSecret)
+        case .nextProtocolNegotiation:
+            try await write(.nextProtocolNegotiation)
+        case .renegotiationInfo:
+            try await write(.renegotiationInfo)
         }
 
-        try await stream.withSubStreamWriter(sizedBy: UInt16.self) { stream in
+        try await stream.withSubStreamWriter(sizedBy: UInt16.self) { sub in
             switch self {
-            case .ecPointFormats(let value): try await value.encode(to: stream)
-            case .sessionTicket(let value): try await value.encode(to: stream)
-            case .statusRequest(let value): try await value.encode(to: stream)
-            case .encryptThenMac(let value): try await value.encode(to: stream)
-            case .extendedMasterSecret(let value): try await value.encode(to: stream)
-            case .nextProtocolNegotiation(let value): try await value.encode(to: stream)
-            case .renegotiationInfo(let value): try await value.encode(to: stream)
+            case .ecPointFormats(let value):
+                try await value.encode(to: sub)
+            case .sessionTicket(let value):
+                try await value.encode(to: sub)
+            case .statusRequest(let value):
+                try await value.encode(to: sub)
+            case .encryptThenMac(let value):
+                try await value.encode(to: sub)
+            case .extendedMasterSecret(let value):
+                try await value.encode(to: sub)
+            case .nextProtocolNegotiation(let value):
+                try await value.encode(to: sub)
+            case .renegotiationInfo(let value):
+                try await value.encode(to: sub)
             }
         }
     }
