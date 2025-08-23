@@ -1,0 +1,18 @@
+import Testing
+@testable import TLS
+
+@Test
+func `per record nonce`() async throws {
+    let baseIV: [UInt8] = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
+    let nonce = PerRecordNonce(baseIV: baseIV)
+
+    #expect(nonce.baseIV == baseIV)
+    #expect(nonce.sequenceNumber == 0)
+    #expect(nonce.nextIV == baseIV)
+    #expect(nonce.sequenceNumber == 1)
+    #expect(nonce.baseIV == baseIV)
+
+    #expect(nonce.nextIV == [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01])
+    #expect(nonce.nextIV == [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02])
+    #expect(nonce.nextIV == [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03])
+}

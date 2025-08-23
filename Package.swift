@@ -16,7 +16,6 @@ let package = Package(
         .package(name: "Platform"),
         .package(name: "Crypto"),
         .package(name: "Stream"),
-        .package(name: "Test"),
     ],
     targets: [
         .target(
@@ -26,6 +25,16 @@ let package = Package(
                 .product(name: "Crypto", package: "crypto"),
                 .product(name: "Stream", package: "stream"),
             ]),
+        .testTarget(
+            name: "Obsolete",
+            dependencies: [
+                .target(name: "TLS"),
+            ]),
+        .testTarget(
+            name: "TLSTests",
+            dependencies: [
+                .target(name: "TLS"),
+            ]),
     ]
 )
 
@@ -33,64 +42,6 @@ let package = Package(
 package.dependencies.append(.package(name: "CryptoKit"))
 package.targets[0].dependencies.append("CryptoKit")
 #endif
-
-// MARK: - tests
-
-testTarget("TLS") { test in
-    test("Alert")
-    test("Certificate")
-    test("ChangeCipherSpec")
-    test("ClientHello")
-    test("ClientSession")
-    test("ExtensionALPN")
-    test("ExtensionEncryptedExtensions")
-    test("ExtensionExtendedMasterSecret")
-    test("ExtensionHeartbeat")
-    test("ExtensionKeyShare")
-    test("ExtensionNextProtocolNegotiation")
-    test("ExtensionPostHandshakeAuth")
-    test("ExtensionPSKKeyExchangeModes")
-    test("ExtensionServerName")
-    test("ExtensionSignatureAlgorithms")
-    test("ExtensionSupportedGroups")
-    test("ExtensionSupportedVersions")
-    test("Handshake")
-    test("Heartbeat")
-    test("Keys")
-    test("NewSessionTicket")
-    test("PerRecordNonce")
-    test("Random")
-    test("Record")
-    test("ServerHello")
-    test("Version")
-}
-
-testTarget("Obsolete") { test in
-    test("CertificateStatus")
-    test("ClientKeyExchange")
-    test("ExtensionECPointFormats")
-    test("ExtensionEncryptThenMac")
-    test("ExtensionRenegotiationInfo")
-    test("ExtensionSessionTicket")
-    test("ExtensionStatusRequest")
-    test("ServerHelloDone")
-    test("ServerKeyExchange")
-}
-
-func testTarget(_ target: String, task: ((String) -> Void) -> Void) {
-    task { test in addTest(target: target, name: test) }
-}
-
-func addTest(target: String, name: String) {
-    package.targets.append(
-        .executableTarget(
-            name: "Tests/\(target)/\(name)",
-            dependencies: [
-                .target(name: "TLS"),
-                .product(name: "Test", package: "test"),
-            ],
-            path: "Tests/\(target)/\(name)"))
-}
 
 // MARK: - custom package source
 
