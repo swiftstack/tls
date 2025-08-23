@@ -1,7 +1,7 @@
 import Stream
 
 extension Extension {
-    public struct ServerNames: Equatable {
+    public struct ServerNames: Equatable, Sendable {
         var items: [ServerName]
 
         init(_ items: [ServerName]) {
@@ -11,8 +11,8 @@ extension Extension {
 }
 
 extension Extension {
-    public struct ServerName: Equatable {
-        public enum NameType: UInt8 {
+    public struct ServerName: Equatable, Sendable {
+        public enum NameType: UInt8, Sendable {
             case hostName = 0
         }
         public let type: NameType

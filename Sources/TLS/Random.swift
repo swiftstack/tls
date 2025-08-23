@@ -1,7 +1,7 @@
 import Stream
 import Platform
 
-public struct Random: Equatable {
+public struct Random: Equatable, Sendable {
     public let time: Int
     public let bytes: [UInt8]
 

@@ -1,6 +1,6 @@
 import Stream
 
-public struct ApplicationData: Equatable {
+public struct ApplicationData: Equatable, Sendable {
     let bytes: [UInt8]
 }
 

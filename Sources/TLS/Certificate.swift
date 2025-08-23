@@ -1,12 +1,12 @@
 import UInt24
 import Stream
 
-public struct Certificates: Equatable {
+public struct Certificates: Equatable, Sendable {
     let context: UInt8
     let sertificates: [Certificate]
 }
 
-public struct Certificate: Equatable {
+public struct Certificate: Equatable, Sendable {
     let bytes: [UInt8]
     let extensions: [UInt8]
 }

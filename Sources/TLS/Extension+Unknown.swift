@@ -1,7 +1,7 @@
 import Stream
 
 extension Extension {
-    public struct Unknown: Equatable {
+    public struct Unknown: Equatable, Sendable {
         let rawType: UInt16
         let content: [UInt8]
 

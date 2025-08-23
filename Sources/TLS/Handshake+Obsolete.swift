@@ -2,7 +2,7 @@ import Crypto
 import Stream
 
 extension Handshake {
-    public enum Obsolete: Equatable {
+    public enum Obsolete: Equatable, Sendable {
         case helloRequest
         case helloVerifyRequest
         case serverKeyExchange(ServerKeyExchange)

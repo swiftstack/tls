@@ -1,7 +1,7 @@
 import Stream
 
 extension Extension {
-    public struct ALPN: Equatable {
+    public struct ALPN: Equatable, Sendable {
         var items: [NextProtocol]
 
         init(_ items: [NextProtocol]) {
@@ -11,7 +11,7 @@ extension Extension {
 }
 
 extension Extension.ALPN {
-    public enum NextProtocol: RawRepresentable, Equatable {
+    public enum NextProtocol: RawRepresentable, Equatable, Sendable {
         case http2
         case http11
         case unkwnown(String)

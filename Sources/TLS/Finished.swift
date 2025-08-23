@@ -1,6 +1,6 @@
 import Stream
 
-public struct Finished: Equatable {
+public struct Finished: Equatable, Sendable {
     let hmac: [UInt8]
 }
 

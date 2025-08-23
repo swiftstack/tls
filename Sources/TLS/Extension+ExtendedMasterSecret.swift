@@ -1,7 +1,7 @@
 import Stream
 
 extension Extension {
-    public struct ExtendedMasterSecret: Equatable {
+    public struct ExtendedMasterSecret: Equatable, Sendable {
         public init() {
 
         }

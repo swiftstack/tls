@@ -1,6 +1,6 @@
 import Stream
 
-public struct Record: Equatable {
+public struct Record: Equatable, Sendable {
     public let version: Version
     public let content: Content
 
@@ -58,7 +58,7 @@ extension Record {
         case heartbeat = 24
     }
 
-    public enum Content: Equatable {
+    public enum Content: Equatable, Sendable {
         case changeChiperSpec(ChangeCiperSpec)
         case alert(Alert)
         case handshake(Handshake)

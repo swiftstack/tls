@@ -1,7 +1,7 @@
 import Stream
 
 extension Extension {
-    public struct RecordSizeLimit: Equatable {
+    public struct RecordSizeLimit: Equatable, Sendable {
         public let value: Int
 
         public init(_ value: Int) {

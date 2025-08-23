@@ -1,6 +1,6 @@
 import Stream
 
-public struct ServerKeyExchange: Equatable {
+public struct ServerKeyExchange: Equatable, Sendable {
     public enum CurveType: UInt8 {
         case namedCurve = 0x03
     }

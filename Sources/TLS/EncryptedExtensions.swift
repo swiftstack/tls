@@ -14,7 +14,7 @@ import Stream
 // | early_data (RFC 8446)                            | CH, EE, NST |
 // +--------------------------------------------------+-------------+
 
-public struct EncryptedExtensions: Equatable {
+public struct EncryptedExtensions: Equatable, Sendable {
     var items: [Extension.Encrypted]
 
     init(_ items: [Extension.Encrypted]) {
@@ -23,7 +23,7 @@ public struct EncryptedExtensions: Equatable {
 }
 
 extension Extension {
-    public enum Encrypted: Equatable {
+    public enum Encrypted: Equatable, Sendable {
         case serverName(ServerName?)
         case recordSizeLimit(RecordSizeLimit)
         case supportedGroups(SupportedGroups)

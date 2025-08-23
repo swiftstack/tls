@@ -1,6 +1,6 @@
 import Stream
 
-public struct CompressionMethods: Equatable {
+public struct CompressionMethods: Equatable, Sendable {
     var items: [CompressionMethod]
 
     init(_ items: [CompressionMethod]) {
@@ -8,7 +8,7 @@ public struct CompressionMethods: Equatable {
     }
 }
 
-public enum CompressionMethod: UInt8 {
+public enum CompressionMethod: UInt8, Sendable {
     case none = 0
 }
 

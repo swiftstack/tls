@@ -1,7 +1,7 @@
 import Stream
 
 extension Extension {
-    public struct ECPointFormats: Equatable {
+    public struct ECPointFormats: Equatable, Sendable {
         typealias LengthType = UInt8
 
         var items: [ECPointFormat]
@@ -13,7 +13,7 @@ extension Extension {
 }
 
 extension Extension {
-    public enum ECPointFormat: UInt8 {
+    public enum ECPointFormat: UInt8, Sendable {
         case uncompressed = 0x00
         case ansiX962_compressed_prime = 0x01
         case ansiX962_compressed_char2 = 0x02

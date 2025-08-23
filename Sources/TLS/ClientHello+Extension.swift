@@ -42,7 +42,7 @@ extension ClientHello {
     public typealias Obsolete = TLS.Extension.Obsolete
     public typealias Unknown = TLS.Extension.Unknown
 
-    public struct Extensions: Equatable {
+    public struct Extensions: Equatable, Sendable {
         var items: [Extension]
 
         init(_ items: [Extension]) {
@@ -50,7 +50,7 @@ extension ClientHello {
         }
     }
 
-    public enum Extension: Equatable {
+    public enum Extension: Equatable, Sendable {
         case serverName(ServerNames)
         case supportedGroups(SupportedGroups)
         case signatureAlgorithms(SignatureAlgorithms)

@@ -41,13 +41,12 @@ extension ClientSession {
             return try await perform(helloBytes: helloBytes)
         }
 
-        // FIXME: [Concurrency] crash
-        // func perform(
-        //     using hello: ClientHello
-        // ) async throws -> HandshakeDerivedKeys {
-        //     let helloBytes = try await Handshake.clientHello(hello).encode()
-        //     try await perform(helloBytes: helloBytes)
-        // }
+         func perform(
+             using hello: ClientHello
+         ) async throws -> HandshakeDerivedKeys {
+             let helloBytes = try await Handshake.clientHello(hello).encode()
+             return try await perform(helloBytes: helloBytes)
+         }
 
         func perform(helloBytes: [UInt8]) async throws -> HandshakeDerivedKeys {
             try await sendHello(helloBytes)
@@ -56,7 +55,7 @@ extension ClientSession {
             guard let publicKey = serverHello.publicKey else {
                 throw TLSError.invalidKeyExchange
             }
-            let keys = try Keys<SHA256>.handshakeKeys(
+            var keys = try Keys<SHA256>.handshakeKeys(
                 sharedSecret: privateKey.sharedSecret(with: publicKey),
                 transcriptHash: hash.finalize())
 
@@ -80,7 +79,7 @@ extension ClientSession {
                 ) { buffer in
                     try decrypt(
                         buffer,
-                        using: keys.traffic.read,
+                        using: &keys.traffic.read,
                         authenticating: ad)
                 }
 
@@ -96,7 +95,7 @@ extension ClientSession {
                         hash.update(data: try await handshake.encode())
                         let derivedKeys = deriveKeys(masterSecret: keys.master)
                         // note: hash changes here again
-                        try await sendFinished(using: keys)
+                        try await sendFinished(using: &keys)
                         return derivedKeys
                     } else {
                         hash.update(data: try await handshake.encode())
@@ -142,7 +141,7 @@ extension ClientSession {
             return .init(master: masterSecret, trafficSecrets: trafficSecrets)
         }
 
-        func sendFinished(using keys: HandshakeKeys) async throws {
+        func sendFinished(using keys: inout HandshakeKeys) async throws {
             let hmac = hash.hmac(using: keys.finished.write)
             let finished = Handshake.finished(.init(hmac: [UInt8](hmac)))
             let encoded = try await finished.encode()
@@ -151,13 +150,13 @@ extension ClientSession {
             try await send(
                 contentType: .handshake,
                 payload: encoded,
-                keys: keys.traffic.write)
+                keys: &keys.traffic.write)
         }
 
         private func send(
             contentType: Record.ContentType,
             payload: [UInt8],
-            keys: PeerTrafficKeys
+            keys: inout PeerTrafficKeys
         ) async throws {
             let authTagSize = 16
 
@@ -172,7 +171,7 @@ extension ClientSession {
 
             let encryptedPayload = try encrypt(
                 payload,
-                using: keys,
+                using: &keys,
                 authenticating: headerBytes)
 
             try await send(header: header, payload: encryptedPayload)

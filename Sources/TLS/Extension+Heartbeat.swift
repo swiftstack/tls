@@ -1,8 +1,8 @@
 import Stream
 
 extension Extension {
-    public struct Heartbeat: Equatable {
-        public enum Mode: UInt8 {
+    public struct Heartbeat: Equatable, Sendable {
+        public enum Mode: UInt8, Sendable {
             case allowed = 1
         }
         public let mode: Mode

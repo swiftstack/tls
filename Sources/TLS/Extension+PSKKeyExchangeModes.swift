@@ -3,7 +3,7 @@ import Stream
 // https://tools.ietf.org/html/rfc8446#section-4.2.9
 
 extension Extension {
-    public struct PSKKeyExchangeModes: Equatable {
+    public struct PSKKeyExchangeModes: Equatable, Sendable {
         var items: [PSKKeyExchangeMode]
 
         init(_ items: [PSKKeyExchangeMode]) {
@@ -13,7 +13,7 @@ extension Extension {
 }
 
 extension Extension {
-    public enum PSKKeyExchangeMode: UInt8, Equatable {
+    public enum PSKKeyExchangeMode: UInt8, Sendable {
         case psk_ke = 0
         case psk_dhe_ke = 1
     }

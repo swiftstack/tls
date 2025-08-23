@@ -1,7 +1,7 @@
 import Stream
 
 extension Extension {
-    public struct SupportedVersions: Equatable {
+    public struct SupportedVersions: Equatable, Sendable {
         let items: [Version]
 
         init(_ items: [Version]) {

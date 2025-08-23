@@ -88,26 +88,22 @@ class ClientSession<T: Stream> {
     }
 
     func send(_ bytes: UnsafeRawBufferPointer) async throws {
-        guard let keys = trafficKeys else {
-            fatalError("invalid traffic keys")
-        }
+        precondition(trafficKeys != nil, "invalid traffic keys")
         try await send(
             contentType: .applicationData,
             payload: bytes,
-            keys: keys.write)
+            keys: &trafficKeys!.write)
     }
 
     func receive() async throws -> [UInt8] {
-        guard let keys = trafficKeys else {
-            fatalError("invalid traffic keys")
-        }
-        return try await receive(keys: keys.read)
+        precondition(trafficKeys != nil, "invalid traffic keys")
+        return try await receive(keys: &trafficKeys!.read)
     }
 
     private func send(
         contentType: Record.ContentType,
         payload: UnsafeRawBufferPointer,
-        keys: PeerTrafficKeys
+        keys: inout PeerTrafficKeys
     ) async throws {
         let authTagSize = 16
 
@@ -121,7 +117,7 @@ class ClientSession<T: Stream> {
 
         let encryptedPayload = try encrypt(
             payload,
-            using: keys,
+            using: &keys,
             authenticating: headerBytes)
 
         try await send(header: header, payload: encryptedPayload)
@@ -133,7 +129,7 @@ class ClientSession<T: Stream> {
         try await stream.flush()
     }
 
-    private func receive(keys: PeerTrafficKeys) async throws -> [UInt8] {
+    private func receive(keys: inout PeerTrafficKeys) async throws -> [UInt8] {
         while try await stream.cache(count: 5) {
             let ad = try await stream.peek(count: 5, as: [UInt8].self)
             let header = try await Record.Header.decode(from: stream)
@@ -146,7 +142,7 @@ class ClientSession<T: Stream> {
             }
 
             let data = try await stream.read(count: header.length) { buffer in
-                try decrypt(buffer, using: keys, authenticating: ad)
+                try decrypt(buffer, using: &keys, authenticating: ad)
             }
 
             guard let rawContentType = data.last,

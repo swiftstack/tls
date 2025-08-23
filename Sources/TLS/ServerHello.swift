@@ -1,6 +1,6 @@
 import Stream
 
-public struct ServerHello: Equatable {
+public struct ServerHello: Equatable, Sendable {
     public let version: Version
     public let random: Random
     public let sessionId: SessionId // [0..32]

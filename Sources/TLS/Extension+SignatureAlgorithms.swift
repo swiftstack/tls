@@ -1,7 +1,7 @@
 import Stream
 
 extension Extension {
-    public struct SignatureAlgorithms: Equatable {
+    public struct SignatureAlgorithms: Equatable, Sendable {
         var items: [SignatureAlgorithm]
 
         init(_ items: [SignatureAlgorithm]) {
@@ -13,7 +13,7 @@ extension Extension {
 // https://tools.ietf.org/html/rfc8446#section-4.2.3
 
 extension Extension {
-    public enum SignatureAlgorithm: RawRepresentable, Equatable {
+    public enum SignatureAlgorithm: RawRepresentable, Equatable, Sendable {
         case rsa_pkcs1_sha256
         case rsa_pkcs1_sha384
         case rsa_pkcs1_sha512

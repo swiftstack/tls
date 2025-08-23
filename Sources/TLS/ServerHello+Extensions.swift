@@ -15,7 +15,7 @@ extension ServerHello {
     public typealias Obsolete = TLS.Extension.Obsolete
     public typealias Unknown = TLS.Extension.Unknown
 
-    public struct Extensions: Equatable {
+    public struct Extensions: Equatable, Sendable {
         var items: [Extension]
 
         init(_ items: [Extension]) {
@@ -48,7 +48,7 @@ extension ServerHello {
         }
     }
 
-    public enum Extension: Equatable {
+    public enum Extension: Equatable, Sendable {
         case supportedVersions(Version)
         case keyShare(KeyShare)
         case obsolete(Obsolete)

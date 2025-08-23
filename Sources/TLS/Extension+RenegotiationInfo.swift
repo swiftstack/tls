@@ -1,7 +1,7 @@
 import Stream
 
 extension Extension {
-    public struct RenegotiationInfo: Equatable {
+    public struct RenegotiationInfo: Equatable, Sendable {
         let renegotiatedConnection: [UInt8]
 
         public init(renegotiatedConnection: [UInt8] = []) {

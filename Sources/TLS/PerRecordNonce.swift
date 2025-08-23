@@ -1,12 +1,14 @@
-public class PerRecordNonce {
+public struct PerRecordNonce: Equatable, Sendable {
     let baseIV: [UInt8]
     var sequenceNumber: UInt64
 
     public var nextIV: [UInt8] {
-        var result = baseIV
-        result ^= sequenceNumber
-        sequenceNumber += 1
-        return result
+        mutating get {
+            var result = baseIV
+            result ^= sequenceNumber
+            sequenceNumber += 1
+            return result
+        }
     }
 
     public init(baseIV: [UInt8]) {
@@ -27,12 +29,5 @@ extension Array where Element == UInt8 {
                 }
             }
         }
-    }
-}
-
-extension PerRecordNonce: Equatable {
-    public static func == (lhs: PerRecordNonce, rhs: PerRecordNonce) -> Bool {
-        return lhs.baseIV == rhs.baseIV
-            && lhs.sequenceNumber == rhs.sequenceNumber
     }
 }

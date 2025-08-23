@@ -1,13 +1,13 @@
 import Stream
 
-public struct NewSessionTicket: Equatable {
+public struct NewSessionTicket: Equatable, Sendable {
     public let lifetime: Int
     public let ageAdd: Int
     public let nonce: [UInt8]
     public let ticket: [UInt8]
     public let earlyDataIndication: EarlyDataIndication?
 
-    public struct EarlyDataIndication: Equatable {
+    public struct EarlyDataIndication: Equatable, Sendable {
         let maxSize: Int
     }
 }

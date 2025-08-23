@@ -1,7 +1,7 @@
 import Stream
 
 extension Extension {
-    public struct EncryptThenMac: Equatable {
+    public struct EncryptThenMac: Equatable, Sendable {
         public init() {
 
         }

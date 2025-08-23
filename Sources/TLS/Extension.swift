@@ -1,6 +1,6 @@
 import Stream
 
-public struct Extensions: Equatable {
+public struct Extensions: Equatable, Sendable {
     var items: [Extension.Obsolete]
 
     init(_ items: [Extension.Obsolete]) {
@@ -8,9 +8,9 @@ public struct Extensions: Equatable {
     }
 }
 
-public enum Extension: Equatable {
+public enum Extension: Equatable, Sendable {
     // prior to TLS 1.3
-    public enum Obsolete: Equatable {
+    public enum Obsolete: Equatable, Sendable {
         case ecPointFormats(ECPointFormats)
         case sessionTicket(SessionTicket)
         case statusRequest(StatusRequest)

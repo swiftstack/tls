@@ -1,6 +1,6 @@
 import Stream
 
-public enum ChangeCiperSpec: UInt8 {
+public enum ChangeCiperSpec: UInt8, Sendable {
     case `default` = 1
 }
 

@@ -1,7 +1,7 @@
 import Crypto
 import Stream
 
-public enum Handshake: Equatable {
+public enum Handshake: Equatable, Sendable {
     case clientHello(ClientHello)
     case serverHello(ServerHello)
     case endOfEarlyData

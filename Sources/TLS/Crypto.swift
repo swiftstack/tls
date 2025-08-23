@@ -2,7 +2,7 @@ import CryptoKit
 
 func encrypt(
     _ bytes: UnsafeRawBufferPointer,
-    using keys: PeerTrafficKeys,
+    using keys: inout PeerTrafficKeys,
     authenticating ad: [UInt8]
 ) throws -> [UInt8] {
     let cryptedBox = try AES.GCM.seal(
@@ -15,7 +15,7 @@ func encrypt(
 
 func decrypt(
     _ bytes: UnsafeRawBufferPointer,
-    using keys: PeerTrafficKeys,
+    using keys: inout PeerTrafficKeys,
     authenticating ad: [UInt8]
 ) throws -> [UInt8] {
     let sealedBox = try AES.GCM.SealedBox(
@@ -27,20 +27,20 @@ func decrypt(
 
 func encrypt(
     _ bytes: [UInt8],
-    using keys: PeerTrafficKeys,
+    using keys: inout PeerTrafficKeys,
     authenticating ad: [UInt8]
 ) throws -> [UInt8] {
     try bytes.withUnsafeBytes { bytes in
-        try encrypt(bytes, using: keys, authenticating: ad)
+        try encrypt(bytes, using: &keys, authenticating: ad)
     }
 }
 
 func decrypt(
     _ bytes: [UInt8],
-    using keys: PeerTrafficKeys,
+    using keys: inout PeerTrafficKeys,
     authenticating ad: [UInt8]
 ) throws -> [UInt8] {
     try bytes.withUnsafeBytes { bytes in
-        try decrypt(bytes, using: keys, authenticating: ad)
+        try decrypt(bytes, using: &keys, authenticating: ad)
     }
 }

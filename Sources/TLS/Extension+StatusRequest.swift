@@ -4,7 +4,7 @@ import Platform
 // https://tools.ietf.org/html/rfc4366#section-3.6
 
 extension Extension {
-    public enum StatusRequest: Equatable {
+    public enum StatusRequest: Equatable, Sendable {
         case none
         case ocsp(OCSPStatusRequest)
 
@@ -13,7 +13,7 @@ extension Extension {
         }
     }
 
-    public struct OCSPStatusRequest: Equatable {
+    public struct OCSPStatusRequest: Equatable, Sendable {
         public let responderIdList: [UInt8]
         public let extensions: [UInt8]
 

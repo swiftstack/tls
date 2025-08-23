@@ -2,7 +2,7 @@ import Stream
 
 extension Extension {
     // TODO: Implement
-    public struct NextProtocolNegotiation: Equatable {
+    public struct NextProtocolNegotiation: Equatable, Sendable {
         public let data: [UInt8]
 
         public static let none: NextProtocolNegotiation = .init(data: [])

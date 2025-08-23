@@ -1,6 +1,6 @@
 import Stream
 
-public struct ClientKeyExchange: Equatable {
+public struct ClientKeyExchange: Equatable, Sendable {
     public let pubkey: [UInt8]
 
     public init(pubkey: [UInt8]) {

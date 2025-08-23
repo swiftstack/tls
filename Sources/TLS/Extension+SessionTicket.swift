@@ -1,7 +1,7 @@
 import Stream
 
 extension Extension {
-    public struct SessionTicket: Equatable {
+    public struct SessionTicket: Equatable, Sendable {
         public let data: [UInt8]
 
         public init(data: [UInt8]) {

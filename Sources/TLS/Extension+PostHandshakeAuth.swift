@@ -1,7 +1,7 @@
 import Stream
 
 extension Extension {
-    public struct PostHandshakeAuth: Equatable {
+    public struct PostHandshakeAuth: Equatable, Sendable {
         public init() {
 
         }

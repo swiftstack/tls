@@ -1,7 +1,7 @@
 import Stream
 
 extension Extension {
-    public struct SupportedGroups: Equatable {
+    public struct SupportedGroups: Equatable, Sendable {
         var items: [SupportedGroup]
 
         init(_ items: [SupportedGroup]) {
@@ -14,7 +14,7 @@ extension Extension {
 
 extension Extension {
     // ex elliptic_curves
-    public enum SupportedGroup: RawRepresentable, Equatable {
+    public enum SupportedGroup: RawRepresentable, Equatable, Sendable {
         /* Elliptic Curve Groups (ECDHE) */
         case secp256r1
         case secp384r1
@@ -102,7 +102,7 @@ extension Extension {
 
         // https://tools.ietf.org/html/rfc4492#section-5.1.1
 
-        public enum Deprecated: UInt16 {
+        public enum Deprecated: UInt16, Sendable {
             /* Elliptic Curve Groups (ECDHE) */
             case sect163k1 = 0x0001
             case sect163r1 = 0x0002

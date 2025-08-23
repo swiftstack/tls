@@ -3,7 +3,7 @@ import Crypto
 
 // https://tools.ietf.org/html/rfc6961
 
-public enum CertificateStatus: Equatable {
+public enum CertificateStatus: Equatable, Sendable {
     case ocsp(OCSP.Response)
 
     // https://tools.ietf.org/html/rfc6961#section-3

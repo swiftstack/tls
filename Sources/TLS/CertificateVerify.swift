@@ -1,6 +1,6 @@
 import Stream
 
-public struct CertificateVerify: Equatable {
+public struct CertificateVerify: Equatable, Sendable {
     public let algorithm: Extension.SignatureAlgorithm
     public let signature: [UInt8]
 }

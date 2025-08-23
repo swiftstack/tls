@@ -1,6 +1,6 @@
 import Stream
 
-public struct SessionId: Equatable {
+public struct SessionId: Equatable, Sendable {
     public let data: [UInt8]
 
     public init(data: [UInt8]) {

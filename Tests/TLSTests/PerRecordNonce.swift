@@ -4,7 +4,7 @@ import Testing
 @Test
 func `per record nonce`() async throws {
     let baseIV: [UInt8] = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
-    let nonce = PerRecordNonce(baseIV: baseIV)
+    var nonce = PerRecordNonce(baseIV: baseIV)
 
     #expect(nonce.baseIV == baseIV)
     #expect(nonce.sequenceNumber == 0)

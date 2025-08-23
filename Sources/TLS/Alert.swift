@@ -1,6 +1,6 @@
 import Stream
 
-public struct Alert: Equatable {
+public struct Alert: Equatable, Sendable {
     public let level: Level
     public let description: Description
 
@@ -11,12 +11,12 @@ public struct Alert: Equatable {
 }
 
 extension Alert {
-    public enum Level: UInt8 {
+    public enum Level: UInt8, Sendable {
         case warning = 1
         case fatal = 2
     }
 
-    public enum Description: UInt8 {
+    public enum Description: UInt8, Sendable {
         case closeNotify = 0
         case unexpectedMessage = 10
         case badRecordMAC = 20

@@ -1,6 +1,6 @@
 import Stream
 
-public struct CiperSuites: Equatable {
+public struct CiperSuites: Equatable, Sendable {
     var items: [CiperSuite]
 
     init(_ items: [CiperSuite]) {
@@ -10,7 +10,7 @@ public struct CiperSuites: Equatable {
 
 // http://www.iana.org/assignments/tls-parameters/tls-parameters.txt
 
-public enum CiperSuite: UInt16 {
+public enum CiperSuite: UInt16, Sendable {
     case tls_aes_128_gcm_sha256 = 0x1301
     case tls_aes_256_gcm_sha384 = 0x1302
     case tls_chacha20_poly1305_sha256 = 0x1303

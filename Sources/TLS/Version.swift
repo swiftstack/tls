@@ -1,6 +1,6 @@
 import Stream
 
-public enum Version: UInt16 {
+public enum Version: UInt16, Sendable {
     case tls10 = 0x0301
     case tls11 = 0x0302
     case tls12 = 0x0303

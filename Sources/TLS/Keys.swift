@@ -3,14 +3,14 @@ import CryptoKit
 public typealias PublicKey = Curve25519.KeyAgreement.PublicKey
 public typealias PrivateKey = Curve25519.KeyAgreement.PrivateKey
 
-struct PeerTrafficKeys: Equatable {
+struct PeerTrafficKeys: Equatable, Sendable {
     let key: SymmetricKey
-    let iv: PerRecordNonce
+    var iv: PerRecordNonce
 }
 
-struct TrafficKeys: Equatable {
-    let read: PeerTrafficKeys
-    let write: PeerTrafficKeys
+struct TrafficKeys: Equatable, Sendable {
+    var read: PeerTrafficKeys
+    var write: PeerTrafficKeys
 }
 
 struct SymmetricKeys {

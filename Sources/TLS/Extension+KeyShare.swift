@@ -3,7 +3,7 @@ import Stream
 // https://tools.ietf.org/html/rfc8446#section-4.2.8
 
 extension Extension {
-    public struct KeysShare: Equatable {
+    public struct KeysShare: Equatable, Sendable {
         var items: [KeyShare]
 
         init(_ items: [KeyShare]) {
@@ -13,8 +13,8 @@ extension Extension {
 }
 
 extension Extension {
-    public struct KeyShare: Equatable {
-        public enum NamedGroup: UInt16 {
+    public struct KeyShare: Equatable, Sendable {
+        public enum NamedGroup: UInt16, Sendable {
             case x25519 = 0x001d
         }
         public let group: NamedGroup
