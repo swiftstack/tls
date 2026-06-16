@@ -30,31 +30,31 @@ extension ServerKeyExchange: StreamCodable {}
 
 extension StreamDecodable {
     static func decode(from bytes: [UInt8]) async throws -> Self {
-        let stream = InputByteStream(bytes)
+        let stream = MemoryStream(bytes)
         return try await Self.decode(from: stream)
     }
 }
 
 extension StreamEncodable {
     func encode() async throws -> [UInt8] {
-        let stream = OutputByteStream()
+        let stream = MemoryStream()
         try await self.encode(to: stream)
-        return stream.bytes
+        return stream.withUnsafeBufferPointer([UInt8].init)
     }
 }
 
 extension StreamDecodableCollection {
     static func decode(from bytes: [UInt8]) async throws -> Self {
-        let stream = InputByteStream(bytes)
+        let stream = MemoryStream(bytes)
         return try await Self.decode(from: stream)
     }
 }
 
 extension StreamEncodableCollection {
     func encode() async throws -> [UInt8] {
-        let stream = OutputByteStream()
+        let stream = MemoryStream()
         try await self.encode(to: stream)
-        return stream.bytes
+        return stream.withUnsafeBufferPointer([UInt8].init)
     }
 }
 

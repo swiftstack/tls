@@ -33,7 +33,7 @@ extension StreamDecodableCollection {
             sizedBy: LengthType.self
         ) { sub -> [Element] in
             var items = [Element]()
-            while !sub.isEmpty {
+            while try await sub.cache(count: 1) {
                 items.append(try await Element.decode(from: sub))
             }
             return items

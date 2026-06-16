@@ -75,11 +75,11 @@ class ClientSession<T: Stream> {
     ) async throws {
         switch contentType {
         case .handshake:
-            let stream = InputByteStream(payload)
+            let stream = MemoryStream(payload)
             let handshake = try await Handshake.decode(from: stream)
             print("handshake data:", handshake)
         case .alert:
-            let stream = InputByteStream(payload)
+            let stream = MemoryStream(payload)
             let alert = try await Alert.decode(from: stream)
             print("alert message:", alert)
         default:
@@ -131,7 +131,7 @@ class ClientSession<T: Stream> {
 
     private func receive(keys: inout PeerTrafficKeys) async throws -> [UInt8] {
         while try await stream.cache(count: 5) {
-            let ad = try await stream.peek(count: 5, as: [UInt8].self)
+            let ad = try await stream.peek(count: 5, body: [UInt8].init)
             let header = try await Record.Header.decode(from: stream)
 
             guard let recordType = header.type else {

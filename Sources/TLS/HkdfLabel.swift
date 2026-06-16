@@ -32,16 +32,17 @@ struct HkdfLabel {
         precondition(label.utf8.count <= UInt8.max)
         precondition(context.count <= UInt8.max)
 
-        let stream = OutputByteStream()
+        // TODO: manual encoding
+        let stream = MemoryStream()
 
-        stream.write(UInt16(length))
+        try? stream.write(UInt16(length))
 
-        stream.write(UInt8(label.utf8.count))
-        stream.write(label)
+        try? stream.write(UInt8(label.utf8.count))
+        try? stream.write(label)
 
-        stream.write(UInt8(context.count))
-        stream.write(context)
+        try? stream.write(UInt8(context.count))
+        try? stream.write(context)
 
-        return stream.bytes
+        return stream.withUnsafeBufferPointer([UInt8].init)
     }
 }

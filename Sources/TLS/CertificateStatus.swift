@@ -38,14 +38,15 @@ extension CertificateStatus: StreamCodable {
     }
 }
 
+// FIXME: why here?
 extension OCSP.Response {
     static func decode(from stream: StreamReader) async throws -> Self {
-        let asn1 = try await ASN1.decode(from: stream)
-        return try await .decode(from: asn1)
+        let asn1 = try await ASN1(from: stream)
+        return try await .init(from: asn1)
     }
 
     func encode(to stream: StreamWriter) async throws {
         let asn1 = self.encode()
-        try await asn1.encode(to: stream)
+        try await asn1.write(to: stream)
     }
 }

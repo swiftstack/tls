@@ -19,7 +19,7 @@ extension Certificates: StreamCodable {
             sizedBy: UInt24.self
         ) { sub -> [Certificate] in
             var items = [Certificate]()
-            while !sub.isEmpty {
+            while try await sub.cache(count: 1) {
                 items.append(try await Certificate.decode(from: sub))
             }
             return items

@@ -60,7 +60,7 @@ extension ClientSession {
                 transcriptHash: hash.finalize())
 
             while try await stream.cache(count: 5) {
-                let ad = try await stream.peek(count: 5, as: [UInt8].self)
+                let ad = try await stream.peek(count: 5, body: [UInt8].init)
                 let header = try await Record.Header.decode(from: stream)
 
                 guard let type = header.type else {
@@ -83,7 +83,7 @@ extension ClientSession {
                         authenticating: ad)
                 }
 
-                let dataStream = InputByteStream(data)
+                let dataStream = MemoryStream(data)
                 while try dataStream.cache(count: 5) {
                     let handshake = try await Handshake.decode(from: dataStream)
 

@@ -16,8 +16,8 @@ private typealias PrivateKey = Curve25519.KeyAgreement.PrivateKey
 private typealias PublicKey = Curve25519.KeyAgreement.PublicKey
 
 private class TestStream: Stream {
-    let inputStream: InputByteStream
-    let outputStream: OutputByteStream
+    let inputStream: MemoryStream
+    let outputStream: MemoryStream
 
     init(serverData: [UInt8]) {
         self.inputStream = .init(serverData)
@@ -35,7 +35,7 @@ private class TestStream: Stream {
         from buffer: UnsafeRawPointer,
         byteCount: Int
     ) async throws -> Int {
-        outputStream.write(from: buffer, byteCount: byteCount)
+        try outputStream.write(from: buffer, byteCount: byteCount)
     }
 }
 
@@ -45,9 +45,10 @@ func `handshake example`() async throws {
     let session = ClientSession(privateKey: Client.privateKey, stream: stream)
     try await session.handshake(Client.hello)
 
+    let bytes = stream.outputStream.withUnsafeBufferPointer([UInt8].init)
     let finishedSize = Client.finishedRecord.count
-    let finishedBytes = [UInt8](stream.outputStream.bytes.suffix(finishedSize))
-    #expect(finishedBytes == Client.finishedRecord)
+    let finishedBytes = bytes.suffix(finishedSize)
+    #expect(finishedBytes.elementsEqual(Client.finishedRecord))
 }
 
 
